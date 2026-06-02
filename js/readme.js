@@ -133,7 +133,7 @@ async function updateAuthUI() {
         try {
             const result = await verifyLodestoneCharacter(lodestoneId, currentVCode);
             verifyBtn.disabled = false;
-            
+
             if (result.success) {
                 statusEl.textContent = "検証成功！登録しています...";
                 await registerUserToFirestore(lodestoneId, result.characterName);

@@ -350,7 +350,7 @@ export function updateCardFull(card, mob) {
   }
 }
 
-export const updateVisibleCards = function() {
+export const updateVisibleCards = function () {
   const mobMap = getMobMap();
   for (const mobNoStr of visibleCards) {
     const card = cardCache.get(mobNoStr);
@@ -405,7 +405,7 @@ export const sortAndRedistribute = (options = {}) => {
   }
 };
 
-export const syncDomOrder = function() {
+export const syncDomOrder = function () {
   if (!DOM.pcLeftList) return;
 
   invalidateSortCache();
@@ -555,7 +555,7 @@ export function filterAndRender({ isInitialLoad = false } = {}) {
 let lastTierBTime = 0;
 let lastTierCTime = 0;
 
-export const updateProgressBarsOptimized = function(force = false) {
+export const updateProgressBarsOptimized = function (force = false) {
   if (document.visibilityState === 'hidden' && !force) return;
 
   const state = getState();
@@ -616,7 +616,7 @@ export const updateProgressBarsOptimized = function(force = false) {
   }
 };
 
-const updateMobState = function(mob, nowSec, state) {
+const updateMobState = function (mob, nowSec, state) {
   const info = mob.repopInfo;
   if (!info) return false;
 

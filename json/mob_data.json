@@ -868,7 +868,7 @@
     },
     "51051": {
       "rank": "A",
-      "name": "1_アイゲイロス",
+      "name": "アイゲイロス",
       "area": "ガレマルド",
       "condition": "",
       "repopSeconds": 14400,
@@ -876,23 +876,7 @@
     },
     "51061": {
       "rank": "A",
-      "name": "1_ミネルウァ",
-      "area": "ガレマルド",
-      "condition": "",
-      "repopSeconds": 14400,
-      "maxRepopSeconds": 21600
-    },
-    "51052": {
-      "rank": "A",
-      "name": "2_アイゲイロス",
-      "area": "ガレマルド",
-      "condition": "",
-      "repopSeconds": 14400,
-      "maxRepopSeconds": 21600
-    },
-    "51062": {
-      "rank": "A",
-      "name": "2_ミネルウァ",
+      "name": "ミネルウァ",
       "area": "ガレマルド",
       "condition": "",
       "repopSeconds": 14400,
@@ -900,7 +884,7 @@
     },
     "51071": {
       "rank": "A",
-      "name": "1_ムースプリンセス",
+      "name": "ムースプリンセス",
       "area": "嘆きの海",
       "condition": "",
       "repopSeconds": 14400,
@@ -908,23 +892,7 @@
     },
     "51081": {
       "rank": "A",
-      "name": "1_ルナテンダー・クイーン",
-      "area": "嘆きの海",
-      "condition": "",
-      "repopSeconds": 14400,
-      "maxRepopSeconds": 21600
-    },
-    "51072": {
-      "rank": "A",
-      "name": "2_ムースプリンセス",
-      "area": "嘆きの海",
-      "condition": "",
-      "repopSeconds": 14400,
-      "maxRepopSeconds": 21600
-    },
-    "51082": {
-      "rank": "A",
-      "name": "2_ルナテンダー・クイーン",
+      "name": "ルナテンダー・クイーン",
       "area": "嘆きの海",
       "condition": "",
       "repopSeconds": 14400,
@@ -988,15 +956,7 @@
     },
     "52031": {
       "rank": "S",
-      "name": "1_アームストロング",
-      "area": "ガレマルド",
-      "condition": "「リペアド・インペリアルショートローブ」//「リペアド・インペリアルポットヘルム」を//装備してPOP地点で戦闘不能になる（自爆も可）",
-      "repopSeconds": 302400,
-      "maxRepopSeconds": 475200
-    },
-    "52032": {
-      "rank": "S",
-      "name": "2_アームストロング",
+      "name": "アームストロング",
       "area": "ガレマルド",
       "condition": "「リペアド・インペリアルショートローブ」//「リペアド・インペリアルポットヘルム」を//装備してPOP地点で戦闘不能になる（自爆も可）",
       "repopSeconds": 302400,
@@ -1004,15 +964,7 @@
     },
     "52041": {
       "rank": "S",
-      "name": "1_ルミネイター",
-      "area": "嘆きの海",
-      "condition": "「シンカー」「ワンダラー」「ウィーパー」各100体討伐",
-      "repopSeconds": 302400,
-      "maxRepopSeconds": 475200
-    },
-    "52042": {
-      "rank": "S",
-      "name": "2_ルミネイター",
+      "name": "ルミネイター",
       "area": "嘆きの海",
       "condition": "「シンカー」「ワンダラー」「ウィーパー」各100体討伐",
       "repopSeconds": 302400,
@@ -1084,7 +1036,7 @@
     },
     "61051": {
       "rank": "A",
-      "name": "1_幻煌鳥",
+      "name": "幻煌鳥",
       "area": "ヤクテル樹海",
       "condition": "",
       "repopSeconds": 14400,
@@ -1092,23 +1044,7 @@
     },
     "61061": {
       "rank": "A",
-      "name": "1_ラシュイチャ",
-      "area": "ヤクテル樹海",
-      "condition": "",
-      "repopSeconds": 14400,
-      "maxRepopSeconds": 21600
-    },
-    "61052": {
-      "rank": "A",
-      "name": "2_幻煌鳥",
-      "area": "ヤクテル樹海",
-      "condition": "",
-      "repopSeconds": 14400,
-      "maxRepopSeconds": 21600
-    },
-    "61062": {
-      "rank": "A",
-      "name": "2_ラシュイチャ",
+      "name": "ラシュイチャ",
       "area": "ヤクテル樹海",
       "condition": "",
       "repopSeconds": 14400,
@@ -1181,15 +1117,7 @@
     },
     "62031": {
       "rank": "S",
-      "name": "1_ネヨーゾテール",
-      "area": "ヤクテル樹海",
-      "condition": "「魚粉」を50個まとめて捨てる",
-      "repopSeconds": 302400,
-      "maxRepopSeconds": 475200
-    },
-    "62032": {
-      "rank": "S",
-      "name": "2_ネヨーゾテール",
+      "name": "ネヨーゾテール",
       "area": "ヤクテル樹海",
       "condition": "「魚粉」を50個まとめて捨てる",
       "repopSeconds": 302400,
@@ -1237,4 +1165,3 @@
     }
   }
 }
-
