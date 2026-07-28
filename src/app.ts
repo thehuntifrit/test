@@ -1,38 +1,38 @@
-import { getState, updateAllMobCullStatuses, loadBaseMobData, startRealtime, setOpenMobCardNo, setUserId, setLodestoneId, setCharacterName, setVerified, isCulled, STATUS_LABELS, CONFIG, DOM, handleAppError } from "./dataManager.js";
-import { calculateRepop, getDurationDHMParts, formatDurationDHM, formatDurationColon, formatMMDDHHmm, debounce, getEorzeaTime, EORZEA_MINUTE_MS } from "./cal.js";
-import { createMobCard, updateProgressBar, updateProgressText, updateExpandablePanel, updateMemoIcon, updateMobCount, updateAreaInfo, updateMapOverlay, createSimpleMobItem, updateSimpleMobItem, escapeHtml, initGlobalMagnifier, adjustMemoHeight } from "./mobCard.js";
-import { getGroupKey, GROUP_LABELS, getOrCreateGroupSection, getSortedFilteredMobs, getFilteredMobs, invalidateFilterCache, invalidateSortCache, allTabComparator } from "./mobSorter.js";
-import { closeReportModal, openAuthModal, openReportModal, initModal, closeAuthModal } from "./modal.js";
-import { handleAreaFilterClick, handleRankTabClick, initAppNav, initNotification, togglePanel, closePanel, setActiveNavItem, checkAndNotify, updateErrorPanel } from "./sidebar.js";
-import { initializeAuth, getUserData, submitReport, submitMemo, toggleCrushStatus } from "./server.js";
-import { openUserManual } from "./readme.js";
-
+import { getState, updateAllMobCullStatuses, loadBaseMobData, startRealtime, setOpenMobCardNo, setUserId, setLodestoneId, setCharacterName, setVerified, isCulled, STATUS_LABELS, CONFIG, DOM, handleAppError } from "./dataManager";
+import { calculateRepop, getDurationDHMParts, formatDurationDHM, formatDurationColon, formatMMDDHHmm, debounce, getEorzeaTime, EORZEA_MINUTE_MS } from "./cal";
+import { createMobCard, updateProgressBar, updateProgressText, updateExpandablePanel, updateMemoIcon, updateMobCount, updateAreaInfo, updateMapOverlay, createSimpleMobItem, updateSimpleMobItem, escapeHtml, initGlobalMagnifier, adjustMemoHeight } from "./mobCard";
+import { getGroupKey, GROUP_LABELS, getOrCreateGroupSection, getSortedFilteredMobs, getFilteredMobs, invalidateFilterCache, invalidateSortCache, allTabComparator } from "./mobSorter";
+import { closeReportModal, openAuthModal, openReportModal, initModal, closeAuthModal } from "./modal";
+import { handleAreaFilterClick, handleRankTabClick, initAppNav, initNotification, togglePanel, closePanel, setActiveNavItem, checkAndNotify, updateErrorPanel } from "./sidebar";
+import { initializeAuth, getUserData, submitReport, submitMemo, toggleCrushStatus } from "./server";
+import { openUserManual } from "./readme";
+import { Mob, CullStatus, RepopInfo } from "./types/mob";
 
 // ─── 定数 ──────────────────────────────────────────────
-export const cardCache = new Map();
+export const cardCache = new Map<string, HTMLElement>();
 
-const visibleCards = new Set();
+const visibleCards = new Set<string>();
 let hasUrgentMob = false;
 
-const CULLED_CLASS_MAP = {
+const CULLED_CLASS_MAP: Record<string, string> = {
   "color-b1": "color-b1-culled",
   "color-b2": "color-b2-culled",
-}
+};
 
-const UNCULLED_CLASS_MAP = {
+const UNCULLED_CLASS_MAP: Record<string, string> = {
   "color-b1-culled": "color-b1",
   "color-b2-culled": "color-b2",
-}
+};
 
 let isInitialLoading = false;
 let isInitialSortingSuppressed = false;
 let lastClickTime = 0;
-let lastClickLocationId = null;
+let lastClickLocationId: string | null = null;
 let locationEventsAttached = false;
-let loadingTimeout = null;
+let loadingTimeout: any = null;
 
 // ─── 初期化 ─────────────────────────────────────────────
-async function initApp() {
+async function initApp(): Promise<void> {
   try {
     initAppEventListeners();
     attachMobCardEvents();
@@ -72,7 +72,7 @@ async function initApp() {
     initAppNav();
     attachLocationEvents();
     attachGlobalEventListeners();
-    window.renderMaintenanceStatus = renderMaintenanceStatus;
+    (window as any).renderMaintenanceStatus = renderMaintenanceStatus;
 
     loadingTimeout = setTimeout(() => {
       const overlay = DOM.loadingOverlay;
@@ -93,11 +93,11 @@ async function initApp() {
   }
 }
 
-export function showColumnContainer() {
+export function showColumnContainer(): void {
   if (!DOM.colContainer) return;
 
   requestAnimationFrame(() => {
-    DOM.colContainer.classList.add("is-ready");
+    DOM.colContainer!.classList.add("is-ready");
 
     requestAnimationFrame(() => {
       const overlay = document.getElementById("loading-overlay");
@@ -109,7 +109,15 @@ export function showColumnContainer() {
 }
 
 // ─── メンテナンス表示 ───────────────────────────────────
-async function getMaintenanceStatus() {
+interface MaintStatus {
+  is_active: boolean;
+  scheduled: boolean;
+  start_time?: string;
+  end_time?: string;
+  message: string;
+}
+
+async function getMaintenanceStatus(): Promise<MaintStatus> {
   const state = getState();
   const maintenance = state.maintenance;
 
@@ -129,7 +137,7 @@ async function getMaintenanceStatus() {
 
   const isWithinDisplayWindow = now >= showFrom && now <= showUntil;
 
-  let status = {
+  const status: MaintStatus = {
     is_active: false,
     scheduled: false,
     start_time: maintenance.start,
@@ -148,7 +156,7 @@ async function getMaintenanceStatus() {
   return status;
 }
 
-export async function renderMaintenanceStatus() {
+export async function renderMaintenanceStatus(): Promise<void> {
   const state = getState();
   const maintenance = await getMaintenanceStatus();
 
@@ -156,7 +164,6 @@ export async function renderMaintenanceStatus() {
   const telopPanels = document.querySelectorAll(".js-telop-content");
 
   let hasMaintenance = false;
-  let hasMessage = false;
 
   if (maintenance && (maintenance.is_active || maintenance.scheduled)) {
     hasMaintenance = true;
@@ -186,7 +193,6 @@ export async function renderMaintenanceStatus() {
   });
 
   const telopMsg = (maintenance && maintenance.message && maintenance.message.trim() !== "") ? maintenance.message : "";
-  hasMessage = telopMsg !== "";
 
   const nameToDisplay = (state.isVerified && state.characterName) ? state.characterName : "名無しさん";
 
@@ -228,7 +234,7 @@ export async function renderMaintenanceStatus() {
   document.querySelectorAll(`.appnav-btn[data-nav-id="telop"]`)
     .forEach(btn => btn.classList.toggle("has-alert", state.hasUnreadTelop));
 
-  const errorLogCount = window.errorLog ? window.errorLog.length : 0;
+  const errorLogCount = (window as any).errorLog ? (window as any).errorLog.length : 0;
   const hasError = errorLogCount > 0;
   document.querySelectorAll(`.appnav-btn[data-nav-id="error"]`)
     .forEach(btn => btn.classList.toggle("has-alert", hasError));
@@ -238,11 +244,11 @@ export async function renderMaintenanceStatus() {
 }
 
 // ─── ヘッダー時刻 ───────────────────────────────────────
-let headerClocks = null;
+let headerClocks: { lt: Element[]; et: Element[] } | null = null;
 let lastLtStr = "";
 let lastEtStr = "";
 
-export function updateHeaderTime() {
+export function updateHeaderTime(): void {
   if (document.visibilityState === 'hidden') return;
 
   const now = new Date();
@@ -267,11 +273,11 @@ export function updateHeaderTime() {
 }
 
 // ─── ソート＆描画 ───────────────────────────────────────
-function getMobMap() {
+function getMobMap(): Map<string, Mob> {
   return getState().mobsMap;
 }
 
-function updateVisibleCardsSet() {
+function updateVisibleCardsSet(): void {
   const container = document.getElementById('moblist-container');
   if (!container) return;
 
@@ -283,15 +289,16 @@ function updateVisibleCardsSet() {
   visibleCards.clear();
 
   items.forEach(el => {
-    const rect = el.getBoundingClientRect();
+    const htmlEl = el as HTMLElement;
+    const rect = htmlEl.getBoundingClientRect();
     if (rect.bottom > -100 && rect.top < vh + 100) {
-      const mobNo = el.dataset.mobNo;
+      const mobNo = htmlEl.dataset.mobNo!;
       visibleCards.add(mobNo);
-      cardCache.set(mobNo, el);
+      cardCache.set(mobNo, htmlEl);
 
       if (!prevVisible.has(mobNo)) {
         const mob = mobMap.get(mobNo);
-        if (mob) updateCardFull(el, mob);
+        if (mob) updateCardFull(htmlEl, mob);
       }
     }
   });
@@ -301,30 +308,30 @@ const handleScroll = debounce(updateVisibleCardsSet, 200);
 window.addEventListener('scroll', handleScroll, { passive: true });
 window.addEventListener('resize', handleScroll, { passive: true });
 
-export function observeCard(el) {
+export function observeCard(el: HTMLElement): void {
   if (el) {
-    const mobNo = el.dataset.mobNo;
+    const mobNo = el.dataset.mobNo!;
     cardCache.set(mobNo, el);
   }
 }
 
-export function unobserveCard(el) {
+export function unobserveCard(el: HTMLElement): void {
   if (el) {
-    const mobNo = el.dataset.mobNo;
+    const mobNo = el.dataset.mobNo!;
     cardCache.delete(mobNo);
     visibleCards.delete(mobNo);
   }
 }
 
-export function updateCardFull(card, mob) {
-  const info = mob.repopInfo || {};
+export function updateCardFull(card: HTMLElement, mob: Mob): void {
+  const info = mob.repopInfo || {} as RepopInfo;
 
   let cullHash = "";
   if (mob.spawn_cull_status) {
     for (const key in mob.spawn_cull_status) {
       const s = mob.spawn_cull_status[key];
-      const c = s.culled_at?.seconds || 0;
-      const u = s.uncull_at?.seconds || 0;
+      const c = (s.culled_at as any)?.seconds || 0;
+      const u = (s.uncull_at as any)?.seconds || 0;
       cullHash += `${key}:${c},${u};`;
     }
   }
@@ -332,8 +339,8 @@ export function updateCardFull(card, mob) {
   const memoHash = `${mob.memo_updated_at || 0}:${mob.memo_text || ""}`;
   const stateHash = `${info.status}|${info.timeRemaining}|${info.isInConditionWindow}|${cullHash}|${memoHash}`;
 
-  if (card._lastStateHash === stateHash) return;
-  card._lastStateHash = stateHash;
+  if ((card as any)._lastStateHash === stateHash) return;
+  (card as any)._lastStateHash = stateHash;
 
   const isDetail = card.classList.contains('mobcard-card');
   const isListItem = card.classList.contains('moblist-item');
@@ -350,7 +357,7 @@ export function updateCardFull(card, mob) {
   }
 }
 
-export const updateVisibleCards = function () {
+export const updateVisibleCards = function (): void {
   const mobMap = getMobMap();
   for (const mobNoStr of visibleCards) {
     const card = cardCache.get(mobNoStr);
@@ -360,19 +367,19 @@ export const updateVisibleCards = function () {
   updateVisibleDetailCard(mobMap);
 };
 
-export function updateVisibleDetailCard(mobMap) {
+export function updateVisibleDetailCard(mobMap: Map<string, Mob>): void {
   const rightPane = DOM.pcRightDetail || document.getElementById("mobcard-detail");
-  if (!rightPane || rightPane.offsetParent === null) return;
+  if (!rightPane || (rightPane as HTMLElement).offsetParent === null) return;
 
   if (rightPane.dataset.renderedMobNo && rightPane.dataset.renderedMobNo !== "none") {
-    const detailCard = rightPane.firstElementChild;
+    const detailCard = rightPane.firstElementChild as HTMLElement | null;
     const mob = mobMap.get(rightPane.dataset.renderedMobNo);
     if (detailCard && mob) updateCardFull(detailCard, mob);
   }
 
   const mobileOverlay = DOM.mobileDetailOverlay || document.getElementById("mobcard-overlay");
-  if (mobileOverlay && mobileOverlay.offsetParent !== null && mobileOverlay.dataset.renderedMobNo && mobileOverlay.dataset.renderedMobNo !== "none") {
-    const detailCard = mobileOverlay.querySelector('.mobcard-card');
+  if (mobileOverlay && (mobileOverlay as HTMLElement).offsetParent !== null && mobileOverlay.dataset.renderedMobNo && mobileOverlay.dataset.renderedMobNo !== "none") {
+    const detailCard = mobileOverlay.querySelector('.mobcard-card') as HTMLElement | null;
     const mob = mobMap.get(mobileOverlay.dataset.renderedMobNo);
     if (detailCard && mob) {
       updateCardFull(detailCard, mob);
@@ -384,7 +391,7 @@ const debouncedSortAndRedistribute = debounce(() => {
   sortAndRedistribute({ immediate: true });
 }, 200);
 
-export const sortAndRedistribute = (options = {}) => {
+export const sortAndRedistribute = (options: { immediate?: boolean } = {}): void => {
   const { immediate = false } = options;
   const run = () => {
     filterAndRender();
@@ -405,19 +412,19 @@ export const sortAndRedistribute = (options = {}) => {
   }
 };
 
-export const syncDomOrder = function () {
+export const syncDomOrder = function (): void {
   if (!DOM.pcLeftList) return;
 
   invalidateSortCache();
   const sortedMobs = getSortedFilteredMobs();
-  const groups = { MAX_OVER: [], WINDOW: [], NEXT: [], MAINTENANCE: [] };
+  const groups: Record<string, Mob[]> = { MAX_OVER: [], WINDOW: [], NEXT: [], MAINTENANCE: [] };
   sortedMobs.forEach(m => {
     groups[getGroupKey(m)].push(m);
   });
 
-  const idealNodes = [];
-  const currentNodes = Array.from(DOM.pcLeftList.children);
-  const nodeMap = new Map();
+  const idealNodes: HTMLElement[] = [];
+  const currentNodes = Array.from(DOM.pcLeftList.children) as HTMLElement[];
+  const nodeMap = new Map<string, HTMLElement>();
   currentNodes.forEach(node => {
     if (node.dataset.mobNo) nodeMap.set(`mob-${node.dataset.mobNo}`, node);
     else if (node.classList.contains('moblist-group-header')) nodeMap.set(`header-${node.textContent}`, node);
@@ -428,8 +435,8 @@ export const syncDomOrder = function () {
     const groupMobs = groups[key];
     if (groupMobs.length === 0) return;
 
-    const headerKey = `header-${key}`;
-    const headerText = GROUP_LABELS[key];
+    const headerText = (GROUP_LABELS as any)[key];
+    const headerKey = `header-${headerText}`;
     let header = nodeMap.get(headerKey);
     if (!header) {
       header = document.createElement("div");
@@ -450,7 +457,7 @@ export const syncDomOrder = function () {
 
   for (let i = 0; i < idealNodes.length; i++) {
     const ideal = idealNodes[i];
-    const current = DOM.pcLeftList.children[i];
+    const current = DOM.pcLeftList.children[i] as HTMLElement | null;
 
     if (current !== ideal) {
       DOM.pcLeftList.insertBefore(ideal, current || null);
@@ -459,11 +466,12 @@ export const syncDomOrder = function () {
   }
 
   while (DOM.pcLeftList.children.length > idealNodes.length) {
-    DOM.pcLeftList.removeChild(DOM.pcLeftList.lastChild);
+    DOM.pcLeftList.removeChild(DOM.pcLeftList.lastChild!);
   }
 };
 
-export function filterAndRender({ isInitialLoad = false } = {}) {
+export function filterAndRender(options: { isInitialLoad?: boolean } = {}): void {
+  const { isInitialLoad = false } = options;
   const state = getState();
   if (!state.initialLoadComplete && !isInitialLoad) {
     return;
@@ -473,18 +481,19 @@ export function filterAndRender({ isInitialLoad = false } = {}) {
     isInitialLoading = true;
   }
 
-  const activeElement = document.activeElement;
-  let focusedMobNo = null;
-  let focusedAction = null;
-  let selectionStart = null;
-  let selectionEnd = null;
+  const activeElement = document.activeElement as HTMLElement | null;
+  let focusedMobNo: string | null = null;
+  let focusedAction: string | null = null;
+  let selectionStart: number | null = null;
+  let selectionEnd: number | null = null;
 
   if (activeElement && activeElement.closest('.mobcard-card, .moblist-item')) {
-    focusedMobNo = activeElement.closest('.mobcard-card, .moblist-item').dataset.mobNo;
+    const container = activeElement.closest('.mobcard-card, .moblist-item') as HTMLElement;
+    focusedMobNo = container.dataset.mobNo || null;
     if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
-      focusedAction = activeElement.dataset.action;
-      selectionStart = activeElement.selectionStart;
-      selectionEnd = activeElement.selectionEnd;
+      focusedAction = (activeElement as any).dataset.action || null;
+      selectionStart = (activeElement as HTMLInputElement).selectionStart;
+      selectionEnd = (activeElement as HTMLInputElement).selectionEnd;
     }
   }
 
@@ -541,7 +550,7 @@ export function filterAndRender({ isInitialLoad = false } = {}) {
   if (focusedMobNo) {
     const card = cardCache.get(String(focusedMobNo));
     if (card && focusedAction) {
-      const input = card.querySelector(`input[data-action="${focusedAction}"]`);
+      const input = card.querySelector(`input[data-action="${focusedAction}"], textarea[data-action="${focusedAction}"]`) as HTMLInputElement | null;
       if (input) {
         input.focus();
         if (selectionStart !== null && selectionEnd !== null) {
@@ -555,7 +564,7 @@ export function filterAndRender({ isInitialLoad = false } = {}) {
 let lastTierBTime = 0;
 let lastTierCTime = 0;
 
-export const updateProgressBarsOptimized = function (force = false) {
+export const updateProgressBarsOptimized = function (force = false): void {
   if (document.visibilityState === 'hidden' && !force) return;
 
   const state = getState();
@@ -567,7 +576,6 @@ export const updateProgressBarsOptimized = function (force = false) {
 
   if (!isTierB && !isTierC) return;
 
-  // 3秒監視（Tier C）
   if (isTierC && !isTierB && !hasUrgentMob && !force) {
     lastTierCTime = now;
     return;
@@ -616,7 +624,7 @@ export const updateProgressBarsOptimized = function (force = false) {
   }
 };
 
-const updateMobState = function (mob, nowSec, state) {
+const updateMobState = function (mob: Mob, nowSec: number, state: any): boolean {
   const info = mob.repopInfo;
   if (!info) return false;
 
@@ -648,7 +656,7 @@ const updateMobState = function (mob, nowSec, state) {
     }
   }
 
-  if (oldStatus !== mob.repopInfo.status) {
+  if (oldStatus !== mob.repopInfo!.status) {
     hasSignificantChange = true;
   }
 
@@ -656,7 +664,7 @@ const updateMobState = function (mob, nowSec, state) {
 };
 
 // ─── 報告処理 ───────────────────────────────────────────
-export function showToast(message, type = "error") {
+export function showToast(message: string, type = "error"): void {
   if (type === "error") {
     console.error(message);
   }
@@ -688,7 +696,7 @@ export function showToast(message, type = "error") {
   }, CONFIG.TOAST_DURATION);
 }
 
-export function handleReportResult(result) {
+export function handleReportResult(result: any): void {
   if (!result.success) {
     if (result.code === "permission-denied" || (result.error && result.error.includes("permission"))) {
       showToast("アクセス権限エラーが発生しました。\n再度認証を行ってください。", "error");
@@ -701,23 +709,23 @@ export function handleReportResult(result) {
   }
 }
 
-export async function handleInstantReport(mobNo) {
+export async function handleInstantReport(mobNo: number): Promise<void> {
   const result = await submitReport(mobNo, new Date().toISOString());
   handleReportResult(result);
 }
 
-async function handleReportSubmit(e) {
+async function handleReportSubmit(e: Event): Promise<void> {
   e.preventDefault();
-  const form = e.target;
-  const mobNo = parseInt(form.dataset.mobNo, 10);
-  const timeISO = form.elements["kill-time"].value;
+  const form = e.target as HTMLFormElement;
+  const mobNo = parseInt(form.dataset.mobNo!, 10);
+  const timeISO = (form.elements.namedItem("kill-time") as HTMLInputElement).value;
   const result = await submitReport(mobNo, timeISO);
   handleReportResult(result);
   if (result.success) closeReportModal();
 }
 
 // ─── スポーン操作 ───────────────────────────────────────
-function applyOptimisticDOM(point, nextCulled) {
+function applyOptimisticDOM(point: HTMLElement, nextCulled: boolean): void {
   point.dataset.isCulled = String(nextCulled);
 
   if (nextCulled) {
@@ -737,41 +745,45 @@ function applyOptimisticDOM(point, nextCulled) {
   }
 }
 
-function applyOptimisticState(mobNo, area, locationId, nextCulled) {
-  const state = getState();
+function applyOptimisticState(mobNo: number, area: string, locationId: string, nextCulled: boolean): void {
+  const stateVal = getState();
   const instance = mobNo % 10;
   const key = `${area}_${instance}`;
-  if (!state.mobLocations[key]) {
-    state.mobLocations[key] = {};
+  if (!stateVal.mobLocations) {
+    stateVal.mobLocations = {};
   }
-  if (!state.mobLocations[key][locationId]) {
-    state.mobLocations[key][locationId] = {};
+  if (!stateVal.mobLocations[key]) {
+    stateVal.mobLocations[key] = {};
+  }
+  if (!stateVal.mobLocations[key][locationId]) {
+    stateVal.mobLocations[key][locationId] = {};
   }
 
-  const now = { toMillis: () => Date.now() };
+  const now = { toMillis: () => Date.now(), seconds: Math.floor(Date.now() / 1000) };
   if (nextCulled) {
-    state.mobLocations[key][locationId].culled_at = now;
+    stateVal.mobLocations[key][locationId].culled_at = now;
   } else {
-    state.mobLocations[key][locationId].uncull_at = now;
+    stateVal.mobLocations[key][locationId].uncull_at = now;
   }
 
-  state.mobs.forEach(m => {
+  stateVal.mobs.forEach(m => {
     if (m.area === area && (m.No % 10) === instance) {
-      m.spawn_cull_status = state.mobLocations[key];
+      m.spawn_cull_status = stateVal.mobLocations![key];
     }
   });
 
   window.dispatchEvent(new CustomEvent("locationsUpdated", {
-    detail: { locationsMap: state.mobLocations }
+    detail: { locationsMap: stateVal.mobLocations }
   }));
 }
 
-function handleCrushToggle(e) {
-  const point = e.target.closest(".spawn-point");
+function handleCrushToggle(e: Event): void {
+  const target = e.target as HTMLElement;
+  const point = target.closest(".spawn-point") as HTMLElement | null;
   if (!point) return;
 
-  const state = getState();
-  if (!state.isVerified) {
+  const stateVal = getState();
+  if (!stateVal.isVerified) {
     openAuthModal();
     return;
   }
@@ -779,17 +791,17 @@ function handleCrushToggle(e) {
   if (point.dataset.isInteractive !== "true") return;
   if (point.dataset.isLastone === "true") return;
 
-  const card = e.target.closest(".mobcard-card");
+  const card = target.closest(".mobcard-card") as HTMLElement | null;
   if (!card) return;
 
   e.preventDefault();
   e.stopPropagation();
 
-  const mobNo = parseInt(card.dataset.mobNo, 10);
-  const mob = state.mobs.find(m => m.No === mobNo);
+  const mobNo = parseInt(card.dataset.mobNo!, 10);
+  const mob = stateVal.mobs.find(m => m.No === mobNo);
   if (!mob) return;
 
-  const locationId = point.dataset.locationId;
+  const locationId = point.dataset.locationId!;
   const area = mob.area;
 
   const isTouchDevice = window.matchMedia("(hover: none)").matches;
@@ -821,7 +833,7 @@ function handleCrushToggle(e) {
   });
 }
 
-export function attachLocationEvents() {
+export function attachLocationEvents(): void {
   if (locationEventsAttached) return;
 
   const moblistContainer = document.getElementById("moblist-container");
@@ -830,7 +842,6 @@ export function attachLocationEvents() {
   }
 
   const mobcardDetail = document.getElementById("mobcard-detail");
-
   if (mobcardDetail) {
     mobcardDetail.addEventListener("click", handleCrushToggle);
   }
@@ -844,7 +855,7 @@ export function attachLocationEvents() {
 }
 
 // ─── グローバルイベント管理（イベント委譲） ───────────────────────
-function attachGlobalEventListeners() {
+function attachGlobalEventListeners(): void {
   let prevWidth = window.innerWidth;
   window.addEventListener("resize", debounce(() => {
     const currentWidth = window.innerWidth;
@@ -855,11 +866,11 @@ function attachGlobalEventListeners() {
   }, CONFIG.DEBOUNCE_DELAY));
 
   document.body.addEventListener('click', (e) => {
-    const target = e.target;
+    const target = e.target as HTMLElement;
 
-    const navBtn = target.closest('.appnav-btn[data-nav-id]');
+    const navBtn = target.closest('.appnav-btn[data-nav-id]') as HTMLElement | null;
     if (navBtn) {
-      const navId = navBtn.dataset.navId;
+      const navId = navBtn.dataset.navId!;
       if (navId === 'notify') return;
       e.preventDefault();
       e.stopPropagation();
@@ -897,15 +908,16 @@ function attachGlobalEventListeners() {
   }
 
   document.body.addEventListener('input', (e) => {
-    if (e.target.classList.contains('mobcard-memo-input') || e.target.matches("[data-action='save-memo']")) {
-      adjustMemoHeight(e.target);
+    const target = e.target as HTMLElement;
+    if (target.classList.contains('mobcard-memo-input') || target.matches("[data-action='save-memo']")) {
+      adjustMemoHeight(target);
     }
   });
 
   document.body.addEventListener('change', async (e) => {
-    const input = e.target;
+    const input = e.target as HTMLInputElement;
     if (input.classList.contains('mobcard-memo-input') || input.matches("[data-action='save-memo']")) {
-      const mobNo = parseInt(input.dataset.mobNo, 10);
+      const mobNo = parseInt(input.dataset.mobNo!, 10);
       const value = input.value.trim();
       if (!isNaN(mobNo)) {
         if (!getState().isVerified) {
@@ -920,16 +932,18 @@ function attachGlobalEventListeners() {
 
   let touchStartX = 0;
   document.body.addEventListener('touchstart', (e) => {
-    const reportBtn = e.target.closest('.report-side-bar');
+    const target = e.target as HTMLElement;
+    const reportBtn = target.closest('.report-side-bar') as HTMLElement | null;
     if (reportBtn) touchStartX = e.changedTouches[0].screenX;
   }, { passive: true });
 
   document.body.addEventListener('touchend', (e) => {
-    const reportBtn = e.target.closest('.report-side-bar');
+    const target = e.target as HTMLElement;
+    const reportBtn = target.closest('.report-side-bar') as HTMLElement | null;
     if (reportBtn) {
       const touchEndX = e.changedTouches[0].screenX;
       if (touchEndX - touchStartX > 30) {
-        const mobNo = parseInt(reportBtn.dataset.mobNo, 10);
+        const mobNo = parseInt(reportBtn.dataset.mobNo!, 10);
         if (reportBtn.dataset.reportType === 'modal') openReportModal(mobNo);
         else reportBtn.click();
       }
@@ -938,7 +952,7 @@ function attachGlobalEventListeners() {
 }
 
 // ─── イベント ───────────────────────────────────────────
-function initAppEventListeners() {
+function initAppEventListeners(): void {
   window.addEventListener('maintenanceUpdated', () => renderMaintenanceStatus());
 
   window.addEventListener('pageshow', (event) => {
@@ -962,7 +976,7 @@ function initAppEventListeners() {
     }
   }, { once: true });
 
-  window.addEventListener('criticalDataLoadError', (e) => {
+  window.addEventListener('criticalDataLoadError', (e: any) => {
     if (loadingTimeout) clearTimeout(loadingTimeout);
     const overlay = DOM.loadingOverlay;
     if (overlay) {
@@ -985,7 +999,7 @@ function initAppEventListeners() {
       const isFirstVisit = !localStorage.getItem("has_visited");
       if (isFirstVisit) {
         localStorage.setItem("has_visited", "true");
-        if (window.openUserManual) window.openUserManual();
+        if ((window as any).openUserManual) (window as any).openUserManual();
       }
     } catch (e) {
       console.error("初回描画失敗:", e);
@@ -995,11 +1009,11 @@ function initAppEventListeners() {
 
   window.addEventListener('characterNameSet', () => renderMaintenanceStatus());
 
-  window.addEventListener('mobsBatchUpdated', (e) => {
+  window.addEventListener('mobsBatchUpdated', (e: any) => {
     const { mobNos } = e.detail;
     const mobMap = getMobMap();
     if (!mobMap) return;
-    mobNos.forEach(mobNo => {
+    mobNos.forEach((mobNo: number) => {
       const mob = mobMap.get(String(mobNo));
       if (!mob) return;
       checkAndNotify(mob);
@@ -1010,7 +1024,7 @@ function initAppEventListeners() {
     sortAndRedistribute();
   });
 
-  window.addEventListener('mobUpdated', (e) => {
+  window.addEventListener('mobUpdated', (e: any) => {
     const { mobNo, mob } = e.detail;
     const mobMap = getMobMap();
     if (!mobMap) return;
@@ -1032,17 +1046,17 @@ function initAppEventListeners() {
     updateVisibleCards();
   });
 
-  window.addEventListener('appNotify', (e) => {
+  window.addEventListener('appNotify', (e: any) => {
     const { message, type } = e.detail;
     showToast(message, type);
   });
 }
 
-function attachMobCardEvents() {
+function attachMobCardEvents(): void {
   const containers = [
     document.getElementById("moblist-container"),
     document.getElementById("mobcard-detail")
-  ].filter(Boolean);
+  ].filter(Boolean) as HTMLElement[];
 
   containers.forEach(c => c.addEventListener("click", handleGeneralClick));
 
@@ -1057,16 +1071,16 @@ function attachMobCardEvents() {
   }
 }
 
-function handleGeneralClick(e) {
-  const target = e.target;
-  const item = target.closest(".moblist-item, .mobcard-card");
+function handleGeneralClick(e: Event): void {
+  const target = e.target as HTMLElement;
+  const item = target.closest(".moblist-item, .mobcard-card") as HTMLElement | null;
   if (!item) return;
 
-  const mobNo = parseInt(item.dataset.mobNo, 10);
+  const mobNo = parseInt(item.dataset.mobNo!, 10);
   const mob = getState().mobs.find(m => m.No === mobNo);
   if (!mob) return;
 
-  const reportBtn = target.closest(".moblist-report-btn");
+  const reportBtn = target.closest(".moblist-report-btn") as HTMLElement | null;
   if (reportBtn) {
     e.preventDefault();
     e.stopPropagation();
@@ -1076,7 +1090,7 @@ function handleGeneralClick(e) {
     }
     const type = reportBtn.dataset.reportType || (mob.rank === 'A' ? 'instant' : 'modal');
     if (type === "modal") openReportModal(mobNo);
-    else handleInstantReport(mobNo, mob.rank);
+    else handleInstantReport(mobNo);
     return;
   }
 
@@ -1094,8 +1108,8 @@ function handleGeneralClick(e) {
   }
 }
 
-if (window.appInterval) clearInterval(window.appInterval);
-window.appInterval = setInterval(() => {
+if ((window as any).appInterval) clearInterval((window as any).appInterval);
+(window as any).appInterval = setInterval(() => {
   if (document.visibilityState === 'hidden') return;
   updateProgressBarsOptimized();
   updateHeaderTime();
@@ -1108,7 +1122,3 @@ document.addEventListener('visibilitychange', () => {
 });
 
 document.addEventListener('DOMContentLoaded', initApp);
-
-
-
-

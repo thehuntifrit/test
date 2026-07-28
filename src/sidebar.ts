@@ -1,19 +1,20 @@
-import { getState, setFilter, EXPANSION_MAP, setNotificationEnabled, safeJsonParse, RANKS, CONFIG, DOM, handleAppError, setTelopRead } from "./dataManager.js";
-import { filterAndRender } from "./app.js";
-import { openUserManual, closeUserManual } from "./readme.js";
-import { cloneTemplate, escapeHtml } from "./mobCard.js";
+import { getState, setFilter, EXPANSION_MAP, setNotificationEnabled, safeJsonParse, RANKS, CONFIG, DOM, handleAppError, setTelopRead } from "./dataManager";
+import { filterAndRender } from "./app";
+import { openUserManual, closeUserManual } from "./readme";
+import { cloneTemplate, escapeHtml } from "./mobCard";
+import { Mob } from "./types/mob";
 
 // ─── 定数・DOM ──────────────────────────────────────────
 const SOUND_FILE = "./sound/01 FFXIV_Linkshell_Transmission.mp3";
 
-let audio = null;
-const notifiedCycles = new Set();
-let currentPanel = null;
-window.errorLog = window.errorLog || [];
+let audio: HTMLAudioElement | null = null;
+const notifiedCycles = new Set<string>();
+let currentPanel: string | null = null;
+(window as any).errorLog = (window as any).errorLog || [];
 const MAX_ERROR_LOG = 50;
 
 // ─── 通知 ───────────────────────────────────────────────
-export function initNotification() {
+export function initNotification(): void {
     audio = new Audio(SOUND_FILE);
     audio.load();
 
@@ -23,7 +24,7 @@ export function initNotification() {
     const isEnabled = getState().notificationEnabled;
     toggle.checked = isEnabled;
 
-    const label = toggle.closest('.appnav-btn');
+    const label = toggle.closest('.appnav-btn') as HTMLElement | null;
     if (label) {
         label.classList.toggle('is-disabled', !isEnabled);
     }
@@ -39,7 +40,8 @@ export function initNotification() {
     document.addEventListener('touchstart', onFirstUserAction);
 
     toggle.addEventListener('change', (e) => {
-        const enabled = e.target.checked;
+        const target = e.target as HTMLInputElement;
+        const enabled = target.checked;
         if (label) {
             label.classList.toggle('is-disabled', !enabled);
         }
@@ -52,7 +54,7 @@ export function initNotification() {
     });
 }
 
-async function requestNotificationPermission() {
+async function requestNotificationPermission(): Promise<void> {
     if ("Notification" in window) {
         if (Notification.permission !== "granted" && Notification.permission !== "denied") {
             await Notification.requestPermission();
@@ -60,14 +62,14 @@ async function requestNotificationPermission() {
     }
 }
 
-export function playNotificationSound(isSilent = false) {
+export function playNotificationSound(isSilent = false): void {
     if (!audio) return;
 
     if (isSilent) {
         audio.muted = true;
         audio.play().then(() => {
-            audio.pause();
-            audio.muted = false;
+            audio!.pause();
+            audio!.muted = false;
         }).catch(() => { });
         return;
     }
@@ -78,7 +80,7 @@ export function playNotificationSound(isSilent = false) {
     });
 }
 
-export async function sendBrowserNotification(title, body) {
+export async function sendBrowserNotification(title: string, body: string): Promise<void> {
     if (!getState().notificationEnabled) return;
     if (!("Notification" in window) || Notification.permission !== "granted") return;
 
@@ -96,7 +98,7 @@ export async function sendBrowserNotification(title, body) {
     }
 }
 
-export function checkAndNotify(mob) {
+export function checkAndNotify(mob: Mob): void {
     const state = getState();
     if (!state.notificationEnabled) return;
 
@@ -139,37 +141,37 @@ export function checkAndNotify(mob) {
 }
 
 // ─── フィルタ ───────────────────────────────────────────
-function normalizeRank(rank) {
+function normalizeRank(rank: string): string {
     if (rank === RANKS.S_RANK || rank === RANKS.S) return RANKS.S;
     if (rank === RANKS.A_RANK || rank === RANKS.A) return RANKS.A;
     if (rank === RANKS.FATE || rank === RANKS.FATE_FULL || rank === RANKS.F) return RANKS.F;
     return rank;
 }
 
-const getAllAreas = () => {
+const getAllAreas = (): string[] => {
     return Array.from(new Set(Object.values(EXPANSION_MAP)));
 };
 
-export const renderAreaFilterPanel = (customContainer = null) => {
-    const state = getState();
-    const targetRankKey = normalizeRank(state.filter.rank);
+export const renderAreaFilterPanel = (customContainer: HTMLElement | null = null): void => {
+    const stateVal = getState();
+    const targetRankKey = normalizeRank(stateVal.filter.rank);
 
-    let items = [];
-    let currentSet = new Set();
+    let items: string[] = [];
+    let currentSet = new Set<string>();
     let isAllSelected = false;
 
-    if (state.filter.rank === RANKS.ALL) {
+    if (stateVal.filter.rank === RANKS.ALL) {
         items = [RANKS.S, RANKS.A, RANKS.F];
-        currentSet = state.filter.allRankSet instanceof Set ? state.filter.allRankSet : new Set();
+        currentSet = stateVal.filter.allRankSet instanceof Set ? stateVal.filter.allRankSet : new Set();
         isAllSelected = items.length > 0 && currentSet.size === items.length;
     } else {
-        const expansionEntries = Object.entries(EXPANSION_MAP).sort((a, b) => b[0] - a[0]);
+        const expansionEntries = Object.entries(EXPANSION_MAP).sort((a, b) => Number(b[0]) - Number(a[0]));
         items = expansionEntries.map(e => e[1]);
-        currentSet = state.filter.areaSets[targetRankKey] instanceof Set ? state.filter.areaSets[targetRankKey] : new Set();
+        currentSet = (stateVal.filter.areaSets as any)[targetRankKey] instanceof Set ? (stateVal.filter.areaSets as any)[targetRankKey] : new Set();
         isAllSelected = items.length > 0 && currentSet.size === items.length;
     }
 
-    const container = customContainer || document.querySelector("#appnav .appnav-rank-item.appnav-active .area-grid-container");
+    const container = customContainer || document.querySelector("#appnav .appnav-rank-item.appnav-active .area-grid-container") as HTMLElement | null;
     if (!container) return;
 
     container.innerHTML = "";
@@ -187,44 +189,45 @@ export const renderAreaFilterPanel = (customContainer = null) => {
         const isSelected = currentSet.has(item);
         const btn = document.createElement("button");
         btn.className = `area-filter-btn ${isSelected ? 'is-selected' : ''}`;
-        btn.textContent = (state.filter.rank === RANKS.FATE && item === RANKS.F) ? 'FATE' : (state.filter.rank === RANKS.ALL ? (item === RANKS.F ? 'FATE' : `${item} rank`) : item);
+        btn.textContent = (stateVal.filter.rank === RANKS.FATE && item === RANKS.F) ? 'FATE' : (stateVal.filter.rank === RANKS.ALL ? (item === RANKS.F ? 'FATE' : `${item} rank`) : item);
         btn.dataset.value = item;
         container.appendChild(btn);
     });
 };
 
-export const handleRankTabClick = (rank) => {
+export const handleRankTabClick = (rank: string): void => {
     if (!rank) return;
-    const state = getState();
-    const prevRank = state.filter.rank;
+    const stateVal = getState();
+    const prevRank = stateVal.filter.rank;
 
     const isSameRank = normalizeRank(rank) === normalizeRank(prevRank);
 
     if (isSameRank) {
-        const nextStep = (state.filter.clickStep === 2) ? 3 : 2;
+        const nextStep = (stateVal.filter.clickStep === 2) ? 3 : 2;
         setFilter({ clickStep: nextStep });
     } else {
         setFilter({
             rank,
             clickStep: 1,
-            areaSets: state.filter.areaSets
+            areaSets: stateVal.filter.areaSets
         });
     }
 
     filterAndRender();
 };
 
-export function handleAreaFilterClick(e) {
-    const btn = e.target.closest(".area-filter-btn");
+export function handleAreaFilterClick(e: Event): void {
+    const target = e.target as HTMLElement;
+    const btn = target.closest(".area-filter-btn") as HTMLElement | null;
     if (!btn) return;
-    const customContainer = btn.closest(".area-grid-container");
+    const customContainer = btn.closest(".area-grid-container") as HTMLElement | null;
 
-    const state = getState();
-    const uiRank = state.filter.rank;
+    const stateVal = getState();
+    const uiRank = stateVal.filter.rank;
 
     if (uiRank === 'ALL') {
-        const currentSet = state.filter.allRankSet instanceof Set ? state.filter.allRankSet : new Set();
-        const nextSet = new Set(currentSet);
+        const currentSet = stateVal.filter.allRankSet instanceof Set ? stateVal.filter.allRankSet : new Set<string>();
+        const nextSet = new Set<string>(currentSet);
         const val = btn.dataset.value;
 
         if (val === "ALL") {
@@ -233,7 +236,7 @@ export function handleAreaFilterClick(e) {
             } else {
                 nextSet.add("S").add("A").add("F");
             }
-        } else {
+        } else if (val) {
             if (nextSet.has(val)) nextSet.delete(val);
             else nextSet.add(val);
         }
@@ -252,22 +255,22 @@ export function handleAreaFilterClick(e) {
     const allAreas = getAllAreas();
 
     const currentSet =
-        state.filter.areaSets[targetRankKey] instanceof Set
-            ? state.filter.areaSets[targetRankKey]
-            : new Set();
+        (stateVal.filter.areaSets as any)[targetRankKey] instanceof Set
+            ? (stateVal.filter.areaSets as any)[targetRankKey]
+            : new Set<string>();
 
-    const nextAreaSets = { ...state.filter.areaSets };
+    const nextAreaSets = { ...stateVal.filter.areaSets };
     const val = btn.dataset.value || btn.dataset.area;
 
     if (val === "ALL") {
         if (currentSet.size === allAreas.length) {
-            nextAreaSets[targetRankKey] = new Set();
+            nextAreaSets[targetRankKey] = new Set<string>();
         } else {
-            nextAreaSets[targetRankKey] = new Set(allAreas);
+            nextAreaSets[targetRankKey] = new Set<string>(allAreas);
         }
-    } else {
+    } else if (val) {
         const area = val;
-        const next = new Set(currentSet);
+        const next = new Set<string>(currentSet);
         if (next.has(area)) next.delete(area);
         else next.add(area);
         nextAreaSets[targetRankKey] = next;
@@ -282,17 +285,17 @@ export function handleAreaFilterClick(e) {
     renderAreaFilterPanel(customContainer);
 }
 
-export function filterMobsByRankAndArea(mobs) {
+export function filterMobsByRankAndArea(mobs: Mob[]): Mob[] {
     const filter = getState().filter;
     const uiRank = filter.rank;
     const areaSets = filter.areaSets;
     const allRankSet = filter.allRankSet;
     const allExpansions = getAllAreas().length;
 
-    const getMobRankKey = (rank) => {
-        if (rank === RANKS.S || rank === RANKS.A) return rank;
-        if (rank === RANKS.F) return RANKS.F;
-        if (rank.startsWith('B')) return RANKS.A;
+    const getMobRankKey = (rankStr: string) => {
+        if (rankStr === RANKS.S || rankStr === RANKS.A) return rankStr;
+        if (rankStr === RANKS.F) return RANKS.F;
+        if (rankStr.startsWith('B')) return RANKS.A;
         return null;
     };
 
@@ -301,7 +304,7 @@ export function filterMobsByRankAndArea(mobs) {
         const mobExpansion = m.Expansion;
         const mobRankKey = getMobRankKey(mobRank);
 
-        if (!mobRankKey) return false;
+        if (!mobRankKey || !mobExpansion) return false;
 
         const filterKey = mobRankKey;
 
@@ -313,7 +316,7 @@ export function filterMobsByRankAndArea(mobs) {
             }
 
             const targetSet =
-                areaSets?.[filterKey] instanceof Set ? areaSets[filterKey] : new Set();
+                areaSets?.[filterKey] instanceof Set ? areaSets[filterKey] : new Set<string>();
 
             if (targetSet.size === 0) return false;
             if (targetSet.size === allExpansions) return true;
@@ -329,7 +332,7 @@ export function filterMobsByRankAndArea(mobs) {
             if (!isRankMatch) return false;
 
             const targetSet =
-                areaSets?.[filterKey] instanceof Set ? areaSets[filterKey] : new Set();
+                areaSets?.[filterKey] instanceof Set ? areaSets[filterKey] : new Set<string>();
 
             if (targetSet.size === 0) return false;
             if (targetSet.size === allExpansions) return true;
@@ -340,17 +343,17 @@ export function filterMobsByRankAndArea(mobs) {
 }
 
 // ─── アプリナビ ─────────────────────────────────────────
-function loadSidebarState() {
+function loadSidebarState(): any {
     return safeJsonParse(localStorage.getItem("sidebarState"), {});
 }
 
-function saveState(key, value) {
+function saveState(key: string, value: any): void {
     const s = loadSidebarState();
     s[key] = value;
     localStorage.setItem("sidebarState", JSON.stringify(s));
 }
 
-export function initAppNav() {
+export function initAppNav(): void {
     const nav = DOM.appNav;
     if (!nav) return;
 
@@ -361,37 +364,37 @@ export function initAppNav() {
         currentPanel = stored.panel;
         nav.classList.add("expanded");
         document.body.classList.add("sidebar-expanded");
-        showPanel(currentPanel);
-        setActiveNavItem(currentPanel);
+        showPanel(currentPanel!);
+        setActiveNavItem(currentPanel!);
     } else {
         setActiveNavItem(null);
     }
 
     initNotification();
 
-    if (nav) {
-        nav.addEventListener('click', (e) => {
-            const header = e.target.closest('.appnav-rank-header');
-            if (header) {
-                e.preventDefault();
-                e.stopPropagation();
-                handleRankTabClick(header.dataset.rank);
-            }
-        });
-    }
+    nav.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        const header = target.closest('.appnav-rank-header') as HTMLElement | null;
+        if (header) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleRankTabClick(header.dataset.rank || "");
+        }
+    });
 
     if (currentPanel !== "rank") {
         renderSidebarFilterAccordion();
     }
 }
 
-export function setActiveNavItem(id) {
+export function setActiveNavItem(id: string | null): void {
     document.querySelectorAll(".appnav-btn[data-nav-id]").forEach(btn => {
-        btn.classList.toggle("appnav-active", btn.dataset.navId === id);
+        const htmlBtn = btn as HTMLElement;
+        htmlBtn.classList.toggle("appnav-active", htmlBtn.dataset.navId === id);
     });
 }
 
-export async function togglePanel(panelName) {
+export async function togglePanel(panelName: string): Promise<void> {
     if (panelName === "manual") {
         const modal = DOM.manualModal;
         if (modal && !modal.classList.contains('hidden')) {
@@ -421,14 +424,14 @@ export async function togglePanel(panelName) {
     saveState("panel", panelName);
 }
 
-export function closePanel() {
+export function closePanel(): void {
     const nav = DOM.appNav;
     if (!nav) return;
 
     nav.classList.remove("expanded");
     DOM.body.classList.remove("sidebar-expanded");
 
-    const panelArea = nav.querySelector(".appnav-panel");
+    const panelArea = nav.querySelector(".appnav-panel") as HTMLElement | null;
     if (panelArea) {
         panelArea.classList.remove("expanded");
     }
@@ -440,9 +443,10 @@ export function closePanel() {
     DOM.appNavPanelItems.forEach(p => p.classList.add("hidden"));
 }
 
-function showPanel(panelName) {
+function showPanel(panelName: string): void {
     const nav = DOM.appNav;
-    const panelArea = nav.querySelector(".appnav-panel");
+    if (!nav) return;
+    const panelArea = nav.querySelector(".appnav-panel") as HTMLElement | null;
     if (panelArea) panelArea.classList.add("expanded");
 
     DOM.appNavPanelItems.forEach(p => p.classList.add("hidden"));
@@ -453,59 +457,59 @@ function showPanel(panelName) {
     }
 }
 
-async function syncPanelContents(panelName, container) {
-    if (panelName === "rank") renderSidebarFilterAccordion(container);
-    else if (panelName === "error") updateErrorPanel(container);
+async function syncPanelContents(panelName: string, container: HTMLElement): Promise<void> {
+    if (panelName === "rank") renderSidebarFilterAccordion();
+    else if (panelName === "error") updateErrorPanel();
     else if (panelName === "telop" || panelName === "maintenance") {
-        const { renderMaintenanceStatus } = await import("./app.js");
-        if (typeof renderMaintenanceStatus === "function") {
-            renderMaintenanceStatus();
+        const m = await import("./app");
+        if (typeof m.renderMaintenanceStatus === "function") {
+            m.renderMaintenanceStatus();
         }
     }
 }
 
 // ─── エラー ─────────────────────────────────────────────
-function captureErrors() {
+function captureErrors(): void {
     const origError = console.error;
     console.error = (...args) => {
         origError.apply(console, args);
         const msg = args.map(a => (typeof a === "object" ? JSON.stringify(a, null, 2) : String(a))).join(" ");
         const time = new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-        window.errorLog.unshift({ time, msg });
-        if (window.errorLog.length > MAX_ERROR_LOG) window.errorLog.pop();
+        (window as any).errorLog.unshift({ time, msg });
+        if ((window as any).errorLog.length > MAX_ERROR_LOG) (window as any).errorLog.pop();
         updateErrorPanel();
         updateErrorBadge();
     };
 
     window.addEventListener("error", (e) => {
         const time = new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-        window.errorLog.unshift({ time, msg: e.message || "Unknown error" });
-        if (window.errorLog.length > MAX_ERROR_LOG) window.errorLog.pop();
+        (window as any).errorLog.unshift({ time, msg: e.message || "Unknown error" });
+        if ((window as any).errorLog.length > MAX_ERROR_LOG) (window as any).errorLog.pop();
         updateErrorPanel();
         updateErrorBadge();
     });
 
     window.addEventListener("unhandledrejection", (e) => {
         const time = new Date().toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
-        window.errorLog.unshift({ time, msg: String(e.reason) });
-        if (window.errorLog.length > MAX_ERROR_LOG) window.errorLog.pop();
+        (window as any).errorLog.unshift({ time, msg: String(e.reason) });
+        if ((window as any).errorLog.length > MAX_ERROR_LOG) (window as any).errorLog.pop();
         updateErrorPanel();
         updateErrorBadge();
     });
 }
 
-export function updateErrorPanel(targetContainer = null) {
+export function updateErrorPanel(targetContainer: HTMLElement | null = null): void {
     const panels = document.querySelectorAll(".js-error-content");
     if (panels.length === 0) return;
 
     const fragment = document.createDocumentFragment();
-    if (!window.errorLog || window.errorLog.length === 0) {
+    if (!(window as any).errorLog || (window as any).errorLog.length === 0) {
         const emptyMsg = document.createElement("div");
         emptyMsg.className = "text-center u-text-sm text-gray-500 mt-10";
         emptyMsg.textContent = "現在エラーはありません";
         fragment.appendChild(emptyMsg);
     } else {
-        window.errorLog.forEach(e => {
+        (window as any).errorLog.forEach((e: any) => {
             const el = cloneTemplate('appnav-error-item-template');
             if (el) {
                 const timeEl = el.querySelector(".appnav-error-time");
@@ -524,14 +528,14 @@ export function updateErrorPanel(targetContainer = null) {
     });
 }
 
-function updateErrorBadge() {
-    import("./app.js").then(m => {
+function updateErrorBadge(): void {
+    import("./app").then(m => {
         if (typeof m.renderMaintenanceStatus === "function") m.renderMaintenanceStatus();
     });
 }
 
 // ─── アコーディオン ─────────────────────────────────────
-function renderSidebarFilterAccordion() {
+function renderSidebarFilterAccordion(): void {
     const container = DOM.filterAccordion;
     if (!container) return;
 
@@ -542,9 +546,9 @@ function renderSidebarFilterAccordion() {
         { key: RANKS.FATE, label: "FATE", color: "var(--color-rank-f)" },
     ];
 
-    const state = getState();
-    const activeRank = state.filter.rank || RANKS.ALL;
-    const clickStep = state.filter.clickStep || 1;
+    const stateVal = getState();
+    const activeRank = stateVal.filter.rank || RANKS.ALL;
+    const clickStep = stateVal.filter.clickStep || 1;
 
     const fragment = document.createDocumentFragment();
 
@@ -559,12 +563,12 @@ function renderSidebarFilterAccordion() {
 
         const itemEl = cloneTemplate('rank-accordion-item-template');
         if (itemEl) {
-            const root = itemEl.querySelector('.appnav-rank-item') || itemEl;
+            const root = itemEl.querySelector('.appnav-rank-item') as HTMLElement || itemEl;
             if (isActive) root.classList.add('appnav-active');
             if (isExpanded) root.classList.add('appnav-is-expanded');
             root.dataset.rank = r.key;
 
-            const header = root.querySelector(".appnav-rank-header");
+            const header = root.querySelector(".appnav-rank-header") as HTMLElement | null;
             if (header) {
                 header.dataset.rank = r.key;
                 header.textContent = r.label;
@@ -576,7 +580,7 @@ function renderSidebarFilterAccordion() {
     container.innerHTML = "";
     container.appendChild(fragment);
 
-    const activeExpansion = container.querySelector(".appnav-rank-item.appnav-active .area-grid-container");
+    const activeExpansion = container.querySelector(".appnav-rank-item.appnav-active .area-grid-container") as HTMLElement | null;
     if (activeExpansion) {
         activeExpansion.className = "area-grid-container appnav-area-grid";
         renderAreaFilterPanel(activeExpansion);
@@ -587,5 +591,3 @@ function renderSidebarFilterAccordion() {
 window.addEventListener("filterChanged", () => {
     renderSidebarFilterAccordion();
 });
-
-

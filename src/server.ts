@@ -1,11 +1,16 @@
+// @ts-ignore
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+// @ts-ignore
 import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, getDoc, Timestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+// @ts-ignore
 import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+// @ts-ignore
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app-check.js";
 
-import { getState, DOM, CONFIG, handleAppError } from "./dataManager.js";
-import { closeReportModal } from "./modal.js";
-import { getMaintenanceRepop } from "./cal.js";
+import { getState, DOM, CONFIG, handleAppError } from "./dataManager";
+import { closeReportModal } from "./modal";
+import { getMaintenanceRepop } from "./cal";
+import { Mob } from "./types/mob";
 
 const FIREBASE_CONFIG = {
     apiKey: "AIzaSyBikwjGsjL_PVFhx3Vj-OeJCocKA_hQOgU",
@@ -22,7 +27,7 @@ const auth = getAuth(app);
 
 // Initialize Firebase App Check
 if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
-    self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+    (self as any).FIREBASE_APPCHECK_DEBUG_TOKEN = true;
 }
 
 initializeAppCheck(app, {
@@ -30,15 +35,15 @@ initializeAppCheck(app, {
     isTokenAutoRefreshEnabled: true
 });
 
-export async function initializeAuth() {
+export async function initializeAuth(): Promise<string | null> {
     return new Promise((resolve) => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user: any) => {
             if (user) {
                 unsubscribe();
                 resolve(user.uid);
             } else {
                 signInAnonymously(auth)
-                    .catch((error) => {
+                    .catch((error: any) => {
                         console.error("Anonymous sign-in failed:", error);
                         unsubscribe();
                         resolve(null);
@@ -52,7 +57,7 @@ export async function initializeAuth() {
     });
 }
 
-export async function getUserData(uid) {
+export async function getUserData(uid: string): Promise<any | null> {
     try {
         const userDocRef = doc(db, "users", uid);
         const userSnap = await getDoc(userDocRef);
@@ -65,11 +70,11 @@ export async function getUserData(uid) {
     return null;
 }
 
-export function subscribeMobStatusDocs(onUpdate) {
+export function subscribeMobStatusDocs(onUpdate: (data: any) => void): () => void {
     const docIds = ["s_latest", "a_latest", "f_latest"];
-    const mobStatusDataMap = {};
+    const mobStatusDataMap: Record<string, any> = {};
     const unsubs = docIds.map(id =>
-        onSnapshot(doc(db, "mob_status", id), snap => {
+        onSnapshot(doc(db, "mob_status", id), (snap: any) => {
             const data = snap.data();
             if (data) mobStatusDataMap[id] = data;
             onUpdate(mobStatusDataMap);
@@ -78,28 +83,28 @@ export function subscribeMobStatusDocs(onUpdate) {
     return () => unsubs.forEach(u => u());
 }
 
-export function subscribeMobMemos(onUpdate) {
+export function subscribeMobMemos(onUpdate: (data: any) => void): () => void {
     const memoDocRef = doc(db, "shared_data", "memo");
-    const unsub = onSnapshot(memoDocRef, snap => {
+    const unsub = onSnapshot(memoDocRef, (snap: any) => {
         const data = snap.data() || {};
         onUpdate(data);
     });
     return unsub;
 }
 
-export function subscribeMaintenance(onUpdate) {
+export function subscribeMaintenance(onUpdate: (data: any) => void): () => void {
     const maintenanceDocRef = doc(db, "shared_data", "maintenance");
-    const unsub = onSnapshot(maintenanceDocRef, snap => {
+    const unsub = onSnapshot(maintenanceDocRef, (snap: any) => {
         const data = snap.data() || null;
         onUpdate(data);
-    }, err => {
+    }, (err: any) => {
         onUpdate(null);
     });
     return unsub;
 }
 
-function normalizePoints(data) {
-    const result = {};
+function normalizePoints(data: any): Record<string, any> {
+    const result: Record<string, any> = {};
     for (const [key, value] of Object.entries(data)) {
         if (key.startsWith("points.")) {
             const [, locId, field] = key.split(".");
@@ -109,17 +114,17 @@ function normalizePoints(data) {
         else if (key === "points" && typeof value === "object" && value !== null) {
             for (const [locId, locData] of Object.entries(value)) {
                 if (!result[locId]) result[locId] = {};
-                Object.assign(result[locId], locData);
+                Object.assign(result[locId], locData!);
             }
         }
     }
     return result;
 }
 
-export function subscribeMobLocations(onUpdate) {
-    const unsub = onSnapshot(collection(db, "mob_locations"), snapshot => {
-        const map = {};
-        snapshot.forEach(docSnap => {
+export function subscribeMobLocations(onUpdate: (data: any) => void): () => void {
+    const unsub = onSnapshot(collection(db, "mob_locations"), (snapshot: any) => {
+        const map: Record<string, any> = {};
+        snapshot.forEach((docSnap: any) => {
             const docId = docSnap.id;
             const data = docSnap.data();
             const normalized = normalizePoints(data);
@@ -130,13 +135,19 @@ export function subscribeMobLocations(onUpdate) {
     return unsub;
 }
 
-function ensureAuth() {
+function ensureAuth(): { lodestoneId: string; userId: string; mobs: Mob[] } | null {
     const { isVerified, lodestoneId, userId, mobs } = getState();
     if (!isVerified || !lodestoneId || !userId) return null;
     return { lodestoneId, userId, mobs };
 }
 
-export const submitReport = async (mobNo, timeISO) => {
+export interface ReportResult {
+    success: boolean;
+    error?: string;
+    code?: string;
+}
+
+export const submitReport = async (mobNo: number, timeISO: string): Promise<ReportResult> => {
     const authData = ensureAuth();
     if (!authData) return { success: false, error: "認証エラー" };
 
@@ -144,7 +155,7 @@ export const submitReport = async (mobNo, timeISO) => {
     const mob = mobs.find(m => m.No === mobNo);
     if (!mob) return { success: false, error: "Mobデータが見つかりません" };
 
-    let killTimeDate;
+    let killTimeDate: Date;
     if (timeISO) {
         killTimeDate = new Date(timeISO);
         if (isNaN(killTimeDate.getTime())) {
@@ -213,7 +224,7 @@ export const submitReport = async (mobNo, timeISO) => {
         await setDoc(docRef, newData, { merge: true });
         return { success: true };
 
-    } catch (error) {
+    } catch (error: any) {
         handleAppError(error, "報告送信失敗");
         return {
             success: false,
@@ -223,7 +234,7 @@ export const submitReport = async (mobNo, timeISO) => {
     }
 };
 
-export const submitMemo = async (mobNo, memoText) => {
+export const submitMemo = async (mobNo: number, memoText: string): Promise<ReportResult> => {
     const authData = ensureAuth();
     if (!authData) return { success: false, error: "認証エラー" };
 
@@ -257,13 +268,13 @@ export const submitMemo = async (mobNo, memoText) => {
 
         return { success: true };
 
-    } catch (error) {
+    } catch (error: any) {
         handleAppError(error, "メモ保存失敗");
         return { success: false, error: error.message || "通信または認証に失敗しました。" };
     }
 };
 
-export const toggleCrushStatus = async (mobNo, area, locationId, nextCulled) => {
+export const toggleCrushStatus = async (mobNo: number, area: string, locationId: string, nextCulled: boolean): Promise<{ success: boolean }> => {
     const authData = ensureAuth();
     if (!authData) return { success: false };
 
@@ -289,7 +300,7 @@ export const toggleCrushStatus = async (mobNo, area, locationId, nextCulled) => 
     }
 };
 
-export async function registerUserToFirestore(lodestoneId, characterName) {
+export async function registerUserToFirestore(lodestoneId: string, characterName: string): Promise<void> {
     try {
         let user = auth.currentUser;
         if (!user) {
@@ -311,7 +322,7 @@ export async function registerUserToFirestore(lodestoneId, characterName) {
 
 const VERIFICATION_PROXY_URL = "https://icy-resonance-2526.the-hunt-ifrit.workers.dev/";
 
-export async function verifyLodestoneCharacter(lodestoneId, verificationCode) {
+export async function verifyLodestoneCharacter(lodestoneId: string, verificationCode: string): Promise<{ success: boolean; characterName?: string; error?: string }> {
     if (!VERIFICATION_PROXY_URL) {
         return {
             success: false,
@@ -371,7 +382,7 @@ export async function verifyLodestoneCharacter(lodestoneId, verificationCode) {
                 error: "検証コードが自己紹介文に見つかりませんでした。保存から反映まで最大5分程度かかる場合があります。また、言語設定が日本語(JP)であることを確認してください。"
             };
         }
-    } catch (error) {
+    } catch (error: any) {
         handleAppError(error, "Lodestone認証失敗");
         return {
             success: false,
@@ -379,5 +390,3 @@ export async function verifyLodestoneCharacter(lodestoneId, verificationCode) {
         };
     }
 }
-
-

@@ -1,8 +1,10 @@
-import { calculateRepop } from "./cal.js";
-import { subscribeMobStatusDocs, subscribeMobLocations, subscribeMobMemos, subscribeMaintenance } from "./server.js";
+import { Mob, RepopInfo, CullStatus, SpawnCache } from "./types/mob";
+import { AppState, FilterState } from "./types/state";
+import { calculateRepop } from "./cal";
+import { subscribeMobStatusDocs, subscribeMobLocations, subscribeMobMemos, subscribeMaintenance } from "./server";
 
 // ─── 定数 ───────────────────────────────────────────────
-export const EXPANSION_MAP = { 1: "新生", 2: "蒼天", 3: "紅蓮", 4: "漆黒", 5: "暁月", 6: "黄金" };
+export const EXPANSION_MAP: Record<number, string> = { 1: "新生", 2: "蒼天", 3: "紅蓮", 4: "漆黒", 5: "暁月", 6: "黄金" };
 
 export const PROGRESS_CLASSES = {
     HIGHLIGHT_WHITE: "progress-highlight-white"
@@ -54,7 +56,7 @@ export const CONFIG = {
     FIRESTORE_LOAD_TIMEOUT: 8000
 };
 
-export const STATUS_LABELS = {
+export const STATUS_LABELS: Record<string, string | { S: string; others: string }> = {
     Maintenance: "停止",
     MaxOver: "超過",
     ConditionActive: "なう",
@@ -71,15 +73,15 @@ export const DOM = {
     mobileDetailOverlay: document.getElementById('mobcard-overlay'),
     cardOverlayBackdrop: document.getElementById('mobcard-overlay-backdrop'),
     reportModal: document.getElementById('report-modal'),
-    reportForm: document.getElementById('report-form'),
+    reportForm: document.getElementById('report-form') as HTMLFormElement | null,
     modalMobName: document.getElementById('modal-mob-name'),
     modalStatus: document.getElementById('modal-status'),
-    modalTimeInput: document.getElementById('report-datetime'),
-    modalForceSubmit: document.getElementById('report-force-submit'),
+    modalTimeInput: document.getElementById('report-datetime') as HTMLInputElement | null,
+    modalForceSubmit: document.getElementById('report-force-submit') as HTMLInputElement | null,
     authModal: document.getElementById('auth-modal'),
     authVCode: document.getElementById('auth-v-code'),
     authStatus: document.getElementById('auth-modal-status'),
-    authLodestoneId: document.getElementById('auth-lodestone-id'),
+    authLodestoneId: document.getElementById('auth-lodestone-id') as HTMLInputElement | null,
     loadingOverlay: document.getElementById('loading-overlay'),
     appNav: document.getElementById('appnav'),
     manualModal: document.getElementById('manual-modal'),
@@ -87,18 +89,18 @@ export const DOM = {
     body: document.body,
     filterAccordion: document.getElementById('sidebar-filter-accordion'),
     appNavPanelItems: document.querySelectorAll(".appnav-panel .js-appnav-panel-item"),
-    cardTemplate: document.getElementById('mobcard-card-template'),
+    cardTemplate: document.getElementById('mobcard-card-template') as HTMLTemplateElement | null,
     globalMagnifier: document.getElementById('global-magnifier'),
     authCopyCodeBtn: document.getElementById('auth-copy-code'),
-    authVerifyBtn: document.getElementById('auth-verify'),
+    authVerifyBtn: document.getElementById('auth-verify') as HTMLButtonElement | null,
     readmeAuthSession: document.getElementById('readme-auth-session'),
     closeManualModalBtn: document.getElementById('close-manual-modal'),
-    notificationToggle: document.getElementById('appnav-notification-toggle'),
+    notificationToggle: document.getElementById('appnav-notification-toggle') as HTMLInputElement | null,
     cancelReportBtn: document.getElementById('cancel-report'),
     authCancelBtn: document.getElementById('auth-cancel')
 };
 
-export function getStatusLabel(status, rank) {
+export function getStatusLabel(status: string, rank: string): string {
     const mapping = STATUS_LABELS[status] || STATUS_LABELS.Unknown;
     if (typeof mapping === "object") {
         return rank === 'S' ? mapping.S : mapping.others;
@@ -106,7 +108,7 @@ export function getStatusLabel(status, rank) {
     return mapping;
 }
 
-export function safeJsonParse(str, fallback = null) {
+export function safeJsonParse(str: string | null, fallback: any = null): any {
     if (!str) return fallback;
     try {
         return JSON.parse(str);
@@ -115,7 +117,7 @@ export function safeJsonParse(str, fallback = null) {
     }
 }
 
-export function extractLodestoneId(input) {
+export function extractLodestoneId(input: string | null): string | null {
     if (!input) return null;
     const trimmed = input.trim();
     const idMatch = trimmed.match(/character\/(\d+)/);
@@ -125,7 +127,7 @@ export function extractLodestoneId(input) {
     return lodestoneId;
 }
 
-export function handleAppError(error, context = "エラーが発生しました", notifyUser = true) {
+export function handleAppError(error: any, context = "エラーが発生しました", notifyUser = true): void {
     const message = error.message || String(error);
     console.error(`[${context}]`, error);
 
@@ -137,7 +139,7 @@ export function handleAppError(error, context = "エラーが発生しました"
 }
 
 // ─── State ──────────────────────────────────────────────
-export const state = {
+export const state: AppState = {
     userId: localStorage.getItem("user_uuid") || null,
     lodestoneId: localStorage.getItem("lodestone_id") || null,
     characterName: localStorage.getItem("character_name") || null,
@@ -162,43 +164,44 @@ export const state = {
     })(),
     openMobCardNo: null,
     notificationEnabled: localStorage.getItem("huntNotificationEnabled") === "true",
-    pendingCalculationMobs: new Set(),
+    pendingCalculationMobs: new Set<number>(),
     pendingStatusMap: null,
     pendingMaintenanceData: null,
     pendingLocationsMap: null,
     pendingMemoData: null,
     _filterVersion: 0,
-    sMobMap: new Map(),
-    mobsMap: new Map(),
-    hasUnreadTelop: false
+    sMobMap: new Map<string, Mob>(),
+    mobsMap: new Map<string, Mob>(),
+    hasUnreadTelop: false,
+    mobLocations: {}
 };
 
 if (state.filter.areaSets) {
     for (const k in state.filter.areaSets) {
-        const v = state.filter.areaSets[k];
-        state.filter.areaSets[k] = new Set(v || []);
+        const v = (state.filter.areaSets as any)[k];
+        (state.filter.areaSets as any)[k] = new Set(v || []);
     }
 } else {
     state.filter.areaSets = {
-        S: new Set(),
-        A: new Set(),
-        F: new Set(),
-        ALL: new Set()
+        S: new Set<string>(),
+        A: new Set<string>(),
+        F: new Set<string>(),
+        ALL: new Set<string>()
     };
 }
 
 if (Array.isArray(state.filter.allRankSet)) {
     state.filter.allRankSet = new Set(state.filter.allRankSet);
 } else if (!(state.filter.allRankSet instanceof Set)) {
-    state.filter.allRankSet = new Set();
+    state.filter.allRankSet = new Set<string>();
 }
 
 // ─── State Accessors ────────────────────────────────────
-export function getState() {
+export function getState(): AppState {
     return state;
 }
 
-export function setUserId(uid) {
+export function setUserId(uid: string | null): void {
     state.userId = uid;
     if (uid) {
         localStorage.setItem("user_uuid", uid);
@@ -207,7 +210,7 @@ export function setUserId(uid) {
     }
 }
 
-export function setLodestoneId(id) {
+export function setLodestoneId(id: string | null): void {
     state.lodestoneId = id;
     if (id) {
         localStorage.setItem("lodestone_id", id);
@@ -216,7 +219,7 @@ export function setLodestoneId(id) {
     }
 }
 
-export function setCharacterName(name) {
+export function setCharacterName(name: string | null): void {
     state.characterName = name;
     if (name) {
         localStorage.setItem("character_name", name);
@@ -226,19 +229,19 @@ export function setCharacterName(name) {
     window.dispatchEvent(new CustomEvent('characterNameSet'));
 }
 
-export function setVerified(verified) {
+export function setVerified(verified: boolean): void {
     state.isVerified = verified;
     localStorage.setItem("is_verified", verified ? "true" : "false");
 }
 
-function setMobs(data) {
+function setMobs(data: Mob[]): void {
     state.mobs = data;
     state.mobsMap.clear();
     data.forEach(m => state.mobsMap.set(String(m.No), m));
     updateSMobMap();
 }
 
-export function updateSMobMap() {
+export function updateSMobMap(): void {
     state.sMobMap.clear();
     state.mobs.forEach(m => {
         if (m.rank === "S") {
@@ -248,13 +251,13 @@ export function updateSMobMap() {
     });
 }
 
-export function setFilter(partial) {
-    state.filter = { ...state.filter, ...partial };
+export function setFilter(partial: Partial<FilterState>): void {
+    state.filter = { ...state.filter, ...partial } as FilterState;
     state._filterVersion++;
     const serialized = {
         ...state.filter,
-        areaSets: Object.keys(state.filter.areaSets).reduce((acc, key) => {
-            const v = state.filter.areaSets[key];
+        areaSets: Object.keys(state.filter.areaSets).reduce((acc: Record<string, string[]>, key) => {
+            const v = (state.filter.areaSets as any)[key];
             acc[key] = v instanceof Set ? Array.from(v) : v;
             return acc;
         }, {}),
@@ -264,11 +267,11 @@ export function setFilter(partial) {
     window.dispatchEvent(new CustomEvent('filterChanged'));
 }
 
-export function setOpenMobCardNo(no) {
+export function setOpenMobCardNo(no: number | null): void {
     state.openMobCardNo = no;
 }
 
-export function setNotificationEnabled(enabled) {
+export function setNotificationEnabled(enabled: boolean): void {
     state.notificationEnabled = enabled;
     localStorage.setItem("huntNotificationEnabled", enabled ? "true" : "false");
     window.dispatchEvent(new CustomEvent('notificationSettingChanged', { detail: { enabled } }));
@@ -276,7 +279,7 @@ export function setNotificationEnabled(enabled) {
 
 const LAST_SEEN_TELOP_KEY = "huntLastSeenTelopMessage";
 
-export function checkTelopUnread(msg) {
+export function checkTelopUnread(msg: string | null): void {
     const message = msg || "";
     if (message.trim() === "") {
         state.hasUnreadTelop = false;
@@ -286,7 +289,7 @@ export function checkTelopUnread(msg) {
     state.hasUnreadTelop = message !== lastSeen;
 }
 
-export function setTelopRead() {
+export function setTelopRead(): void {
     const currentMsg = (state.maintenance && state.maintenance.message) ? state.maintenance.message : "";
     localStorage.setItem(LAST_SEEN_TELOP_KEY, currentMsg);
     state.hasUnreadTelop = false;
@@ -295,18 +298,18 @@ export function setTelopRead() {
 
 // ─── IndexedDB Cache ────────────────────────────────────
 const idb = {
-    db: null,
-    _initPromise: null,
-    async init() {
+    db: null as IDBDatabase | null,
+    _initPromise: null as Promise<IDBDatabase> | null,
+    async init(): Promise<IDBDatabase> {
         if (this.db) return this.db;
         if (this._initPromise) return this._initPromise;
         this._initPromise = new Promise((resolve, reject) => {
             try {
                 const req = indexedDB.open("HuntDB", 1);
-                req.onupgradeneeded = (e) => {
+                req.onupgradeneeded = (e: any) => {
                     e.target.result.createObjectStore("cache");
                 };
-                req.onsuccess = (e) => { this.db = e.target.result; resolve(this.db); };
+                req.onsuccess = (e: any) => { this.db = e.target.result; resolve(this.db!); };
                 req.onerror = () => reject(req.error);
             } catch (err) {
                 handleAppError(err, "IndexedDB初期化失敗", false);
@@ -315,7 +318,7 @@ const idb = {
         });
         return this._initPromise;
     },
-    async get(key) {
+    async get(key: string): Promise<any> {
         try {
             const db = await this.init();
             return new Promise((resolve, reject) => {
@@ -330,7 +333,7 @@ const idb = {
             return null;
         }
     },
-    async set(key, val) {
+    async set(key: string, val: any): Promise<any> {
         try {
             const db = await this.init();
             return new Promise((resolve, reject) => {
@@ -347,14 +350,14 @@ const idb = {
 };
 
 // ─── Worker ─────────────────────────────────────────────
-let memorySpawnCache = null;
+let memorySpawnCache: Record<number, SpawnCache> | null = null;
 
 // mobNoごとの境界タイマーを管理するMap
-const repopTimers = new Map();
+const repopTimers = new Map<number, any>();
 
 const saveSpawnCacheDebounced = (() => {
-    let timeout;
-    return (cache) => {
+    let timeout: any;
+    return (cache: Record<number, SpawnCache>) => {
         clearTimeout(timeout);
         timeout = setTimeout(() => {
             idb.set(SPAWN_CACHE_KEY, cache);
@@ -365,10 +368,8 @@ const saveSpawnCacheDebounced = (() => {
 /**
  * repopInfoのnextBoundarySecに基づいてタイマーをセットし、
  * 境界到達時にforceRecalc: trueで再計算を投げる。
- * これにより conditionWindowEnd を過ぎた瞬間に次のウィンドウを自動探索する。
  */
-function scheduleRepopTimer(mobNo, repopInfo) {
-    // 既存タイマーをクリア
+function scheduleRepopTimer(mobNo: number, repopInfo: RepopInfo) {
     if (repopTimers.has(mobNo)) {
         clearTimeout(repopTimers.get(mobNo));
         repopTimers.delete(mobNo);
@@ -380,7 +381,6 @@ function scheduleRepopTimer(mobNo, repopInfo) {
     const nowSec = Date.now() / 1000;
     const delayMs = (bSec - nowSec) * 1000;
 
-    // 既に過ぎているか、7日以上先は対象外
     if (delayMs <= 0 || delayMs > 7 * 24 * 3600 * 1000) return;
 
     const timer = setTimeout(() => {
@@ -400,7 +400,7 @@ function initWorker() {
     state.worker.onmessage = (e) => {
         const { type, mobNo, repopInfo, spawnCache, error } = e.data;
         if (type === WORKER_TYPES.RESULT) {
-            const current = getState().mobs;
+            const current = state.mobs;
             const idx = current.findIndex(m => m.No === mobNo);
             state.pendingCalculationMobs.delete(mobNo);
             if (idx !== -1) {
@@ -415,7 +415,6 @@ function initWorker() {
                     saveSpawnCacheDebounced(memorySpawnCache);
                 }
 
-                // 境界タイマーをセット（条件ウィンドウ終端で自動再計算）
                 scheduleRepopTimer(mobNo, repopInfo);
 
                 if (!state.initialLoadComplete && state.pendingCalculationMobs.size === 0 && initialCalculationStarted) {
@@ -431,11 +430,11 @@ function initWorker() {
     };
 }
 
-export function requestWorkerCalculation(mob, maintenance, options = {}) {
+export function requestWorkerCalculation(mob: Mob, maintenance: any, options: { forceRecalc?: boolean } = {}): void {
     if (state.pendingCalculationMobs.has(mob.No)) return;
     if (!state.worker) initWorker();
     state.pendingCalculationMobs.add(mob.No);
-    state.worker.postMessage({
+    state.worker!.postMessage({
         type: WORKER_TYPES.CALCULATE,
         mob,
         maintenance,
@@ -444,44 +443,42 @@ export function requestWorkerCalculation(mob, maintenance, options = {}) {
 }
 
 // ─── データ加工 ─────────────────────────────────────────
-function processMobData(rawMobData, maintenance, options = {}) {
+function processMobData(rawMobData: any, maintenance: any, options: { skipConditionCalc?: boolean } = {}): Mob[] {
     const { skipConditionCalc = false } = options;
-    return Object.entries(rawMobData.mobs).map(([no, mob]) => {
-        const mappedMob = {
-            ...mob,
-            rank: mob.r,
-            name: mob.n,
-            area: mob.a,
-            repopSeconds: mob.min,
-            maxRepopSeconds: mob.max,
-            condition: mob.cond || ""
-        };
-        delete mappedMob.r;
-        delete mappedMob.n;
-        delete mappedMob.a;
-        delete mappedMob.min;
-        delete mappedMob.max;
-        delete mappedMob.cond;
-
-        return {
-            ...mappedMob,
+    return Object.entries(rawMobData.mobs).map(([no, mobVal]: [string, any]) => {
+        const mappedMob: Mob = {
+            ...mobVal,
             No: parseInt(no, 10),
-            Expansion: EXPANSION_MAP[Math.floor(no / 10000)] || "Unknown",
-            ExpansionId: Math.floor(no / 10000),
+            rank: mobVal.r,
+            name: mobVal.n,
+            area: mobVal.a,
+            repopSeconds: mobVal.min,
+            maxRepopSeconds: mobVal.max,
+            condition: mobVal.cond || "",
+            Expansion: EXPANSION_MAP[Math.floor(parseInt(no, 10) / 10000)] || "Unknown",
+            ExpansionId: Math.floor(parseInt(no, 10) / 10000),
             mapImage: "",
             locations: [],
             last_kill_time: 0,
             prev_kill_time: 0,
             spawn_cull_status: {},
             memo_text: "",
-            memo_updated_at: 0,
-            repopInfo: calculateRepop({ ...mappedMob, last_kill_time: 0 }, maintenance, { skipConditionCalc })
+            memo_updated_at: 0
         };
+        delete (mappedMob as any).r;
+        delete (mappedMob as any).n;
+        delete (mappedMob as any).a;
+        delete (mappedMob as any).min;
+        delete (mappedMob as any).max;
+        delete (mappedMob as any).cond;
+
+        mappedMob.repopInfo = calculateRepop({ ...mappedMob, last_kill_time: 0 }, maintenance, { skipConditionCalc });
+        return mappedMob;
     });
 }
 
 // ─── データ読込 ─────────────────────────────────────────
-async function loadMaintenance() {
+async function loadMaintenance(): Promise<any> {
     try {
         const res = await fetch(MAINTENANCE_URL);
         if (!res.ok) throw new Error("Maintenance data failed to load.");
@@ -495,7 +492,7 @@ async function loadMaintenance() {
     }
 }
 
-async function loadLocationData() {
+async function loadLocationData(): Promise<void> {
     try {
         const cachedLocsStr = await idb.get(LOCATIONS_CACHE_KEY);
         const cachedLocs = safeJsonParse(cachedLocsStr);
@@ -517,7 +514,7 @@ async function loadLocationData() {
     }
 }
 
-function applyLocationsToState(locationsData) {
+function applyLocationsToState(locationsData: any): void {
     state.baseMobData.forEach(mob => {
         const locInfo = locationsData[mob.area];
         if (locInfo) {
@@ -537,7 +534,7 @@ function applyLocationsToState(locationsData) {
     window.dispatchEvent(new CustomEvent('locationDataReady'));
 }
 
-export async function loadBaseMobData() {
+export async function loadBaseMobData(): Promise<void> {
     const maintenance = null;
     const cachedDataStr = await idb.get(MOB_DATA_CACHE_KEY);
     let cachedData = null;
@@ -560,7 +557,7 @@ export async function loadBaseMobData() {
         }
 
         processed.forEach(mob => {
-            if (memorySpawnCache[mob.No]) {
+            if (memorySpawnCache && memorySpawnCache[mob.No]) {
                 mob._spawnCache = memorySpawnCache[mob.No];
             }
             mob.repopInfo = calculateRepop(mob, maintenance, { skipConditionCalc: true });
@@ -568,7 +565,7 @@ export async function loadBaseMobData() {
 
         state.baseMobData = processed;
         setMobs([...processed]);
-        scheduleConditionCalculation(processed, maintenance, memorySpawnCache);
+        scheduleConditionCalculation(processed, maintenance);
     }
 
     try {
@@ -583,7 +580,7 @@ export async function loadBaseMobData() {
 
             const processed = processMobData(freshData, maintenance, { skipConditionCalc: true });
             processed.forEach(mob => {
-                if (memorySpawnCache[mob.No]) {
+                if (memorySpawnCache && memorySpawnCache[mob.No]) {
                     mob._spawnCache = memorySpawnCache[mob.No];
                     mob.repopInfo = calculateRepop(mob, maintenance, { skipConditionCalc: true });
                 }
@@ -591,7 +588,7 @@ export async function loadBaseMobData() {
 
             state.baseMobData = processed;
             setMobs([...processed]);
-            scheduleConditionCalculation(processed, maintenance, memorySpawnCache);
+            scheduleConditionCalculation(processed, maintenance);
         }
 
         await loadLocationData();
@@ -625,10 +622,10 @@ const initialLoadState = {
 };
 
 let initialCalculationStarted = false;
-let initialLoadTimer = null;
-let unsubscribes = [];
+let initialLoadTimer: any = null;
+let unsubscribes: (() => void)[] = [];
 
-function applyPendingRealtimeData() {
+function applyPendingRealtimeData(): void {
     const current = state.mobs;
 
     if (state.pendingMaintenanceData !== undefined) {
@@ -640,9 +637,9 @@ function applyPendingRealtimeData() {
     }
 
     if (state.pendingStatusMap) {
-        const map = new Map();
-        Object.values(state.pendingStatusMap).forEach(docData => {
-            Object.entries(docData).forEach(([mobId, mobData]) => {
+        const map = new Map<number, { last_kill_time: number; prev_kill_time: number }>();
+        Object.values(state.pendingStatusMap).forEach((docData: any) => {
+            Object.entries(docData).forEach(([mobId, mobData]: [string, any]) => {
                 const mobNo = parseInt(mobId, 10);
                 map.set(mobNo, {
                     last_kill_time: mobData.last_kill_time?.seconds || 0,
@@ -700,7 +697,7 @@ function applyPendingRealtimeData() {
     checkInitialLoadComplete();
 }
 
-function scheduleConditionCalculation(mobs, maintenance, existingCache) {
+function scheduleConditionCalculation(mobs: Mob[], maintenance: any): void {
     const conditionMobs = mobs.filter(mob =>
         mob.moonPhase || mob.timeRange || mob.timeRanges ||
         mob.weatherSeedRange || mob.weatherSeedRanges || mob.conditions
@@ -713,7 +710,7 @@ function scheduleConditionCalculation(mobs, maintenance, existingCache) {
     });
 }
 
-function checkInitialLoadComplete() {
+function checkInitialLoadComplete(): void {
     if (state.mobs.length === 0) return;
 
     if (initialLoadState.status && initialLoadState.maintenance) {
@@ -750,11 +747,10 @@ function checkInitialLoadComplete() {
 }
 
 // ─── リアルタイム ───────────────────────────────────────
-export function startRealtime() {
+export function startRealtime(): void {
     unsubscribes.forEach(fn => fn && fn());
     unsubscribes = [];
 
-    // startRealtime時に全タイマーをクリア
     repopTimers.forEach(timer => clearTimeout(timer));
     repopTimers.clear();
 
@@ -781,7 +777,7 @@ export function startRealtime() {
         }
     }, CONFIG.FIRESTORE_LOAD_TIMEOUT);
 
-    const unsubStatus = subscribeMobStatusDocs(mobStatusDataMap => {
+    const unsubStatus = subscribeMobStatusDocs((mobStatusDataMap: any) => {
         if (state.mobs.length === 0) {
             state.pendingStatusMap = mobStatusDataMap;
             return;
@@ -789,10 +785,10 @@ export function startRealtime() {
 
         const current = state.mobsMap;
         let anyChanges = false;
-        const updatedMobNos = new Set();
+        const updatedMobNos = new Set<number>();
 
-        Object.values(mobStatusDataMap).forEach(docData => {
-            Object.entries(docData).forEach(([mobId, mobData]) => {
+        Object.values(mobStatusDataMap).forEach((docData: any) => {
+            Object.entries(docData).forEach(([mobId, mobData]: [string, any]) => {
                 const mob = current.get(mobId);
                 if (!mob) return;
 
@@ -816,7 +812,7 @@ export function startRealtime() {
 
         if (anyChanges) {
             if (state.initialLoadComplete) {
-                const statusToCache = state.mobs.reduce((acc, m) => {
+                const statusToCache = state.mobs.reduce((acc: Record<number, any>, m) => {
                     acc[m.No] = { last_kill_time: m.last_kill_time, prev_kill_time: m.prev_kill_time };
                     return acc;
                 }, {});
@@ -835,14 +831,14 @@ export function startRealtime() {
     });
     unsubscribes.push(unsubStatus);
 
-    const unsubLoc = subscribeMobLocations(locationsMap => {
+    const unsubLoc = subscribeMobLocations((locationsMap: any) => {
         if (state.mobs.length === 0) {
             state.pendingLocationsMap = locationsMap;
             return;
         }
 
         state.mobLocations = locationsMap;
-        const updatedMobNos = [];
+        const updatedMobNos: number[] = [];
 
         const affectedAreas = new Set(Object.keys(locationsMap).map(k => k.split('_')[0]));
 
@@ -877,14 +873,14 @@ export function startRealtime() {
     });
     unsubscribes.push(unsubLoc);
 
-    const unsubMemo = subscribeMobMemos(memoData => {
+    const unsubMemo = subscribeMobMemos((memoData: any) => {
         if (state.mobs.length === 0) {
             state.pendingMemoData = memoData;
             return;
         }
 
         const memoMobNos = Object.keys(memoData);
-        const updatedMobNosList = [];
+        const updatedMobNosList: number[] = [];
 
         memoMobNos.forEach(mobNoStr => {
             const mob = state.mobsMap.get(mobNoStr);
@@ -925,7 +921,7 @@ export function startRealtime() {
     });
     unsubscribes.push(unsubMemo);
 
-    const unsubMaintenance = subscribeMaintenance(async maintenanceData => {
+    const unsubMaintenance = subscribeMaintenance(async (maintenanceData: any) => {
         const normalized = (maintenanceData && maintenanceData.maintenance) ? maintenanceData.maintenance : maintenanceData;
 
         if (state.mobs.length === 0) {
@@ -971,17 +967,16 @@ export function startRealtime() {
 }
 
 // ─── ユーティリティ ─────────────────────────────────────
-export function recalculateMob(mobNo) {
-    const state = getState();
-    const mob = state.mobsMap.get(String(mobNo));
+export function recalculateMob(mobNo: number): Mob | undefined {
+    const stateVal = getState();
+    const mob = stateVal.mobsMap.get(String(mobNo));
     if (!mob) return;
 
-    requestWorkerCalculation(mob, state.maintenance, { forceRecalc: true });
-
+    requestWorkerCalculation(mob, stateVal.maintenance, { forceRecalc: true });
     return mob;
 }
 
-export function updateAllMobCullStatuses(locationsMap = state.mobLocations) {
+export function updateAllMobCullStatuses(locationsMap: any = state.mobLocations): void {
     const current = state.mobs;
     state.mobLocations = locationsMap;
     current.forEach(m => {
@@ -992,10 +987,10 @@ export function updateAllMobCullStatuses(locationsMap = state.mobLocations) {
     });
 }
 
-export function isCulled(pointStatus, mobNo, mob = null) {
+export function isCulled(pointStatus: CullStatus | undefined, mobNo: number, mob: Mob | null = null): boolean {
     const s = getState();
     if (!mob) {
-        mob = s.mobsMap.get(String(mobNo));
+        mob = s.mobsMap.get(String(mobNo)) || null;
     }
     if (!mob) return false;
 
@@ -1008,13 +1003,13 @@ export function isCulled(pointStatus, mobNo, mob = null) {
         ? new Date(s.maintenance.serverUp).getTime()
         : 0;
 
-    const culledMs = pointStatus?.culled_at && typeof pointStatus.culled_at.toMillis === "function"
-        ? pointStatus.culled_at.toMillis()
-        : 0;
+    const culledMs = pointStatus?.culled_at && typeof (pointStatus.culled_at as any).toMillis === "function"
+        ? (pointStatus.culled_at as any).toMillis()
+        : (pointStatus?.culled_at as any)?.seconds ? (pointStatus?.culled_at as any).seconds * 1000 : 0;
 
-    const uncullMs = pointStatus?.uncull_at && typeof pointStatus.uncull_at.toMillis === "function"
-        ? pointStatus.uncull_at.toMillis()
-        : 0;
+    const uncullMs = pointStatus?.uncull_at && typeof (pointStatus.uncull_at as any).toMillis === "function"
+        ? (pointStatus.uncull_at as any).toMillis()
+        : (pointStatus?.uncull_at as any)?.seconds ? (pointStatus?.uncull_at as any).seconds * 1000 : 0;
 
     const lastKillMs = typeof baseLastKillTime === "number" ? baseLastKillTime * 1000 : 0;
     const validCulledMs = culledMs > serverUpSec ? culledMs : 0;

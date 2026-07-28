@@ -1,3 +1,5 @@
+import { Mob, RepopInfo, TimeRange } from "./types/mob";
+
 const ET_HOUR_SEC = 175;
 const WEATHER_CYCLE_SEC = 1400;
 const ET_DAY_SEC = ET_HOUR_SEC * 24;
@@ -8,7 +10,7 @@ const LIMIT_DAYS = 20;
 export const EORZEA_MINUTE_MS = 2917;
 export const MAINT_FACTOR = 0.6;
 
-function parseDate(input) {
+function parseDate(input: any): Date | null {
   if (!input) return null;
   if (input instanceof Date) return input;
   if (typeof input === "object" && typeof input.toDate === "function") return input.toDate();
@@ -17,39 +19,49 @@ function parseDate(input) {
   return isNaN(d.getTime()) ? null : d;
 }
 
-export function formatDurationDHM(seconds) {
+export function formatDurationDHM(seconds: number): string {
   if (seconds < 0) seconds = 0;
   const { h, m } = getDurationDHMParts(seconds);
-  const parts = [];
+  const parts: string[] = [];
   if (parseInt(h) > 0) parts.push(`${h.trim()}h`);
   parts.push(`${m.trim()}m`);
   return parts.join("/");
 }
 
-export function getDurationDHMParts(seconds) {
+export interface DHMParts {
+  d: string;
+  h: string;
+  m: string;
+  rawD: number;
+  rawH: number;
+  rawM: number;
+  rawS: number;
+}
+
+export function getDurationDHMParts(seconds: number): DHMParts {
   if (seconds < 0) seconds = 0;
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
-  const toString = (v) => v.toString();
+  const toString = (v: number) => v.toString();
   return { d: "0", h: toString(h), m: toString(m), rawD: 0, rawH: h, rawM: m, rawS: seconds };
 }
 
-export function formatDurationColon(seconds) {
+export function formatDurationColon(seconds: number): string {
   if (seconds < 0) seconds = 0;
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   return `${String(h).padStart(3, '\u00A0')}:${String(m).padStart(2, "0")}`;
 }
 
-export function debounce(func, wait) {
-  let timeout;
-  return function executed(...args) {
+export function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
+  let timeout: any;
+  return function executed(...args: Parameters<T>) {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   };
 }
 
-export function getEorzeaTime(date = new Date()) {
+export function getEorzeaTime(date: Date = new Date()): { hours: string; minutes: string } {
   const unixMs = date.getTime();
   const REAL_MS_PER_ET_HOUR = ET_HOUR_SEC * 1000;
   const ET_HOURS_PER_DAY = 24;
@@ -67,33 +79,33 @@ export function getEorzeaTime(date = new Date()) {
   };
 }
 
-function getEtHourFromRealSec(realSec) {
+function getEtHourFromRealSec(realSec: number): number {
   const ticks = Math.floor(realSec / ET_HOUR_SEC);
   return ticks % 24;
 }
 
-function alignToEtHour(realSec) {
+function alignToEtHour(realSec: number): number {
   return Math.floor(realSec / ET_HOUR_SEC) * ET_HOUR_SEC;
 }
 
-function alignToWeatherCycle(realSec) {
+function alignToWeatherCycle(realSec: number): number {
   return Math.floor(realSec / WEATHER_CYCLE_SEC) * WEATHER_CYCLE_SEC;
 }
 
-function getEorzeaMoonInfo(date = new Date()) {
+function getEorzeaMoonInfo(date: Date = new Date()): { phase: number; label: string | null } {
   const unixSeconds = date.getTime() / 1000;
   const EORZEA_SPEED_RATIO = 20.57142857142857;
   const eorzeaTotalDays = (unixSeconds * EORZEA_SPEED_RATIO) / 86400;
   const phase = (eorzeaTotalDays % 32) + 1;
 
-  let label = null;
+  let label: string | null = null;
   if (phase >= 32.5 || phase < 4.5) label = "新月";
   else if (phase >= 16.5 && phase < 20.5) label = "満月";
 
   return { phase, label };
 }
 
-function getEorzeaWeatherSeed(date = new Date()) {
+function getEorzeaWeatherSeed(date: Date = new Date()): number {
   const unixSeconds = Math.floor(date.getTime() / 1000);
   const eorzeanHours = Math.floor(unixSeconds / ET_HOUR_SEC);
   const eorzeanDays = Math.floor(eorzeanHours / 24);
@@ -107,7 +119,7 @@ function getEorzeaWeatherSeed(date = new Date()) {
   return step2 % 100;
 }
 
-function checkWeatherInRange(mob, seed) {
+function checkWeatherInRange(mob: Mob, seed: number): boolean {
   if (mob.weatherSeedRange) {
     const [min, max] = mob.weatherSeedRange;
     return seed >= min && seed <= max;
@@ -118,7 +130,7 @@ function checkWeatherInRange(mob, seed) {
   return false;
 }
 
-function checkTimeRange(timeRange, realSec) {
+function checkTimeRange(timeRange: TimeRange, realSec: number): boolean {
   const etHour = getEtHourFromRealSec(realSec);
   const { start, end } = timeRange;
 
@@ -126,7 +138,7 @@ function checkTimeRange(timeRange, realSec) {
   return etHour >= start || etHour < end;
 }
 
-function checkEtCondition(mob, realSec) {
+function checkEtCondition(mob: Mob, realSec: number): boolean {
   const { phase } = getEorzeaMoonInfo(new Date(realSec * 1000));
 
   if (mob.conditions) {
@@ -146,15 +158,15 @@ function checkEtCondition(mob, realSec) {
   return true;
 }
 
-function isFirstNightPhase(phase) {
+function isFirstNightPhase(phase: number): boolean {
   return phase >= 32.5 || phase < 1.5;
 }
 
-function isOtherNightsPhase(phase) {
+function isOtherNightsPhase(phase: number): boolean {
   return phase >= 1.5 && phase < 4.5;
 }
 
-function calculateNextMoonStart(startSec, targetPhase) {
+function calculateNextMoonStart(startSec: number, targetPhase: number): number {
   const startPhase = getEorzeaMoonInfo(new Date(startSec * 1000)).phase;
   let phaseDiff = targetPhase - startPhase;
   if (phaseDiff < 0) phaseDiff += 32;
@@ -167,10 +179,7 @@ function calculateNextMoonStart(startSec, targetPhase) {
   return nextStartSec;
 }
 
-function* getValidWeatherIntervals(mob, windowStart, windowEnd) {
-  // 天候継続の必要秒数は時限モブ自体の出現条件であり、
-  // メンテナンス直後の0.6倍(appliedFactor)はここには適用しない。
-  // appliedFactor は minRepop / maxRepop の算出にのみ使用する。
+function* getValidWeatherIntervals(mob: Mob, windowStart: number, windowEnd: number): Generator<[number, number], void, unknown> {
   const requiredMinutes = mob.weatherDuration?.minutes || 0;
   const requiredSec = requiredMinutes * 60;
   const isContinuous = requiredSec > WEATHER_CYCLE_SEC;
@@ -266,7 +275,7 @@ function* getValidWeatherIntervals(mob, windowStart, windowEnd) {
   while (cursor < windowEnd) {
     if (loopSafety++ > MAX_SEARCH_ITERATIONS) break;
 
-    let activeStart = null;
+    let activeStart: number | null = null;
     while (cursor < windowEnd + WEATHER_CYCLE_SEC) {
       if (loopSafety++ > MAX_SEARCH_ITERATIONS) break;
       const seed = getEorzeaWeatherSeed(new Date(cursor * 1000));
@@ -311,7 +320,7 @@ function* getValidWeatherIntervals(mob, windowStart, windowEnd) {
   }
 }
 
-function* getValidEtIntervals(mob, windowStart, windowEnd) {
+function* getValidEtIntervals(mob: Mob, windowStart: number, windowEnd: number): Generator<[number, number], void, unknown> {
   if (!mob.timeRange && !mob.timeRanges && !mob.conditions) {
     yield [windowStart, windowEnd];
     return;
@@ -348,12 +357,12 @@ function* getValidEtIntervals(mob, windowStart, windowEnd) {
   }
 }
 
-function findNextSpawn(mob, pointSec, searchLimit, nowSec = 0) {
-  let moonPhases = [];
+function findNextSpawn(mob: Mob, pointSec: number, searchLimit: number, nowSec = 0): { start: number; end: number } | null {
+  const moonPhases: [number, number][] = [];
   if (!mob.moonPhase) {
     moonPhases.push([pointSec, searchLimit]);
   } else {
-    let targetPhase = mob.moonPhase === "新月" ? 32.5 : 16.5;
+    const targetPhase = mob.moonPhase === "新月" ? 32.5 : 16.5;
     const startPhase = getEorzeaMoonInfo(new Date(pointSec * 1000)).phase;
 
     if (
@@ -398,14 +407,14 @@ function findNextSpawn(mob, pointSec, searchLimit, nowSec = 0) {
   return null;
 }
 
-export function calculateRepop(mob, maintenance, options = {}) {
+export function calculateRepop(mob: Mob, maintenance: any, options: { skipConditionCalc?: boolean; forceRecalc?: boolean } = {}): RepopInfo {
   const { skipConditionCalc = false, forceRecalc = false } = options;
   const now = Date.now() / 1000;
   const lastKill = mob.last_kill_time || 0;
   const repopSec = mob.repopSeconds;
   const maxSec = mob.maxRepopSeconds;
 
-  const maint = (maintenance && maintenance.maintenance) ? maintenance.maintenance : maintenance;
+  const maint = ((maintenance && maintenance.maintenance) ? maintenance.maintenance : maintenance) as any;
   if (!maint || !maint.start) return baseResult("Unknown");
 
   const maintenanceStartDate = parseDate(maint.start);
@@ -420,13 +429,12 @@ export function calculateRepop(mob, maintenance, options = {}) {
   const pointSec = Math.max(minRepop, now);
 
   const nextMinRepopDate = new Date(minRepop * 1000);
-  const searchLimit = pointSec + LIMIT_DAYS * 24 * 3600;
 
-  let status = "Unknown";
+  let status: any = "Unknown";
   let timeRemaining = "";
-  let conditionRemaining = null;
-  let nextConditionSpawnDate = null;
-  let conditionWindowEnd = null;
+  const conditionRemaining = null;
+  let nextConditionSpawnDate: Date | null = null;
+  let conditionWindowEnd: Date | null = null;
   let isInConditionWindow = false;
 
   const hasCondition = !!(
@@ -553,14 +561,14 @@ export function calculateRepop(mob, maintenance, options = {}) {
     isMaintenanceStop,
     isBlockedByMaintenance,
     maintStart: maintenanceStart,
-    maintEnd: serverUp || (parseDate(maint.end)?.getTime() / 1000 || 0),
+    maintEnd: serverUp || ((parseDate(maint?.end)?.getTime() ?? 0) / 1000),
     nextBoundarySec: (() => {
       let bSec = [
         minRepop,
         maxRepop,
         nextConditionSpawnDate ? nextConditionSpawnDate.getTime() / 1000 : null,
         conditionWindowEnd ? conditionWindowEnd.getTime() / 1000 : null
-      ].filter(t => t !== null && t > now).reduce((min, t) => Math.min(min, t), Infinity);
+      ].filter((t): t is number => t !== null && t > now).reduce((minVal, t) => Math.min(minVal, t), Infinity);
 
       if (hasCondition && !nextConditionSpawnDate && skipConditionCalc) {
         bSec = 0;
@@ -570,9 +578,9 @@ export function calculateRepop(mob, maintenance, options = {}) {
   };
 }
 
-export function formatMMDDHHmm(input) {
+export function formatMMDDHHmm(input: any): string {
   if (!input) return "--/-- --:--";
-  let date;
+  let date: Date;
   if (input instanceof Date) date = input;
   else if (typeof input === "string") date = new Date(input);
   else date = new Date(input * 1000);
@@ -583,24 +591,25 @@ export function formatMMDDHHmm(input) {
   return `${m}/${d} ${hh}:${mm}`;
 }
 
-function baseResult(status) {
+function baseResult(status?: string): RepopInfo {
   return {
     minRepop: null,
     maxRepop: null,
     elapsedPercent: 0,
     timeRemaining: "",
-    status: status || "Unknown",
+    status: (status as any) || "Unknown",
     nextMinRepopDate: null,
     nextConditionSpawnDate: null,
     conditionWindowEnd: null,
     conditionRemaining: null,
     isInConditionWindow: false,
     isMaintenanceStop: false,
-    isBlockedByMaintenance: false
+    isBlockedByMaintenance: false,
+    nextBoundarySec: null
   };
 }
 
-export function getMaintenanceRepop(mob, lastKill, maintenance, nowSec) {
+export function getMaintenanceRepop(mob: Mob, lastKill: number, maintenance: any, nowSec: number): { minRepop: number; maxRepop: number; appliedFactor: number } {
   const maint = (maintenance && maintenance.maintenance) ? maintenance.maintenance : maintenance;
   const repopSec = mob.repopSeconds;
   const maxSec = mob.maxRepopSeconds;
@@ -609,14 +618,14 @@ export function getMaintenanceRepop(mob, lastKill, maintenance, nowSec) {
     return { minRepop: lastKill + repopSec, maxRepop: lastKill + maxSec, appliedFactor: 1 };
   }
 
-  const maintenanceStart = parseDate(maint.start)?.getTime() / 1000 || 0;
+  const maintenanceStart = (parseDate(maint?.start)?.getTime() ?? 0) / 1000;
 
   if (nowSec && nowSec >= maintenanceStart && nowSec < (maintenanceStart + 1800)) {
     return { minRepop: lastKill + repopSec, maxRepop: lastKill + maxSec, appliedFactor: 1 };
   }
 
   const isRankF = mob.rank === "F";
-  let serverUp = parseDate(maint.serverUp || maint.end)?.getTime() / 1000 || 0;
+  let serverUp = (parseDate(maint?.serverUp || maint?.end)?.getTime() ?? 0) / 1000;
   if (nowSec >= maintenanceStart && serverUp <= maintenanceStart) {
     serverUp = maintenanceStart;
   }
