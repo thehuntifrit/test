@@ -396,7 +396,7 @@ function scheduleRepopTimer(mobNo: number, repopInfo: RepopInfo) {
 
 function initWorker() {
     if (state.worker) return;
-    state.worker = new Worker(new URL("./worker.js", import.meta.url), { type: "module" });
+    state.worker = new Worker(new URL("./workers/calWorker.ts", import.meta.url), { type: "module" });
     state.worker.onmessage = (e) => {
         const { type, mobNo, repopInfo, spawnCache, error } = e.data;
         if (type === WORKER_TYPES.RESULT) {
