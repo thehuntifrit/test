@@ -37,7 +37,9 @@ async function initApp(): Promise<void> {
     initAppEventListeners();
     attachMobCardEvents();
     initGlobalMagnifier();
-    loadBaseMobData();
+    
+    // 基礎データを確実に読み込んでからリアルタイムリスナーを開始
+    await loadBaseMobData();
 
     initializeAuth().then(async (userId) => {
       if (userId) {

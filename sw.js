@@ -1,23 +1,5 @@
-const CACHE_NAME = 'hunt-cache-v4';
-const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './css/root.css',
-  './css/appnav.css',
-  './css/mobcard.css',
-  './css/moblist.css',
-  './js/app.js',
-  './js/cal.js',
-  './js/dataManager.js',
-  './js/mobCard.js',
-  './js/mobSorter.js',
-  './js/modal.js',
-  './js/readme.js',
-  './js/sidebar.js',
-  './js/server.js',
-  './js/worker.js',
-  './js/lib/marked.min.js',
-  './js/lib/purify.min.js',
+const CACHE_NAME = 'hunt-cache-v5';
+const STATIC_ASSETS = [
   './json/maintenance.json',
   './json/mob_data.json',
   './json/mob_locations.json',
@@ -41,7 +23,9 @@ const ASSETS_TO_CACHE = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
+      return Promise.allSettled(
+        STATIC_ASSETS.map(url => cache.add(url).catch(err => console.warn('SW cache failed for:', url, err)))
+      );
     })
   );
   self.skipWaiting();
@@ -57,38 +41,47 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  if (url.pathname.endsWith('.json') || url.pathname.includes('/maps/') || url.pathname.includes('/icon/') || url.pathname.includes('/sound/')) {
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        const fetchPromise = fetch(event.request).then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseToCache = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseToCache);
-            });
-          }
-          return networkResponse;
-        });
-        return cachedResponse || fetchPromise;
-      })
-    );
-  } else {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match(event.request);
-      })
-    );
+  if (
+    url.hostname.includes('firestore.googleapis.com') ||
+    url.hostname.includes('firebase') ||
+    url.hostname.includes('identitytoolkit') ||
+    url.hostname.includes('securetoken') ||
+    url.hostname.includes('workers.dev') ||
+    event.request.method !== 'GET'
+  ) {
+    return;
   }
+
+  event.respondWith(
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache).catch(() => {});
+          });
+        }
+        return networkResponse;
+      })
+      .catch(async () => {
+        const cachedResponse = await caches.match(event.request);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        if (event.request.headers.get('accept')?.includes('text/html')) {
+          return caches.match('./index.html');
+        }
+        return new Response('Network error and no cache available', {
+          status: 408,
+          headers: { 'Content-Type': 'text/plain' }
+        });
+      })
+  );
 });
-
-
-
-

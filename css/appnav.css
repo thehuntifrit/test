@@ -5,15 +5,19 @@
         inset-block: 0;
         inset-inline-start: 0;
         inline-size: auto;
-        min-inline-size: 56px;
+        min-inline-size: 58px;
         background: var(--color-nav-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
         border-right: 1px solid var(--color-border-normal);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
         display: flex;
         flex-direction: row;
         overflow: hidden;
+        transition: width var(--t-base);
 
         &.expanded {
-            width: 216px;
+            width: 220px;
 
             .appnav-panel {
                 display: flex;
@@ -27,20 +31,20 @@
             height: 100%;
             display: flex;
             align-items: stretch;
-            background: var(--color-nav-bg);
+            background: transparent;
         }
 
         .appnav-main-nav {
-            inline-size: 56px;
-            min-inline-size: 56px;
+            inline-size: 58px;
+            min-inline-size: 58px;
             block-size: 100%;
-            background: var(--color-nav-inner-bg);
+            background: rgba(10, 15, 29, 0.95);
             border-inline-end: 1px solid var(--color-border-subtle);
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 40;
-            padding-block-start: 21px;
+            padding-block-start: 20px;
             box-sizing: border-box;
             overflow-x: hidden;
         }
@@ -48,13 +52,15 @@
         .appnav-panel {
             flex: 1;
             background: var(--color-bg-nav-panel);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
             display: none;
             flex-direction: column;
-            width: 160px;
-            border-left: 1px solid var(--color-border-normal);
+            width: 162px;
+            border-left: 1px solid var(--color-border-subtle);
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 11px 7px;
+            padding: 12px 8px;
             text-align: center;
         }
 
@@ -73,7 +79,10 @@
         right: 0;
         z-index: var(--z-footer);
         background: var(--color-nav-bg);
-        border-top: 1px solid var(--color-nav-border-heavy);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border-top: 1px solid var(--color-nav-border);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
         display: flex;
         flex-direction: column-reverse;
         padding-bottom: env(safe-area-inset-bottom, 0px);
@@ -91,7 +100,7 @@
             align-items: stretch;
             height: var(--mobile-header-height);
             width: 100%;
-            background: var(--color-nav-inner-bg);
+            background: transparent;
         }
 
         .appnav-items-wrapper {
@@ -109,16 +118,20 @@
             max-height: 0;
             overflow: hidden;
             background: var(--color-bg-nav-panel);
-            padding: 0 11px;
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            padding: 0 12px;
             display: flex;
             flex-direction: column;
             width: 100%;
+            transition: max-height var(--t-base), padding var(--t-base);
 
             &.expanded {
                 max-height: 70vh;
-                padding: 4px;
+                padding: 10px 12px;
                 overflow-y: auto;
                 border-bottom: 1px solid var(--color-nav-border);
+                box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.5);
             }
         }
 
