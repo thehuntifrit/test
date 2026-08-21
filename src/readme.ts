@@ -32,12 +32,17 @@ export const openUserManual = async (): Promise<void> => {
             if (!response.ok) throw new Error('Failed to load README');
 
             const text = await response.text();
-            marked.setOptions({
-                breaks: true,
-                gfm: true
-            });
-            const html = marked.parse(text);
-            container.innerHTML = DOMPurify.sanitize(html);
+            
+            if (typeof marked !== 'undefined' && typeof DOMPurify !== 'undefined') {
+                marked.setOptions({
+                    breaks: true,
+                    gfm: true
+                });
+                const html = marked.parse(text);
+                container.innerHTML = DOMPurify.sanitize(html);
+            } else {
+                container.textContent = text;
+            }
             isLoaded = true;
             updateAuthUI();
         } catch (error) {
