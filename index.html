@@ -314,18 +314,24 @@
         </template>
 
         <template id="moblist-item-template">
-            <div class="moblist-item">
-                <div class="moblist-bg-gauge">
-                    <div class="moblist-bg-bar"></div>
+            <div class="moblist-item" data-rank="">
+                <div class="moblist-rank-badge"></div>
+                <div class="moblist-info-col">
+                    <div class="moblist-name-row">
+                        <span class="moblist-name truncate"></span>
+                        <span class="memo-icon-container"></span>
+                        <span class="moblist-count"></span>
+                    </div>
+                    <div class="moblist-area-row">
+                        <span class="moblist-area truncate"></span>
+                    </div>
                 </div>
-                <div class="moblist-header u-font-bold">
-                    <span class="moblist-name truncate"></span>
-                    <span class="memo-icon-container h-4 u-flex u-items-center"></span>
-                    <span class="moblist-count"></span>
+                <div class="moblist-time-col">
+                    <div class="moblist-time"></div>
                 </div>
-                <div class="moblist-time"></div>
-                <div class="moblist-percent">0%</div>
-                <button class="moblist-report-btn"></button>
+                <div class="moblist-progress-line">
+                    <div class="moblist-progress-bar"></div>
+                </div>
             </div>
         </template>
 

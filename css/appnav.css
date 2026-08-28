@@ -1,149 +1,122 @@
-/* --- PC LAYOUT (SIDEBAR) --- */
-@media (min-width: 1024px) {
-    #appnav {
-        position: fixed;
-        inset-block: 0;
-        inset-inline-start: 0;
-        inline-size: auto;
-        min-inline-size: 58px;
-        background: var(--color-nav-bg);
-        backdrop-filter: var(--glass-blur);
-        -webkit-backdrop-filter: var(--glass-blur);
-        border-right: 1px solid var(--color-border-normal);
-        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
-        display: flex;
-        flex-direction: row;
-        overflow: hidden;
-        transition: width var(--t-base);
+/* --- UNIFIED BOTTOM NAVIGATION (PC & Mobile) --- */
+#appnav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: var(--z-footer);
+    background: #070a12;
+    border-top: 1px solid var(--color-border-normal);
+    display: flex;
+    flex-direction: column-reverse;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    width: 100%;
+    box-sizing: border-box;
 
-        &.expanded {
-            width: 220px;
-
-            .appnav-panel {
-                display: flex;
-                transform: none;
-                opacity: 1;
-                pointer-events: auto;
-            }
-        }
-
-        .appnav-inner {
-            height: 100%;
-            display: flex;
-            align-items: stretch;
-            background: transparent;
-        }
-
-        .appnav-main-nav {
-            inline-size: 58px;
-            min-inline-size: 58px;
-            block-size: 100%;
-            background: rgba(10, 15, 29, 0.95);
-            border-inline-end: 1px solid var(--color-border-subtle);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 40;
-            padding-block-start: 20px;
-            box-sizing: border-box;
-            overflow-x: hidden;
-        }
-
-        .appnav-panel {
-            flex: 1;
-            background: var(--color-bg-nav-panel);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            display: none;
-            flex-direction: column;
-            width: 162px;
-            border-left: 1px solid var(--color-border-subtle);
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 12px 8px;
-            text-align: center;
-        }
-
-        .appnav-divider {
-            display: block;
-        }
-    }
-}
-
-/* --- MOBILE LAYOUT (FOOTER) --- */
-@media (max-width: 1023px) {
-    #appnav {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: var(--z-footer);
-        background: var(--color-nav-bg);
-        backdrop-filter: var(--glass-blur);
-        -webkit-backdrop-filter: var(--glass-blur);
-        border-top: 1px solid var(--color-nav-border);
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+    .appnav-inner {
         display: flex;
         flex-direction: column-reverse;
-        padding-bottom: env(safe-area-inset-bottom, 0px);
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+    }
 
-        .appnav-inner {
-            display: flex;
-            flex-direction: column-reverse;
-            width: 100%;
+    .appnav-main-nav {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        height: var(--footer-height);
+        width: 100%;
+        background: #070a12;
+        padding: 0 8px;
+        box-sizing: border-box;
+    }
+
+    .appnav-items-wrapper {
+        display: flex;
+        flex: 1;
+        justify-content: space-around;
+        align-items: center;
+        height: 100%;
+    }
+
+    .appnav-btn {
+        flex: 1;
+        max-width: 120px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        color: var(--color-text-secondary);
+        cursor: pointer;
+        position: relative;
+        padding: 4px 0;
+        gap: 2px;
+        transition: color var(--t-base);
+
+        &:hover {
+            color: var(--color-text-primary);
         }
 
-        .appnav-main-nav {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-            align-items: stretch;
-            height: var(--mobile-header-height);
-            width: 100%;
-            background: transparent;
-        }
+        &.active {
+            color: var(--color-cyan);
 
-        .appnav-items-wrapper {
-            display: flex;
-            flex: 1;
-            justify-content: space-around;
-        }
-
-        .appnav-btn {
-            flex: 1;
-            height: var(--mobile-header-height);
-        }
-
-        .appnav-panel {
-            max-height: 0;
-            overflow: hidden;
-            background: var(--color-bg-nav-panel);
-            backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur);
-            padding: 0 12px;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            transition: max-height var(--t-base), padding var(--t-base);
-
-            &.expanded {
-                max-height: 70vh;
-                padding: 10px 12px;
-                overflow-y: auto;
-                border-bottom: 1px solid var(--color-nav-border);
-                box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.5);
+            &::after {
+                content: '';
+                position: absolute;
+                bottom: 2px;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: var(--color-cyan);
+                box-shadow: 0 0 6px var(--color-cyan);
             }
         }
 
-        .appnav-divider {
-            display: none;
+        .appnav-icon {
+            font-size: 18px;
+            line-height: 1;
         }
 
-        .appnav-top {
-            display: none;
+        .appnav-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
     }
+
+    .appnav-panel {
+        max-height: 0;
+        overflow: hidden;
+        background: #0a0f1d;
+        padding: 0 16px;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        box-sizing: border-box;
+        transition: max-height var(--t-base), padding var(--t-base);
+
+        &.expanded {
+            max-height: 65vh;
+            padding: 12px 16px;
+            overflow-y: auto;
+            border-bottom: 1px solid var(--color-border-normal);
+        }
+    }
+
+    .appnav-top {
+        display: none;
+    }
+
+    .appnav-divider {
+        display: none;
+    }
 }
+
 
 /* --- COMMON ELEMENTS --- */
 #appnav {

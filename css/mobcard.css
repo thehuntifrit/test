@@ -3,51 +3,35 @@
     display: flex;
     flex-direction: column;
     padding: 0;
-    background: transparent;
-    border: none;
+    background: #0e1420;
+    border: 1px solid #1e293b;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    contain: layout style;
+    contain: content;
     inline-size: 100%;
-    max-inline-size: 400px;
+    max-inline-size: 440px;
     block-size: auto;
     max-block-size: 96vh;
     pointer-events: auto;
     position: relative;
     transform: translateZ(0);
-    font-size: 0;
-    -webkit-user-select: none;
     user-select: none;
     z-index: 1;
-    scroll-margin-block-start: calc(env(safe-area-inset-top, 0px) + 7px);
-    container-type: inline-size;
-    container-name: mobcard-card;
-    box-shadow: var(--card-shadow);
-    transition: transform var(--t-base), box-shadow var(--t-base), opacity 0.4s ease;
+    box-sizing: border-box;
 
-    &:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--card-shadow-hover);
-    }
-
-    &.mobcard-highlight-white .mobcard-inner {
-        border-color: rgba(148, 163, 184, 0.6);
+    &.mobcard-highlight-white {
+        border-color: rgba(34, 211, 238, 0.6);
+        box-shadow: 0 0 16px rgba(34, 211, 238, 0.2);
     }
 
     .mobcard-inner {
-        background: var(--color-bg-card);
-        backdrop-filter: var(--glass-blur);
-        -webkit-backdrop-filter: var(--glass-blur);
-        border: 1px solid var(--color-border-normal);
-        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        background: #0e1420;
         border-radius: var(--radius-lg);
-        transition: border-color var(--t-base), background var(--t-base);
         display: flex;
         flex-direction: column;
         overflow: hidden;
         inline-size: 100%;
         block-size: 100%;
-        contain: layout style;
     }
 
     .mobcard-header {

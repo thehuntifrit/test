@@ -424,16 +424,21 @@ export function createSimpleMobItem(mob: Mob): HTMLElement {
   item.dataset.mobNo = String(mob.No);
   item.dataset.rank = mob.rank;
 
-  const reportBtn = item.querySelector('.moblist-report-btn') as HTMLElement | null;
-  if (reportBtn) {
-    reportBtn.dataset.mobNo = String(mob.No);
-    reportBtn.dataset.rank = mob.rank;
+  const rankBadge = item.querySelector('.moblist-rank-badge') as HTMLElement | null;
+  if (rankBadge) {
+    rankBadge.textContent = mob.rank === "FATE" ? "F" : mob.rank;
+    rankBadge.dataset.rank = mob.rank;
   }
 
   const nameEl = item.querySelector('.moblist-name') as HTMLElement | null;
   if (nameEl) {
     renderNameWithInstance(nameEl, mob.name);
     nameEl.dataset.rank = mob.rank;
+  }
+
+  const areaEl = item.querySelector('.moblist-area') as HTMLElement | null;
+  if (areaEl) {
+    areaEl.textContent = mob.area || "";
   }
 
   updateSimpleMobItem(item, mob);
@@ -454,8 +459,8 @@ export function updateProgressBar(element: HTMLElement, mob: Mob, timeLabelObj: 
   const { elapsedPercent } = mob.repopInfo || {};
 
   const status = labelStatus;
-  const bar = element.querySelector('.mobcard-progress-bar, .moblist-bg-bar') as HTMLElement | null;
-  const wrapper = element.querySelector('.mobcard-progress-container, .moblist-bg-gauge') as HTMLElement | null;
+  const bar = element.querySelector('.mobcard-progress-bar, .moblist-bg-bar, .moblist-progress-bar') as HTMLElement | null;
+  const wrapper = element.querySelector('.mobcard-progress-container, .moblist-bg-gauge, .moblist-progress-line') as HTMLElement | null;
   if (!bar) return;
 
   const isDetail = element.classList.contains('mobcard-card');
