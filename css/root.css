@@ -791,6 +791,7 @@ html body.magnifier-active .mobcard-inner * {
   font-family: var(--font-mono);
   color: var(--color-gold);
   font-weight: 700;
+  -webkit-user-select: all;
   user-select: all;
   letter-spacing: 0.1em;
   font-size: 16px;
