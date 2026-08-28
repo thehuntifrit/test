@@ -1098,7 +1098,6 @@ html body.magnifier-active .mobcard-inner * {
   font-size: 14px;
   color: var(--color-white);
   background: var(--color-bg-dark);
-  backdrop-filter: none;
   border: 1px solid #174351;
   box-shadow:
     0 4px 20px #0a0e17,

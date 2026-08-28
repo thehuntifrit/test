@@ -129,8 +129,11 @@
   margin-bottom: 48px;
   cursor: pointer;
   text-align: left;
-  inline-size: fit-content;
-  margin-inline: auto;
+  width: max-content;
+  width: -webkit-fit-content;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -149,8 +152,8 @@
 
 .appnav-logo .appnav-logo-refresh {
   position: absolute;
-  inset-inline-end: -24px;
-  inset-block-start: 50%;
+  right: -24px;
+  top: 50%;
   transform: translateY(-50%);
   font-size: 16px;
   color: var(--color-text-secondary);
@@ -193,10 +196,10 @@
 .appnav-btn.has-alert::after {
   content: "";
   position: absolute;
-  inset-block-start: 8px;
-  inset-inline-end: 8px;
-  inline-size: 6px;
-  block-size: 6px;
+  top: 8px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
   background: var(--color-nav-badge-error);
   border-radius: 50%;
   z-index: 10;
