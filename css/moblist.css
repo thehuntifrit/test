@@ -1,515 +1,289 @@
 /* --- SECTION: MOBLIST LAYOUT --- */
 #list-layout {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 1040px;
-    margin: 0 auto;
-    box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1040px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 #moblist-container {
-    width: 100%;
-    max-width: 580px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
+  width: 100%;
+  max-width: 580px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 #mobcard-pane {
-    display: none;
+  display: none;
 }
 
 #mobcard-anchor {
-    display: none;
+  display: none;
 }
 
 /* --- MOBILE & TABLET OVERLAY (< 1024px) --- */
 @media (max-width: 1023px) {
-    #mobcard-pane.is-active {
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        top: var(--header-height);
-        bottom: var(--footer-height);
-        left: 0;
-        right: 0;
-        z-index: var(--z-mobcard-mobile);
-        background: rgba(7, 10, 18, 0.96);
-        padding: 16px 12px;
-        overflow-y: auto;
-        box-sizing: border-box;
-    }
+  #mobcard-pane.is-active {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: var(--header-height);
+    bottom: var(--footer-height);
+    left: 0;
+    right: 0;
+    z-index: var(--z-mobcard-mobile);
+    background: rgba(7, 10, 18, 0.96);
+    padding: 16px 12px;
+    overflow-y: auto;
+    box-sizing: border-box;
+  }
 
-    #mobcard-detail {
-        width: 100%;
-        max-width: 480px;
-        margin: 0 auto;
-    }
+  #mobcard-detail {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+  }
 
-    #mobcard-clocks {
-        display: none;
-    }
+  #mobcard-clocks {
+    display: none;
+  }
 }
 
 /* --- PC 2-COLUMN LAYOUT (>= 1024px) --- */
 @media (min-width: 1024px) {
-    #list-layout {
-        flex-direction: row;
-        justify-content: center;
-        align-items: flex-start;
-        gap: 24px;
-        padding-top: 8px;
-    }
+  #list-layout {
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 24px;
+    padding-top: 8px;
+  }
 
-    #moblist-container {
-        width: 520px;
-        max-width: 520px;
-        flex: none;
-        margin: 0;
-    }
+  #moblist-container {
+    width: 520px;
+    max-width: 520px;
+    flex: none;
+    margin: 0;
+  }
 
-    #mobcard-pane {
-        display: flex;
-        position: sticky;
-        top: calc(var(--header-height) + 12px);
-        width: 440px;
-        max-width: 440px;
-        flex: none;
-        max-height: calc(100vh - var(--header-height) - var(--footer-height) - 32px);
-        overflow-y: auto;
-        flex-direction: column;
-        gap: 12px;
-    }
+  #mobcard-pane {
+    display: flex;
+    position: sticky;
+    top: calc(var(--header-height) + 12px);
+    width: 440px;
+    max-width: 440px;
+    flex: none;
+    max-height: calc(
+      100vh - var(--header-height) - var(--footer-height) - 32px
+    );
+    overflow-y: auto;
+    flex-direction: column;
+    gap: 12px;
+  }
 
-    #mobcard-clocks {
-        display: none;
-    }
+  #mobcard-clocks {
+    display: none;
+  }
 }
 
 /* --- SECTION: MOBLIST ITEM (52px Mission Terminal) --- */
 .moblist-item {
-    display: grid;
-    grid-template-columns: 34px minmax(0, 1fr) auto;
-    align-items: center;
-    width: 100%;
-    height: 52px;
-    min-height: 52px;
-    background: #0e1420;
-    border: 1px solid #141c2e;
-    border-radius: var(--radius-sm);
-    padding: 0 12px 0 8px;
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-    overflow: hidden;
-    box-sizing: border-box;
-    contain: content;
-    transform: translateZ(0);
-    gap: 10px;
-    transition: background var(--t-base), border-color var(--t-base);
-
-    /* 左端 4px ランクストライプ */
-    &::before {
-        content: '';
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-        background: #334155;
-    }
-
-    &.rank-s::before { background: var(--color-rank-s); }
-    &.rank-a::before { background: var(--color-rank-a); }
-    &.rank-fate::before,
-    &.rank-f::before { background: var(--color-rank-f); }
-
-    /* ホバー時 */
-    &:hover {
-        background: #111a2a;
-        border-color: #1e293b;
-    }
-
-    /* 選択状態 (強調) */
-    &.selected {
-        background: #132030;
-        border-color: rgba(34, 211, 238, 0.45);
-        box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.45);
-
-        &::before {
-            width: 6px;
-        }
-
-        .moblist-time {
-            color: var(--color-cyan);
-        }
-    }
-
-    /* ランクバッジ (28x28px スクエア) */
-    .moblist-rank-badge {
-        width: 28px;
-        height: 28px;
-        min-width: 28px;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: 800;
-        letter-spacing: -0.5px;
-        color: #070a12;
-        background: #64748b;
-        margin-left: 2px;
-    }
-
-    &.rank-s .moblist-rank-badge {
-        background: var(--color-rank-s);
-        color: #070a12;
-    }
-    &.rank-a .moblist-rank-badge {
-        background: var(--color-rank-a);
-        color: #070a12;
-    }
-    &.rank-fate .moblist-rank-badge,
-    &.rank-f .moblist-rank-badge {
-        background: var(--color-rank-f);
-        color: #f8fafc;
-    }
-
-    /* 2段テキスト情報列 */
-    .moblist-info-col {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        min-width: 0;
-        gap: 1px;
-    }
-
-    .moblist-name-row {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        min-width: 0;
-    }
-
-    .moblist-name {
-        font-size: 14px;
-        font-weight: 700;
-        color: #f8fafc;
-        line-height: 1.2;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .moblist-area-row {
-        display: flex;
-        align-items: center;
-        min-width: 0;
-    }
-
-    .moblist-area {
-        font-size: 11px;
-        font-weight: 500;
-        color: #94a3b8;
-        line-height: 1.2;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    /* 大型タイマー列 */
-    .moblist-time-col {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        flex-shrink: 0;
-    }
-
-    .moblist-time {
-        font-family: var(--font-mono);
-        font-size: 16px;
-        font-weight: 700;
-        color: #f8fafc;
-        letter-spacing: -0.5px;
-        text-align: right;
-    }
-
-    .timer-label-base {
-        font-size: 10px;
-        font-weight: 600;
-        color: #94a3b8;
-        margin-left: 4px;
-    }
-
-    /* 最下部 2px プログレスライン */
-    .moblist-progress-line {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: rgba(15, 23, 42, 0.8);
-        overflow: hidden;
-    }
-
-    .moblist-progress-bar {
-        height: 100%;
-        width: 100%;
-        transform-origin: left center;
-        transform: scaleX(var(--prog-percent, 0));
-        background: #334155;
-        transition: transform 0.3s ease;
-    }
-
-    &.rank-s .moblist-progress-bar { background: var(--color-rank-s); }
-    &.rank-a .moblist-progress-bar { background: var(--color-rank-a); }
-    &.rank-fate .moblist-progress-bar,
-    &.rank-f .moblist-progress-bar { background: var(--color-rank-f); }
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  width: 100%;
+  height: 52px;
+  min-height: 52px;
+  background: #0e1420;
+  border: 1px solid #141c2e;
+  border-radius: var(--radius-sm);
+  padding: 0 12px 0 8px;
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  contain: content;
+  transform: translateZ(0);
+  gap: 10px;
+  transition:
+    background var(--t-base),
+    border-color var(--t-base);
 }
 
-    .moblist-header {
-        display: flex;
-        align-items: center;
-        min-inline-size: 0;
-        pointer-events: none;
-        font-weight: 700;
-        font-size: 15px;
-        padding-inline-end: 4px;
-        position: relative;
-        z-index: 10;
-        overflow: hidden;
-        white-space: nowrap;
-        gap: 4px;
-    }
-
-    .instance-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 18px;
-        height: 18px;
-        padding: 0 4px;
-        font-size: 14px;
-        font-weight: 500;
-        line-height: 1;
-        border-radius: 3px;
-        background: var(--color-bg-panel);
-        border: 1.5px solid var(--color-cyan);
-        color: #ffffff;
-        flex-shrink: 0;
-        margin-right: 4px;
-        position: relative;
-    }
-
-    .moblist-name {
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        color: var(--color-white);
-    }
-
-    .moblist-count {
-        display: flex;
-        align-items: center;
-        margin-inline-end: 18px;
-        flex-shrink: 0;
-        white-space: nowrap;
-    }
-
-    .moblist-time {
-        grid-column: 2;
-        font-family: var(--font-mono);
-        font-size: 13px;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-        white-space: nowrap;
-        position: relative;
-        z-index: 10;
-        inline-size: 100%;
-        text-align: right;
-        padding-inline-end: 0;
-
-        .timer-inner-grid {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 2px;
-        }
-
-        .timer-label {
-            flex-shrink: 0;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 1px 3px;
-            border-radius: 3px;
-            background: #353e4b;
-            border: 1px solid #414a56;
-            line-height: 1;
-            min-inline-size: 28px;
-            text-align: center;
-            margin-inline-start: 2px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-
-            &.status-maxover {
-                background: #773434;
-                border-color: #a24040;
-                color: #ff9999;
-            }
-
-            &.status-popwindow,
-            &.status-conditionactive,
-            &.status-nextcondition {
-                background: #1e5b4c;
-                border-color: #1e8869;
-                color: #a7f3d0;
-            }
-
-            &.is-special {
-                color: var(--color-gold);
-                border-color: #777137;
-            }
-        }
-
-        .mobcard-timer-unit {
-            color: #94a3b8;
-            font-size: 11px;
-            margin-inline-start: 1px;
-            font-weight: 500;
-        }
-    }
-
-    .moblist-bg-gauge {
-        position: absolute;
-        inset-inline-start: 0;
-        inset-block: 0;
-        inset-inline-end: 28px;
-        pointer-events: none;
-        overflow: hidden;
-        z-index: 1;
-        border-radius: 4px 0 0 4px;
-    }
-
-    .moblist-bg-bar {
-        inline-size: 100%;
-        block-size: 100%;
-        background: var(--color-progress-list);
-        transform: scaleX(var(--prog-percent, 0));
-        transform-origin: left;
-    }
-
-    &[data-rank="S"] .moblist-bg-bar {
-        background: #463a20;
-    }
-
-    &[data-rank="A"] .moblist-bg-bar {
-        background: #234731;
-    }
-
-    &[data-rank="F"] .moblist-bg-bar,
-    &[data-rank="FATE"] .moblist-bg-bar,
-    &[data-rank="F.A.T.E."] .moblist-bg-bar {
-        background: #42356e;
-    }
-
-    .moblist-percent {
-        grid-column: 3;
-        font-family: var(--font-mono);
-        pointer-events: none;
-        font-size: 12px;
-        font-weight: 500;
-        color: var(--color-white);
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        position: relative;
-        z-index: 10;
-        padding-inline-end: 4px;
-        pointer-events: none;
-    }
-
-    .moblist-report-btn {
-        grid-column: 4;
-        inline-size: 28px;
-        block-size: 100%;
-        background: var(--color-bg-panel-light);
-        border: none;
-        border-radius: 0 4px 4px 0;
-        color: var(--color-white);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        position: relative;
-        z-index: 10;
-        border-left: 1px solid #13909d;
-        border-top: 1px solid #353e4b;
-        transition: none;
-
-        &::before,
-        &::after {
-            content: '';
-            position: absolute;
-            background: var(--color-cyan);
-            border-radius: 1px;
-        }
-
-        &::before {
-            inline-size: 12px;
-            block-size: 2px;
-        }
-
-        &::after {
-            inline-size: 2px;
-            block-size: 12px;
-        }
-
-        &:hover {
-            background: color-mix(in srgb, var(--color-cyan), var(--color-bg-panel-light) 60%);
-        }
-
-        &:active {
-            filter: brightness(1.2);
-        }
-    }
-
-    &.moblist-highlight-white {
-        border: 1px solid #ffffff !important;
-    }
-
-    &.maintenance-gray-out {
-        filter: grayscale(100%) brightness(0.6);
-    }
+/* 左端 4px ランクストライプ */
+.moblist-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #334155;
 }
 
-/* --- SECTION: MEDIA (MOBILE OVERRIDES) --- */
-@media (max-width: 1023px) {
-    .main-layout-container {
-        display: block;
-        width: 100%;
-    }
+.moblist-item.rank-s::before {
+  background: var(--color-rank-s);
+}
+.moblist-item.rank-a::before {
+  background: var(--color-rank-a);
+}
+.moblist-item.rank-fate::before,
+.moblist-item.rank-f::before {
+  background: var(--color-rank-f);
+}
 
-    #moblist-container {
-        width: 100%;
-    }
+/* ホバー時 */
+.moblist-item:hover {
+  background: #111a2a;
+  border-color: #1e293b;
+}
 
-    .moblist-item {
-        margin-block-end: 4px;
-        grid-template-columns: minmax(0, 1fr) 82px 34px 28px;
+/* 選択状態 (強調) */
+.moblist-item.selected {
+  background: #132030;
+  border-color: rgba(34, 211, 238, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.45);
+}
 
-        .moblist-report-btn {
-            width: 28px;
-        }
+.moblist-item.selected::before {
+  width: 6px;
+}
 
-        .moblist-bg-gauge {
-            inset-inline-end: 28px;
-        }
-    }
+.moblist-item.selected .moblist-time {
+  color: var(--color-cyan);
+}
+
+/* ランクバッジ (28x28px スクエア) */
+.moblist-item .moblist-rank-badge {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #070a12;
+  background: #64748b;
+  margin-left: 2px;
+}
+
+.moblist-item.rank-s .moblist-rank-badge {
+  background: var(--color-rank-s);
+  color: #070a12;
+}
+
+.moblist-item.rank-a .moblist-rank-badge {
+  background: var(--color-rank-a);
+  color: #070a12;
+}
+
+.moblist-item.rank-fate .moblist-rank-badge,
+.moblist-item.rank-f .moblist-rank-badge {
+  background: var(--color-rank-f);
+  color: #f8fafc;
+}
+
+/* 2段テキスト情報列 */
+.moblist-item .moblist-info-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  gap: 1px;
+}
+
+.moblist-item .moblist-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.moblist-item .moblist-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f8fafc;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.moblist-item .moblist-area-row {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.moblist-item .moblist-area {
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 大型タイマー列 */
+.moblist-item .moblist-time-col {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.moblist-item .moblist-time {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: -0.5px;
+  text-align: right;
+}
+
+.moblist-item .timer-label-base {
+  font-size: 10px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-left: 4px;
+}
+
+/* 最下部 2px プログレスライン */
+.moblist-item .moblist-progress-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(15, 23, 42, 0.8);
+  overflow: hidden;
+}
+
+.moblist-item .moblist-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform-origin: left center;
+  transform: scaleX(var(--prog-percent, 0));
+  background: #334155;
+  transition: transform 0.3s ease;
+}
+
+.moblist-item.rank-s .moblist-progress-bar {
+  background: var(--color-rank-s);
+}
+.moblist-item.rank-a .moblist-progress-bar {
+  background: var(--color-rank-a);
+}
+.moblist-item.rank-fate .moblist-progress-bar,
+.moblist-item.rank-f .moblist-progress-bar {
+  background: var(--color-rank-f);
 }

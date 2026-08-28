@@ -1,643 +1,646 @@
 /* --- SECTION: MOBCARD --- */
 .mobcard-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: #0e1420;
+  border: 1px solid #1e293b;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  contain: content;
+  inline-size: 100%;
+  max-inline-size: 440px;
+  block-size: auto;
+  max-block-size: 96vh;
+  pointer-events: auto;
+  position: relative;
+  transform: translateZ(0);
+  user-select: none;
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.mobcard-card.mobcard-highlight-white {
+  border-color: rgba(34, 211, 238, 0.6);
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.2);
+}
+
+.mobcard-card .mobcard-inner {
+  background: #0e1420;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.mobcard-header {
+  padding: 11px 12px 6px;
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  .header-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+  }
+
+  .header-mid-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 11px;
+    line-height: 1.2;
+    min-height: 18px;
+  }
+
+  .mobcard-area-info {
+    display: flex;
+    align-items: center;
+    color: #bcbfc5;
+    font-weight: 400;
+    gap: 4px;
+
+    .detail-expansion {
+      color: var(--color-text-secondary);
+    }
+  }
+}
+
+.mobcard-name {
+  font-size: 15px;
+  font-weight: 800;
+  margin: 0;
+  padding: 0;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-white);
+  line-height: 1;
+  text-shadow: none;
+  transition:
+    text-shadow 0.4s ease,
+    color 0.4s ease;
+
+  &[data-rank="S"] {
+    color: var(--color-rank-s);
+  }
+
+  &[data-rank="A"] {
+    color: var(--color-rank-a);
+  }
+
+  &[data-rank="F"] {
+    color: var(--color-rank-f);
+  }
+}
+
+.mobcard-rank {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  border-radius: 2px;
+  background: var(--color-bg-dark);
+  border: 1.5px solid currentColor;
+  margin: 0;
+  flex-shrink: 0;
+
+  &[data-rank="S"] {
+    color: var(--color-rank-s);
+  }
+
+  &[data-rank="A"] {
+    color: var(--color-rank-a);
+  }
+
+  &[data-rank="F"] {
+    color: var(--color-rank-f);
+  }
+}
+
+.instance-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: 3px;
+  background: var(--color-bg-panel);
+  border: 1.5px solid var(--color-cyan);
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-right: 4px;
+  position: relative;
+}
+
+.mobcard-progress-container {
+  height: 8px;
+  background: var(--color-progress-bg);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: -6px 0 0;
+  box-shadow: none;
+  border: 1px solid var(--color-border-subtle);
+}
+
+.mobcard-progress-bar {
+  height: 100%;
+  width: 100%;
+  background: var(--color-progress-card);
+  border-radius: 4px;
+  transform: scaleX(var(--prog-percent, 0));
+  transform-origin: left;
+  transition: transform 0.4s ease-out;
+  box-shadow: none;
+}
+
+&[data-rank="S"] .mobcard-progress-bar {
+  background: var(--color-rank-s);
+}
+
+&[data-rank="A"] .mobcard-progress-bar {
+  background: var(--color-rank-a);
+}
+
+&[data-rank="F"] .mobcard-progress-bar,
+&[data-rank="FATE"] .mobcard-progress-bar,
+&[data-rank="F.A.T.E."] .mobcard-progress-bar {
+  background: var(--color-rank-f);
+}
+
+&.mobcard-floating {
+  position: fixed;
+  z-index: var(--z-mobcard-mobile);
+  max-width: 95vw;
+
+  .mobcard-inner {
+    background: linear-gradient(135deg, #1e293b, var(--color-bg-panel));
+    border: 1px solid #4c5561;
+    height: auto;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+
+  .mobcard-expandable {
+    max-height: none;
+  }
+}
+
+&.mobcard-floating:hover .mobcard-inner {
+  transform: none;
+}
+
+&.mobcard-pre-repop {
+  .area-info-container,
+  .status-bar-inner,
+  .progress-text > div,
+  .memo-icon-container {
+    filter: grayscale(100%);
+  }
+
+  .mobcard-report-bar {
+    filter: grayscale(100%);
+  }
+
+  .mobcard-name {
+    color: var(--color-white);
+    text-shadow: none;
+  }
+}
+
+&.mobcard-maintenance,
+&.maintenance-gray-out {
+  .mobcard-inner {
+    filter: grayscale(100%) brightness(0.6);
+    box-shadow: none;
+  }
+
+  .mobcard-name {
+    color: var(--color-white);
+    text-shadow: none;
+  }
+}
+
+&.mobcard-expanded {
+  .mobcard-inner {
+    max-block-size: inherit;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     display: flex;
     flex-direction: column;
-    padding: 0;
-    background: #0e1420;
-    border: 1px solid #1e293b;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    contain: content;
-    inline-size: 100%;
-    max-inline-size: 440px;
+  }
+
+  .mobcard-expandable {
     block-size: auto;
-    max-block-size: 96vh;
-    pointer-events: auto;
-    position: relative;
-    transform: translateZ(0);
-    user-select: none;
-    z-index: 1;
-    box-sizing: border-box;
+    overflow-y: auto;
+  }
 
-    &.mobcard-highlight-white {
-        border-color: rgba(34, 211, 238, 0.6);
-        box-shadow: 0 0 16px rgba(34, 211, 238, 0.2);
-    }
+  .mobcard-header {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 3;
+    background: var(--color-bg-panel);
+    border-block-end: 1px solid #414a56;
+    border-start-start-radius: 0;
+    border-start-end-radius: 0;
+  }
+}
 
-    .mobcard-inner {
-        background: #0e1420;
-        border-radius: var(--radius-lg);
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
-        inline-size: 100%;
-        block-size: 100%;
-    }
+.mobcard-mobile-actions {
+  display: flex;
+  align-items: stretch;
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  border-top: 1px solid #414a56;
+  flex-shrink: 0;
+  height: 30px;
+  -webkit-tap-highlight-color: transparent;
 
-    .mobcard-header {
-        padding: 11px 12px 6px;
-        position: relative;
-        flex-shrink: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 6px;
+  .mobcard-close-btn,
+  .bottom-report-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    transition:
+      background-color 0.1s,
+      color 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
 
-        .header-top-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-        }
+  .bottom-report-btn {
+    background: #213947;
+    color: var(--color-cyan);
+    border: none;
+    border-right: 1px solid #414a56;
+  }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 0;
-            flex: 1;
-        }
+  .mobcard-close-btn {
+    background: #353e4b;
+    color: #d2d4d8;
+  }
 
-        .header-mid-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            font-size: 11px;
-            line-height: 1.2;
-            min-height: 18px;
-        }
+  .bottom-report-btn:hover {
+    background: #206371;
+    color: var(--color-white);
+  }
 
-        .mobcard-area-info {
-            display: flex;
-            align-items: center;
-            color: #bcbfc5;
-            font-weight: 400;
-            gap: 4px;
+  .mobcard-close-btn:hover {
+    background: #414a56;
+    color: var(--color-white);
+  }
 
-            .detail-expansion {
-                color: var(--color-text-secondary);
-            }
-        }
-    }
+  .bottom-report-btn:active {
+    background: #2a7a8a;
+    color: var(--color-white);
+  }
 
-    .mobcard-name {
-        font-size: 15px;
-        font-weight: 800;
-        margin: 0;
-        padding: 0;
-        letter-spacing: -0.01em;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: var(--color-white);
-        line-height: 1;
-        text-shadow: none;
-        transition: text-shadow 0.4s ease, color 0.4s ease;
-
-        &[data-rank="S"] {
-            color: var(--color-rank-s);
-        }
-
-        &[data-rank="A"] {
-            color: var(--color-rank-a);
-        }
-
-        &[data-rank="F"] {
-            color: var(--color-rank-f);
-        }
-    }
-
-    .mobcard-rank {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 24px;
-        height: 24px;
-        font-size: 13px;
-        font-weight: 900;
-        line-height: 1;
-        border-radius: 2px;
-        background: var(--color-bg-dark);
-        border: 1.5px solid currentColor;
-        margin: 0;
-        flex-shrink: 0;
-
-        &[data-rank="S"] {
-            color: var(--color-rank-s);
-        }
-
-        &[data-rank="A"] {
-            color: var(--color-rank-a);
-        }
-
-        &[data-rank="F"] {
-            color: var(--color-rank-f);
-        }
-    }
-
-    .instance-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 20px;
-        height: 20px;
-        padding: 0 5px;
-        font-size: 13px;
-        font-weight: 500;
-        line-height: 1;
-        border-radius: 3px;
-        background: var(--color-bg-panel);
-        border: 1.5px solid var(--color-cyan);
-        color: #ffffff;
-        flex-shrink: 0;
-        margin-right: 4px;
-        position: relative;
-    }
-
-    .mobcard-progress-container {
-        height: 8px;
-        background: var(--color-progress-bg);
-        border-radius: 4px;
-        overflow: hidden;
-        margin: -6px 0 0;
-        box-shadow: none;
-        border: 1px solid var(--color-border-subtle);
-    }
-
-    .mobcard-progress-bar {
-        height: 100%;
-        width: 100%;
-        background: var(--color-progress-card);
-        border-radius: 4px;
-        transform: scaleX(var(--prog-percent, 0));
-        transform-origin: left;
-        transition: transform 0.4s ease-out;
-        box-shadow: none;
-    }
-
-    &[data-rank="S"] .mobcard-progress-bar {
-        background: var(--color-rank-s);
-    }
-
-    &[data-rank="A"] .mobcard-progress-bar {
-        background: var(--color-rank-a);
-    }
-
-    &[data-rank="F"] .mobcard-progress-bar,
-    &[data-rank="FATE"] .mobcard-progress-bar,
-    &[data-rank="F.A.T.E."] .mobcard-progress-bar {
-        background: var(--color-rank-f);
-    }
-
-    &.mobcard-floating {
-        position: fixed;
-        z-index: var(--z-mobcard-mobile);
-        max-width: 95vw;
-
-        .mobcard-inner {
-            background: linear-gradient(135deg, #1e293b, var(--color-bg-panel));
-            border: 1px solid #4c5561;
-            height: auto;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        .mobcard-expandable {
-            max-height: none;
-        }
-    }
-
-    &.mobcard-floating:hover .mobcard-inner {
-        transform: none;
-    }
-
-    &.mobcard-pre-repop {
-
-        .area-info-container,
-        .status-bar-inner,
-        .progress-text>div,
-        .memo-icon-container {
-            filter: grayscale(100%);
-        }
-
-        .mobcard-report-bar {
-            filter: grayscale(100%);
-        }
-
-        .mobcard-name {
-            color: var(--color-white);
-            text-shadow: none;
-        }
-    }
-
-    &.mobcard-maintenance,
-    &.maintenance-gray-out {
-        .mobcard-inner {
-            filter: grayscale(100%) brightness(0.6);
-            box-shadow: none;
-        }
-
-        .mobcard-name {
-            color: var(--color-white);
-            text-shadow: none;
-        }
-    }
-
-    &.mobcard-expanded {
-        .mobcard-inner {
-            max-block-size: inherit;
-            overflow-y: auto;
-            overscroll-behavior: contain;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .mobcard-expandable {
-            block-size: auto;
-            overflow-y: auto;
-        }
-
-        .mobcard-header {
-            position: sticky;
-            inset-block-start: 0;
-            z-index: 3;
-            background: var(--color-bg-panel);
-            border-block-end: 1px solid #414a56;
-            border-start-start-radius: 0;
-            border-start-end-radius: 0;
-        }
-    }
-
-    .mobcard-mobile-actions {
-        display: flex;
-        align-items: stretch;
-        position: sticky;
-        bottom: 0;
-        z-index: 5;
-        border-top: 1px solid #414a56;
-        flex-shrink: 0;
-        height: 30px;
-        -webkit-tap-highlight-color: transparent;
-
-        .mobcard-close-btn,
-        .bottom-report-btn {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 13px;
-            font-weight: 800;
-            line-height: 1;
-            letter-spacing: 0.1em;
-            transition: background-color 0.1s, color 0.1s;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .bottom-report-btn {
-            background: #213947;
-            color: var(--color-cyan);
-            border: none;
-            border-right: 1px solid #414a56;
-        }
-
-        .mobcard-close-btn {
-            background: #353e4b;
-            color: #d2d4d8;
-        }
-
-        .bottom-report-btn:hover {
-            background: #206371;
-            color: var(--color-white);
-        }
-
-        .mobcard-close-btn:hover {
-            background: #414a56;
-            color: var(--color-white);
-        }
-
-        .bottom-report-btn:active {
-            background: #2a7a8a;
-            color: var(--color-white);
-        }
-
-        .mobcard-close-btn:active {
-            background: #4b5563;
-            color: var(--color-white);
-        }
-    }
+  .mobcard-close-btn:active {
+    background: #4b5563;
+    color: var(--color-white);
+  }
 }
 
 .percent {
-    text-align: right;
-    font-size: 13px;
-    font-weight: 800;
-    color: #f2f3f4;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 800;
+  color: #f2f3f4;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .mobcard-content {
-    padding: 0 11px 7px;
-    border-top: none;
-    flex: 1 1 auto;
-    overflow-y: auto;
-    scrollbar-width: thin;
+  padding: 0 11px 7px;
+  border-top: none;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  scrollbar-width: thin;
 
-    &>*:last-child {
-        margin-bottom: 0;
-    }
+  & > *:last-child {
+    margin-bottom: 0;
+  }
 }
 
 @supports (scrollbar-color: auto) {
-    .mobcard-content {
-        scrollbar-width: thin;
-        scrollbar-color: #2a3341 #1f2937;
-    }
+  .mobcard-content {
+    scrollbar-width: thin;
+    scrollbar-color: #2a3341 #1f2937;
+  }
 }
 
 .mobcard-timer {
-    color: var(--color-timer);
-    font-variant-numeric: tabular-nums;
-    display: flex;
-    justify-content: flex-end;
+  color: var(--color-timer);
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  justify-content: flex-end;
+  align-items: baseline;
+  font-family: var(--font-mono);
+
+  .mobcard-timer-part {
+    display: inline-flex;
     align-items: baseline;
-    font-family: var(--font-mono);
+    justify-content: flex-end;
+    min-inline-size: 2.5ch;
+    margin-inline-end: 0.3ch;
 
-    .mobcard-timer-part {
-        display: inline-flex;
-        align-items: baseline;
-        justify-content: flex-end;
-        min-inline-size: 2.5ch;
-        margin-inline-end: 0.3ch;
-
-        &:last-child {
-            margin-inline-end: 0;
-        }
+    &:last-child {
+      margin-inline-end: 0;
     }
+  }
 
-    .mobcard-timer-num {
-        color: var(--color-white);
-        font-weight: 700;
-    }
+  .mobcard-timer-num {
+    color: var(--color-white);
+    font-weight: 700;
+  }
 
-    &.label-next .mobcard-timer-num,
-    &.label-next.mobcard-timer-over .mobcard-timer-num {
-        color: var(--color-gold);
-    }
+  &.label-next .mobcard-timer-num,
+  &.label-next.mobcard-timer-over .mobcard-timer-num {
+    color: var(--color-gold);
+  }
 }
 
 .mobcard-status-max {
-    background: var(--color-progress-list);
+  background: var(--color-progress-list);
 }
 
 .mobcard-status-active,
 .mobcard-status-window,
 .mobcard-status-next {
-    background: var(--color-progress-card);
+  background: var(--color-progress-card);
 }
 
 .mobcard-timer-label {
-    color: var(--color-white);
-    background: #353e4b;
-    border: 1px solid #414a56;
-    border-radius: 3px;
-    padding: 2px 3px;
-    font-size: 11px;
-    height: auto;
-    min-width: 28px;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
+  color: var(--color-white);
+  background: #353e4b;
+  border: 1px solid #414a56;
+  border-radius: 3px;
+  padding: 2px 3px;
+  font-size: 11px;
+  height: auto;
+  min-width: 28px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
 
-    &.mobcard-status-next {
-        background: #414c5b;
-    }
+  &.mobcard-status-next {
+    background: #414c5b;
+  }
 
-    &.mobcard-status-window,
-    &.mobcard-status-active {
-        background: #1e5c4d;
-    }
+  &.mobcard-status-window,
+  &.mobcard-status-active {
+    background: #1e5c4d;
+  }
 
-    &.mobcard-status-max {
-        background: #653232;
-    }
+  &.mobcard-status-max {
+    background: #653232;
+  }
 
-    &.mobcard-special {
-        color: var(--color-gold);
-    }
+  &.mobcard-special {
+    color: var(--color-gold);
+  }
 }
 
 .mobcard-memo-box {
-    background: #223e5a;
-    border-radius: 6px;
-    border: 1px solid #38849c;
-    transition: border-color 0.2s;
-    display: flex;
-    align-items: center;
-    min-height: 34px;
-    overflow: hidden;
+  background: #223e5a;
+  border-radius: 6px;
+  border: 1px solid #38849c;
+  transition: border-color 0.2s;
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  overflow: hidden;
 
-    &:focus-within {
-        border-color: var(--color-cyan);
-    }
+  &:focus-within {
+    border-color: var(--color-cyan);
+  }
 }
 
 .mobcard-memo-prefix-area {
-    display: flex;
-    align-items: center;
-    padding: 0 8px 0 10px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px 0 10px;
 }
 
 .mobcard-memo-prefix-text {
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--color-cyan);
-    letter-spacing: 0.05em;
-    text-transform: lowercase;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--color-cyan);
+  letter-spacing: 0.05em;
+  text-transform: lowercase;
 }
 
 .mobcard-memo-separator {
-    width: 1px;
-    height: 20px;
-    background: #2e657f;
+  width: 1px;
+  height: 20px;
+  background: #2e657f;
 }
 
 .mobcard-memo-input {
-    flex: 1;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--color-white);
-    font-size: 12px;
-    padding: 0 10px;
-    resize: none;
-    line-height: 1.25;
-    height: var(--memo-h, auto);
-    overflow: hidden;
-    -webkit-user-select: text;
-    user-select: text;
-    cursor: text;
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--color-white);
+  font-size: 12px;
+  padding: 0 10px;
+  resize: none;
+  line-height: 1.25;
+  height: var(--memo-h, auto);
+  overflow: hidden;
+  -webkit-user-select: text;
+  user-select: text;
+  cursor: text;
 
-    &::placeholder {
-        color: #848991;
-    }
+  &::placeholder {
+    color: #848991;
+  }
 }
 
 .mobcard-section {
-    margin-bottom: 4px;
-    padding: 2px 0;
+  margin-bottom: 4px;
+  padding: 2px 0;
 
-    .mobcard-section-label {
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        font-size: 10px;
-        font-weight: 800;
-        color: var(--color-cyan);
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-block-start: 2px;
-        margin-bottom: 3px;
-        padding-left: 7px;
-        border-left: 2px solid var(--color-cyan);
+  .mobcard-section-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--color-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-block-start: 2px;
+    margin-bottom: 3px;
+    padding-left: 7px;
+    border-left: 2px solid var(--color-cyan);
 
-        .map-update-time {
-            font-family: var(--font-mono);
-            font-size: 11px;
-            font-weight: 500;
-            color: var(--color-white);
-            margin-left: 8px;
-        }
+    .map-update-time {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--color-white);
+      margin-left: 8px;
     }
+  }
 
-    .condition-text {
-        font-size: 11px;
-        color: #e8e9eb;
-        line-height: 1.5;
-        padding: 2px 8px;
-        white-space: pre-wrap;
-    }
+  .condition-text {
+    font-size: 11px;
+    color: #e8e9eb;
+    line-height: 1.5;
+    padding: 2px 8px;
+    white-space: pre-wrap;
+  }
 }
 
 .mobcard-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4px;
-    margin-bottom: 6px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
 }
 
 .mobcard-info-item {
-    background: #303c51;
-    border: 1px solid #353e4b;
-    border-radius: 4px;
-    padding: 4px 10px 2px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: auto;
+  background: #303c51;
+  border: 1px solid #353e4b;
+  border-radius: 4px;
+  padding: 4px 10px 2px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: auto;
 }
 
 .mobcard-info-item .mobcard-label {
-    font-size: 10px;
-    font-weight: 800;
-    color: var(--color-text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-block-end: 2px;
-    line-height: 1;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-block-end: 2px;
+  line-height: 1;
 }
 
 .mobcard-info-item .mobcard-value {
-    font-size: 16px;
-    font-weight: 500;
-    color: var(--color-white);
-    font-family: var(--font-mono);
-    line-height: 1.2;
-    text-shadow: none;
-    font-variant-numeric: tabular-nums;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-white);
+  font-family: var(--font-mono);
+  line-height: 1.2;
+  text-shadow: none;
+  font-variant-numeric: tabular-nums;
 }
 
 .mobcard-info-item.mobcard-highlight .mobcard-value {
-    color: var(--color-gold);
+  color: var(--color-gold);
 }
 
 .mobcard-expandable {
-    &.open {
-        max-height: none;
-    }
+  &.open {
+    max-height: none;
+  }
 
-    &>div {
-        min-height: 0;
-        padding: 7px;
-        opacity: 0;
-        animation: fadeIn 0.3s ease-out forwards;
-    }
+  & > div {
+    min-height: 0;
+    padding: 7px;
+    opacity: 0;
+    animation: fadeIn 0.3s ease-out forwards;
+  }
 }
 
 #mobcard-detail,
 #mobcard-overlay {
-    background: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    box-sizing: border-box;
-    overscroll-behavior: contain;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  box-sizing: border-box;
+  overscroll-behavior: contain;
 }
 
 .mobcard-overlay-wrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    pointer-events: none;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  pointer-events: none;
 }
 
 /* --- SECTION: MEDIA (MOBILE OVERRIDES) --- */
 @media (max-width: 1023px) {
+  .mobcard-card {
+    scroll-margin-top: var(--mobile-header-height);
+    margin-block-end: 1px;
+    max-inline-size: 96%;
+    width: 100%;
+    margin-inline: auto;
+    margin-block: 1dvh;
+    height: auto;
+
+    &.moblist-selected .mobcard-inner {
+      background: #313a47;
+      border-color: #205c69;
+    }
+  }
+
+  #mobcard-overlay {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    pointer-events: auto;
+
     .mobcard-card {
-        scroll-margin-top: var(--mobile-header-height);
-        margin-block-end: 1px;
-        max-inline-size: 96%;
-        width: 100%;
-        margin-inline: auto;
-        margin-block: 1dvh;
-        height: auto;
-
-        &.moblist-selected .mobcard-inner {
-            background: #313a47;
-            border-color: #205c69;
-        }
+      width: 96vw;
+      height: 96vh;
+      max-width: none;
+      max-inline-size: none;
+      max-height: 96vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      margin: 0;
+      z-index: var(--z-mobcard-mobile);
     }
-
-    #mobcard-overlay {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        pointer-events: auto;
-
-        .mobcard-card {
-            width: 96vw;
-            height: 96vh;
-            max-width: none;
-            max-inline-size: none;
-            max-height: 96vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            margin: 0;
-            z-index: var(--z-mobcard-mobile);
-        }
-    }
+  }
 }
