@@ -1,0 +1,141 @@
+/* =========================================================
+   CSS1 / root.css
+   Design-token layer — Mission Data Terminal aesthetic
+   ★ NO backdrop-filter / NO logical properties
+   ★ All vendor-prefixed user-select / fit-content
+   ========================================================= */
+
+/* ── Google Fonts import ─────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+
+/* ── Global reset ────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ── Palette ─────────────────────────────────────────── */
+  --c-bg:           #08101c;   /* deepest background        */
+  --c-surface:      #0e1625;   /* card / row surface        */
+  --c-surface-ho:   #111e30;   /* hover surface             */
+  --c-surface-sel:  #0d2038;   /* selected row              */
+  --c-panel:        #06090f;   /* bottom nav / header       */
+
+  /* rank accent colours */
+  --c-s:            #f59e0b;   /* S rank - amber            */
+  --c-s-dark:       #92600a;   /* S rank dim (badge bg)     */
+  --c-a:            #22d3ee;   /* A rank - cyan             */
+  --c-a-dark:       #0b4a59;   /* A rank dim (badge bg)     */
+  --c-f:            #a855f7;   /* F rank - violet           */
+  --c-f-dark:       #4a1a7a;   /* F rank dim (badge bg)     */
+
+  /* text */
+  --c-text-hi:      #f0f4f8;   /* primary / mob name        */
+  --c-text-lo:      #6b7f9a;   /* secondary / area          */
+  --c-text-sel:     #22d3ee;   /* selected-row timer        */
+  --c-text-off:     #3b4f6a;   /* disabled / muted          */
+  --c-timer:        #e8edf4;   /* timer digits normal       */
+
+  /* borders */
+  --c-border:       #16223a;
+  --c-border-sel:   #22d3ee;
+
+  /* progress bar */
+  --c-prog-bg:      #07101d;
+  --c-prog-s:       #f59e0b;
+  --c-prog-a:       #22d3ee;
+  --c-prog-f:       #a855f7;
+
+  /* nav / status */
+  --c-nav-icon:     #6b7f9a;
+  --c-nav-active:   #f0f4f8;
+  --c-nav-dot:      #22d3ee;
+  --c-offline-bg:   #3b1313;
+  --c-offline-text: #f87171;
+  --c-error-badge:  #ef4444;
+
+  /* ── Layout ──────────────────────────────────────────── */
+  --header-h:       52px;
+  --footer-h:       56px;
+  --footer-safe:    calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
+
+  /* list row */
+  --row-h:          72px;
+  --row-stripe:     4px;
+  --row-stripe-sel: 6px;
+  --row-badge:      44px;
+  --row-gap:        6px;
+  --row-prog-h:     2px;
+  --row-radius:     8px;
+
+  /* detail card */
+  --card-radius:    12px;
+
+  /* nav */
+  --nav-icon-size:  26px;
+
+  /* ── Z-index ──────────────────────────────────────────── */
+  --z-header:       90;
+  --z-footer:       90;
+  --z-modal:        80;
+  --z-modal-bd:     75;
+  --z-card-mob:     60;
+  --z-toast:        95;
+  --z-loading:      100;
+
+  /* ── Typography ──────────────────────────────────────── */
+  --font-ui:   'Inter', 'Hiragino Sans', 'Meiryo', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Roboto Mono', monospace;
+
+  /* font sizes */
+  --fs-mob-name:    15px;
+  --fs-mob-area:    11px;
+  --fs-timer:       22px;
+  --fs-timer-label: 11px;
+  --fs-badge:       18px;
+  --fs-header-logo: 20px;
+  --fs-header-et:   11px;
+  --fs-header-time: 17px;
+  --fs-nav:         10px;
+}
+
+/* ── Root application surface ────────────────────────────── */
+html, body {
+  height: 100%;
+  background-color: var(--c-bg);
+  color: var(--c-text-hi);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  overscroll-behavior: none;
+}
+
+/* ── Allow text selection where needed ───────────────────── */
+input, textarea, [data-selectable] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* ── Scrollbar (Chromium) ────────────────────────────────── */
+::-webkit-scrollbar       { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--c-border); border-radius: 2px; }
+
+/* ── Utility ─────────────────────────────────────────────── */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; overflow: hidden;
+  clip: rect(0,0,0,0);
+  border: 0;
+}

@@ -1,0 +1,205 @@
+/* =========================================================
+   CSS1 / layout.css
+   App shell: header + main scrollable area + footer
+   Shared between all tabs/views.
+   ========================================================= */
+
+/* ── App shell ───────────────────────────────────────────── */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  height: 100dvh;            /* Dynamic viewport on mobile   */
+  overflow: hidden;
+  background-color: var(--c-bg);
+}
+
+/* ── Top header ──────────────────────────────────────────── */
+#app-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  height: var(--header-h);
+  min-height: var(--header-h);
+  background-color: var(--c-panel);
+  border-bottom: 1px solid var(--c-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+/* logo */
+.header-logo {
+  font-family: var(--font-ui);
+  font-size: var(--fs-header-logo);
+  font-weight: 700;
+  color: var(--c-text-hi);
+  letter-spacing: -0.3px;
+}
+
+/* Eorzea Time block (right side) */
+.header-et {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+.header-et-label {
+  font-size: var(--fs-header-et);
+  color: var(--c-text-lo);
+  font-family: var(--font-ui);
+  font-weight: 400;
+  line-height: 1;
+}
+.header-et-time {
+  font-family: var(--font-mono);
+  font-size: var(--fs-header-time);
+  font-weight: 700;
+  color: var(--c-s);              /* amber — matches concept image */
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+/* Offline badge (shown when Read-Only mode) */
+.header-offline-badge {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background-color: var(--c-offline-bg);
+  color: var(--c-offline-text);
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-ui);
+}
+.header-offline-badge.is-visible {
+  display: flex;
+}
+
+/* ── Main scrollable region ──────────────────────────────── */
+#app-main {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;    /* iOS momentum scroll */
+  padding-bottom: var(--footer-safe);
+}
+
+/* ── PC two-column layout (>=1024px) ─────────────────────── */
+@media (min-width: 1024px) {
+  #app {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+  /* header moves to a left sidebar on large screens */
+  #app-header {
+    position: static;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: 100%;
+    width: 220px;
+    min-width: 220px;
+    border-bottom: none;
+    border-right: 1px solid var(--c-border);
+    padding: 20px 16px;
+    gap: 24px;
+    overflow: hidden;
+  }
+  #app-main {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 0;
+    overflow: hidden;
+  }
+  /* list pane */
+  #pane-list {
+    flex: 0 0 360px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    border-right: 1px solid var(--c-border);
+  }
+  /* detail card pane */
+  #pane-card {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px;
+  }
+}
+
+/* ── View panels (mobile: single column) ─────────────────── */
+.view-panel {
+  display: none;
+}
+.view-panel.is-active {
+  display: block;
+}
+
+/* ── Loading overlay ─────────────────────────────────────── */
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-loading);
+  background-color: var(--c-bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+#loading-overlay.is-hidden {
+  display: none;
+}
+.loading-logo {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--c-text-hi);
+}
+.loading-spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--c-border);
+  border-top-color: var(--c-a);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.loading-status {
+  font-size: 12px;
+  color: var(--c-text-lo);
+}
+
+/* ── Toast notification ──────────────────────────────────── */
+#toast-container {
+  position: fixed;
+  top: calc(var(--header-h) + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.toast {
+  padding: 8px 14px;
+  border-radius: 6px;
+  background-color: #1a2a40;
+  border: 1px solid var(--c-border);
+  color: var(--c-text-hi);
+  font-size: 13px;
+  font-family: var(--font-ui);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.toast.is-visible { opacity: 1; }
+.toast.is-error   { border-color: var(--c-error-badge); color: var(--c-offline-text); }

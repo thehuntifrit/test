@@ -1,0 +1,346 @@
+/* =========================================================
+   CSS1 / mobcard.css
+   Detail card panel — shown on row tap (mobile overlay)
+   and in the right pane on PC (>=1024px)
+   ========================================================= */
+
+/* ── Mobile: card as bottom-sheet overlay ────────────────── */
+.mob-card-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal-bd);
+  background-color: rgba(4, 8, 18, 0.72);
+}
+.mob-card-backdrop.is-visible {
+  display: block;
+}
+
+.mob-card {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-height: 75vh;
+  z-index: var(--z-card-mob);
+  background-color: var(--c-surface);
+  border-radius: var(--card-radius) var(--card-radius) 0 0;
+  border: 1px solid var(--c-border);
+  border-bottom: none;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 0 calc(var(--footer-safe) + 8px);
+  transform: translateY(100%);
+  transition: transform 0.22s cubic-bezier(0.32, 0, 0.67, 0);
+}
+.mob-card.is-visible {
+  transform: translateY(0);
+  transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+/* drag handle */
+.mob-card-handle {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--c-border);
+  margin: 10px auto 0;
+}
+
+/* ── Card header ─────────────────────────────────────────── */
+.mob-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 10px;
+}
+
+/* large rank badge in card */
+.mob-card-badge {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-size: 24px;
+  font-weight: 700;
+  background-color: var(--c-a-dark);
+  color: var(--c-a);
+  border: 2px solid var(--c-a);
+}
+/* rank overrides for badge */
+.mob-card[data-rank="S"] .mob-card-badge {
+  background-color: var(--c-s-dark); color: var(--c-s); border-color: var(--c-s);
+}
+.mob-card[data-rank="A"] .mob-card-badge {
+  background-color: var(--c-a-dark); color: var(--c-a); border-color: var(--c-a);
+}
+.mob-card[data-rank="F"] .mob-card-badge {
+  background-color: var(--c-f-dark); color: var(--c-f); border-color: var(--c-f);
+}
+
+/* title area */
+.mob-card-titles {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.mob-card-name {
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--c-text-hi);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.mob-card-area {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--c-text-lo);
+  margin-top: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* close button (mobile only) */
+.mob-card-close {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+.mob-card-close svg {
+  width: 16px;
+  height: 16px;
+  fill: var(--c-text-lo);
+}
+
+/* ── Card divider ────────────────────────────────────────── */
+.mob-card-divider {
+  height: 1px;
+  background-color: var(--c-border);
+  margin: 0 16px;
+}
+
+/* ── Timer section ───────────────────────────────────────── */
+.mob-card-timer-section {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.mob-card-timer-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.mob-card-timer-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--c-text-lo);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.mob-card-timer-value {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--c-timer);
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
+/* progress gauge */
+.mob-card-prog-wrap {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+.mob-card-prog-bar {
+  width: 100%;
+  max-width: 180px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: var(--c-prog-bg);
+  overflow: hidden;
+}
+.mob-card-prog-fill {
+  height: 100%;
+  width: var(--prog-pct, 0%);
+  background-color: var(--c-a);
+  border-radius: 3px 0 0 3px;
+}
+.mob-card[data-rank="S"] .mob-card-prog-fill { background-color: var(--c-prog-s); }
+.mob-card[data-rank="A"] .mob-card-prog-fill { background-color: var(--c-prog-a); }
+.mob-card[data-rank="F"] .mob-card-prog-fill { background-color: var(--c-prog-f); }
+.mob-card-prog-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--c-text-lo);
+}
+
+/* ── Info grid (ET range / area / patch etc.) ────────────── */
+.mob-card-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background-color: var(--c-border);
+  border-top: 1px solid var(--c-border);
+  border-bottom: 1px solid var(--c-border);
+}
+.mob-card-info-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 16px;
+  background-color: var(--c-surface);
+}
+.mob-card-info-cell.full-width {
+  grid-column: 1 / -1;
+}
+.mob-card-info-key {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--c-text-lo);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+.mob-card-info-val {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-text-hi);
+  word-break: break-word;
+}
+
+/* ── Action buttons ──────────────────────────────────────── */
+.mob-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px 0;
+}
+.mob-card-btn {
+  height: 44px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s ease;
+}
+.mob-card-btn:active { opacity: 0.7; }
+
+/* primary (report kill) */
+.mob-card-btn-primary {
+  background-color: var(--c-a);
+  color: #000;
+}
+.mob-card[data-rank="S"] .mob-card-btn-primary { background-color: var(--c-s); }
+.mob-card[data-rank="A"] .mob-card-btn-primary { background-color: var(--c-a); }
+.mob-card[data-rank="F"] .mob-card-btn-primary { background-color: var(--c-f); }
+
+/* secondary (memo / note) */
+.mob-card-btn-secondary {
+  background-color: transparent;
+  color: var(--c-text-lo);
+  border: 1px solid var(--c-border);
+}
+
+/* disabled (read-only mode) */
+.mob-card-btn:disabled,
+.mob-card-btn.is-disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ── Read-only mode banner ────────────────────────────────── */
+.mob-card-readonly-banner {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  margin: 0 16px 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: var(--c-offline-bg);
+  border: 1px solid #5c2020;
+  color: var(--c-offline-text);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 500;
+}
+.mob-card-readonly-banner.is-visible {
+  display: flex;
+}
+
+/* ── Memo textarea ───────────────────────────────────────── */
+.mob-card-memo-wrap {
+  padding: 12px 16px 0;
+}
+.mob-card-memo {
+  width: 100%;
+  min-height: 80px;
+  border-radius: 8px;
+  background-color: var(--c-bg);
+  border: 1px solid var(--c-border);
+  color: var(--c-text-hi);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  padding: 10px 12px;
+  resize: vertical;
+  outline: none;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+.mob-card-memo:focus {
+  border-color: var(--c-a);
+}
+.mob-card-memo:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ── PC: card becomes a static pane, no overlay ──────────── */
+@media (min-width: 1024px) {
+  .mob-card-backdrop { display: none !important; }
+  .mob-card {
+    position: static;
+    max-height: none;
+    border-radius: var(--card-radius);
+    border: 1px solid var(--c-border);
+    transform: none !important;
+    transition: none;
+    padding-bottom: 20px;
+  }
+  .mob-card-handle  { display: none; }
+  .mob-card-close   { display: none; }
+}

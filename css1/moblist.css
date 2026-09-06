@@ -1,0 +1,276 @@
+/* =========================================================
+   CSS1 / moblist.css
+   Mob list rows — Mission Data Terminal
+   Concept: 72px rows with left stripe, square rank badge,
+            two-line text, large mono timer, progress line
+   ========================================================= */
+
+/* ── List wrapper ────────────────────────────────────────── */
+.mob-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--row-gap);
+  padding: 8px 8px 8px 8px;
+}
+
+/* ── Tab bar (S / A / F / ALL) ───────────────────────────── */
+.rank-tabs {
+  display: flex;
+  gap: 0;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--c-border);
+  position: sticky;
+  top: var(--header-h);
+  z-index: 10;
+  background-color: var(--c-bg);
+}
+.rank-tab {
+  flex: 1 1 0;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text-lo);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+  margin-bottom: -1px;
+}
+.rank-tab[data-rank="S"].is-active { color: var(--c-s); border-bottom-color: var(--c-s); }
+.rank-tab[data-rank="A"].is-active { color: var(--c-a); border-bottom-color: var(--c-a); }
+.rank-tab[data-rank="F"].is-active { color: var(--c-f); border-bottom-color: var(--c-f); }
+.rank-tab[data-rank="ALL"].is-active { color: var(--c-text-hi); border-bottom-color: var(--c-text-hi); }
+
+/* ── Single mob row ──────────────────────────────────────── */
+.mob-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--row-h);
+  min-height: var(--row-h);
+  background-color: var(--c-surface);
+  border-radius: var(--row-radius);
+  overflow: hidden;           /* clips stripe + progress bar */
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  border: 1px solid var(--c-border);
+  transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+/* left colour stripe */
+.mob-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--row-stripe);
+  height: 100%;
+  background-color: var(--c-a);   /* overridden by rank modifier */
+}
+
+/* progress bar pinned to bottom */
+.mob-row-prog {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--row-prog-h);
+  background-color: var(--c-prog-bg);
+}
+.mob-row-prog-fill {
+  height: 100%;
+  width: var(--prog-pct, 0%);    /* set via JS: el.style.setProperty('--prog-pct', v) */
+  background-color: var(--c-a);   /* overridden by rank modifier */
+  border-radius: 0 1px 1px 0;
+  /* no transition — JS updates every second; CSS transition wastes paint */
+}
+
+/* ── Row inner layout ────────────────────────────────────── */
+.mob-row-inner {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding-left: calc(var(--row-stripe) + 10px);  /* clear stripe + gap */
+  padding-right: 12px;
+  gap: 10px;
+}
+
+/* ── Rank badge (square) ─────────────────────────────────── */
+.mob-rank-badge {
+  flex-shrink: 0;
+  width: var(--row-badge);
+  height: var(--row-badge);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-size: var(--fs-badge);
+  font-weight: 700;
+  line-height: 1;
+  background-color: var(--c-a-dark);   /* overridden by rank */
+  color: var(--c-a);                   /* overridden by rank */
+  border: 1.5px solid var(--c-a);      /* overridden by rank */
+}
+
+/* ── Text block (name + area) ────────────────────────────── */
+.mob-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  overflow: hidden;
+}
+.mob-name {
+  font-family: var(--font-ui);
+  font-size: var(--fs-mob-name);
+  font-weight: 600;
+  color: var(--c-text-hi);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+.mob-area {
+  font-family: var(--font-ui);
+  font-size: var(--fs-mob-area);
+  font-weight: 400;
+  color: var(--c-text-lo);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+
+/* ── Timer block (right) ─────────────────────────────────── */
+.mob-timer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+.mob-timer-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-timer);
+  font-weight: 700;
+  color: var(--c-timer);
+  letter-spacing: 0.5px;
+  line-height: 1;
+  white-space: nowrap;
+}
+.mob-timer-label {
+  font-family: var(--font-ui);
+  font-size: var(--fs-timer-label);
+  font-weight: 400;
+  color: var(--c-text-lo);
+  white-space: nowrap;
+  text-align: right;
+  line-height: 1;
+}
+
+/* ── Rank colour overrides ───────────────────────────────── */
+/* S rank */
+.mob-row[data-rank="S"]::before           { background-color: var(--c-s); }
+.mob-row[data-rank="S"] .mob-row-prog-fill { background-color: var(--c-prog-s); }
+.mob-row[data-rank="S"] .mob-rank-badge {
+  background-color: var(--c-s-dark);
+  color: var(--c-s);
+  border-color: var(--c-s);
+}
+/* A rank */
+.mob-row[data-rank="A"]::before           { background-color: var(--c-a); }
+.mob-row[data-rank="A"] .mob-row-prog-fill { background-color: var(--c-prog-a); }
+.mob-row[data-rank="A"] .mob-rank-badge {
+  background-color: var(--c-a-dark);
+  color: var(--c-a);
+  border-color: var(--c-a);
+}
+/* F rank */
+.mob-row[data-rank="F"]::before           { background-color: var(--c-f); }
+.mob-row[data-rank="F"] .mob-row-prog-fill { background-color: var(--c-prog-f); }
+.mob-row[data-rank="F"] .mob-rank-badge {
+  background-color: var(--c-f-dark);
+  color: var(--c-f);
+  border-color: var(--c-f);
+}
+
+/* ── Selected row ────────────────────────────────────────── */
+.mob-row.is-selected {
+  background-color: var(--c-surface-sel);
+  border-color: var(--c-border-sel);
+}
+.mob-row.is-selected::before {
+  width: var(--row-stripe-sel);
+}
+.mob-row.is-selected .mob-timer-value {
+  color: var(--c-text-sel);
+}
+
+/* ── Hover (pointer devices only) ───────────────────────── */
+@media (hover: hover) {
+  .mob-row:hover:not(.is-selected) {
+    background-color: var(--c-surface-ho);
+  }
+}
+
+/* ── Active (tap feedback) ───────────────────────────────── */
+.mob-row:active {
+  background-color: var(--c-surface-ho);
+}
+
+/* ── State: culled (fully white / greyed out) ────────────── */
+.mob-row.is-culled {
+  opacity: 0.45;
+}
+.mob-row.is-culled .mob-row-prog-fill {
+  background-color: #ffffff33;
+}
+
+/* ── State: popping (spawn window) ──────────────────────── */
+.mob-row.is-popping .mob-name {
+  color: #fff;
+}
+.mob-row.is-popping .mob-timer-value {
+  animation: flash-amber 1s step-end infinite;
+}
+@keyframes flash-amber {
+  50% { opacity: 0.3; }
+}
+
+/* ── State: last one active ──────────────────────────────── */
+.mob-row.is-lastone .mob-timer-value {
+  color: #10b981;   /* emerald */
+}
+
+/* ── Section header (data-center dividers) ───────────────── */
+.mob-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 2px;
+}
+.mob-section-label {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-text-lo);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+.mob-section-line {
+  flex: 1 1 auto;
+  height: 1px;
+  background-color: var(--c-border);
+}
