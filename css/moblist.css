@@ -1,0 +1,267 @@
+/* =========================================================
+   css / moblist.css  —  #moblist-container #moblist-item-template
+   ========================================================= */
+
+/* ── List wrapper ────────────────────────────────────────── */
+#moblist-container {
+  padding: 6px 6px 6px 6px;
+}
+
+/* ── Single list item ────────────────────────────────────── */
+.moblist-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: var(--row-h);
+  min-height: var(--row-h);
+  background-color: var(--c-surface);
+  border-radius: var(--row-radius);
+  border: 1px solid var(--c-border);
+  margin-bottom: 6px;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  transition: background-color 0.1s ease, border-color 0.1s ease;
+}
+
+/* left colour stripe */
+.moblist-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--row-stripe);
+  height: 100%;
+  background-color: var(--c-a);
+}
+
+/* rank stripe colours */
+.moblist-item[data-rank="S"]::before { background-color: var(--c-s); }
+.moblist-item[data-rank="A"]::before { background-color: var(--c-a); }
+.moblist-item[data-rank="F"]::before { background-color: var(--c-f); }
+
+/* ── Progress line (bottom) ──────────────────────────────── */
+.moblist-progress-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: var(--row-prog-h);
+  background-color: var(--c-prog-bg);
+}
+.moblist-progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: var(--c-prog-a);
+  border-radius: 0 1px 1px 0;
+}
+.moblist-item[data-rank="S"] .moblist-progress-bar { background-color: var(--c-prog-s); }
+.moblist-item[data-rank="A"] .moblist-progress-bar { background-color: var(--c-prog-a); }
+.moblist-item[data-rank="F"] .moblist-progress-bar { background-color: var(--c-prog-f); }
+
+/* ── Inner layout ────────────────────────────────────────── */
+/* badge | info | time */
+.moblist-item > .moblist-rank-badge,
+.moblist-item > .moblist-info-col,
+.moblist-item > .moblist-time-col {
+  /* pushed right of stripe */
+}
+
+/* rank badge (square) */
+.moblist-rank-badge {
+  flex-shrink: 0;
+  width: var(--row-badge);
+  height: var(--row-badge);
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+  margin-left: calc(var(--row-stripe) + 10px);
+  margin-right: 10px;
+  /* default A */
+  background-color: var(--c-a-dark);
+  color: var(--c-a);
+  border: 1.5px solid var(--c-a);
+}
+.moblist-item[data-rank="S"] .moblist-rank-badge {
+  background-color: var(--c-s-dark);
+  color: var(--c-s);
+  border-color: var(--c-s);
+}
+.moblist-item[data-rank="A"] .moblist-rank-badge {
+  background-color: var(--c-a-dark);
+  color: var(--c-a);
+  border-color: var(--c-a);
+}
+.moblist-item[data-rank="F"] .moblist-rank-badge {
+  background-color: var(--c-f-dark);
+  color: var(--c-f);
+  border-color: var(--c-f);
+}
+
+/* info column */
+.moblist-info-col {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  overflow: hidden;
+}
+
+/* name row */
+.moblist-name-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+}
+.moblist-name {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--c-text-hi);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  min-width: 0;
+}
+.moblist-count {
+  flex-shrink: 0;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--c-text-lo);
+  white-space: nowrap;
+}
+.memo-icon-container { flex-shrink: 0; }
+.memo-icon { font-size: 12px; }
+
+/* area row */
+.moblist-area-row {
+  overflow: hidden;
+}
+.moblist-area {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--c-text-lo);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+
+/* time column */
+.moblist-time-col {
+  flex-shrink: 0;
+  padding-right: 12px;
+  display: flex;
+  align-items: center;
+}
+.moblist-time {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--c-text-hi);
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* timer inner parts (from #timer-rich-template) */
+.mobcard-timer      { display: inline-flex; gap: 2px; align-items: baseline; }
+.mobcard-timer-part { display: inline-flex; align-items: baseline; }
+.mobcard-timer-num  { font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: var(--c-text-hi); }
+.mobcard-timer-unit { font-family: var(--font-ui); font-size: 12px; color: var(--c-text-lo); margin-left: 1px; margin-right: 4px; }
+
+/* spawn count (pc-count-val) */
+.pc-count-val {
+  font-size: 11px;
+  color: var(--c-text-lo);
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* ── Selected row ────────────────────────────────────────── */
+.moblist-item.is-selected,
+.moblist-item.selected {
+  background-color: var(--c-surface-sel);
+  border-color: var(--c-border-sel);
+}
+.moblist-item.is-selected::before,
+.moblist-item.selected::before {
+  width: var(--row-stripe-sel);
+}
+.moblist-item.is-selected .moblist-time,
+.moblist-item.selected .moblist-time,
+.moblist-item.is-selected .mobcard-timer-num,
+.moblist-item.selected .mobcard-timer-num {
+  color: var(--c-text-sel);
+}
+
+/* ── Hover ───────────────────────────────────────────────── */
+@media (hover: hover) {
+  .moblist-item:hover:not(.is-selected):not(.selected) {
+    background-color: var(--c-surface-ho);
+  }
+}
+.moblist-item:active { background-color: var(--c-surface-ho); }
+
+/* ── State: culled ───────────────────────────────────────── */
+.moblist-item.culled,
+.moblist-item.is-culled {
+  opacity: 0.4;
+}
+
+/* ── State: pop window (flashing) ────────────────────────── */
+.moblist-item.pop-window .moblist-time,
+.moblist-item.pop-window .mobcard-timer-num {
+  animation: flash-amber 1s step-end infinite;
+}
+@keyframes flash-amber { 50% { opacity: 0.25; } }
+
+/* ── State: last one ─────────────────────────────────────── */
+.moblist-item.last-one .moblist-time,
+.moblist-item.last-one .mobcard-timer-num {
+  color: var(--c-emerald);
+}
+
+/* ── Report button on list item ──────────────────────────── */
+.moblist-report-btn {
+  display: none; /* shown only in card context on mobile */
+}
+
+/* ── #status-group-template ──────────────────────────────── */
+.status-group { margin-bottom: 8px; }
+.status-group-separator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px 4px;
+}
+.status-group-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-text-lo);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+.status-group-separator::before,
+.status-group-separator::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--c-border);
+}
+.group-columns {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}

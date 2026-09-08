@@ -1,0 +1,136 @@
+/* =========================================================
+   css / modal.css  —  #report-modal #auth-modal
+   ========================================================= */
+
+.app-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal-bd);
+  background-color: rgba(4, 8, 18, 0.80);
+}
+
+.modal-content-base {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: var(--z-modal);
+  background-color: #0d1829;
+  border-top: 1px solid var(--c-border);
+  border-radius: 12px 12px 0 0;
+  padding: 20px 18px 32px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-top-bar {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background-color: var(--c-border);
+  margin: 0 auto 18px;
+}
+
+.report-modal-backdrop { z-index: var(--z-modal-bd); }
+
+.modal-mob-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--c-text-hi);
+  margin-bottom: 16px;
+}
+
+.modal-input-field {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  background-color: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  color: var(--c-text-hi);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  outline: none;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+.modal-input-field:focus { border-color: var(--c-cyan); }
+
+.modal-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--c-cyan);
+}
+
+.modal-error-display {
+  font-size: 12px;
+  color: var(--c-error);
+  min-height: 16px;
+  margin-top: 6px;
+}
+
+.auth-modal-backdrop { z-index: var(--z-modal-bd); }
+
+.modal-auth-description {
+  font-size: 13px;
+  color: var(--c-text-lo);
+  line-height: 1.6;
+}
+.modal-auth-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 14px;
+  padding: 14px;
+  background-color: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+}
+.auth-code-display {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--c-gold);
+  letter-spacing: 2px;
+  padding: 6px 12px;
+  background-color: #0d1422;
+  border: 1px solid var(--c-border);
+  border-radius: 4px;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+.modal-auth-note {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--c-text-off);
+}
+
+.btn-primary-cyan,
+.btn-primary-yellow,
+.btn-secondary,
+.btn-copy {
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 6px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.15s;
+}
+.btn-primary-cyan   { background-color: var(--c-cyan);    color: #000; }
+.btn-primary-yellow { background-color: var(--c-gold);    color: #000; }
+.btn-secondary      { background-color: transparent; border: 1px solid var(--c-border); color: var(--c-text-lo); }
+.btn-copy           { background-color: var(--c-surface); border: 1px solid var(--c-border); color: var(--c-text-hi); }
+.btn-primary-cyan:active,
+.btn-primary-yellow:active,
+.btn-secondary:active,
+.btn-copy:active { opacity: 0.7; }
