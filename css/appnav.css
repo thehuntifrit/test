@@ -1,0 +1,275 @@
+/* =========================================================
+   css / appnav.css  —  #appnav
+   ========================================================= */
+
+/* ── Sidebar (PC) ────────────────────────────────────────── */
+#appnav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: var(--z-sidebar);
+  background-color: var(--c-panel);
+  border-right: 1px solid var(--c-border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Mobile: bottom bar */
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--footer-safe);
+  width: 100%;
+  border-right: none;
+  border-top: 1px solid var(--c-border);
+}
+
+.appnav-inner {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Mobile: horizontal nav ──────────────────────────────── */
+.appnav-main-nav {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.appnav-top { display: none; } /* logo — hidden on mobile */
+
+.appnav-items-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-around;
+  width: 100%;
+  height: var(--footer-h);
+  padding-top: 0;
+}
+
+.appnav-btn {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: var(--footer-h);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  text-decoration: none;
+}
+
+.appnav-icon {
+  font-size: 20px;
+  line-height: 1;
+  filter: grayscale(60%) opacity(0.7);
+  transition: filter 0.15s;
+}
+
+.appnav-label {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--c-text-lo);
+  transition: color 0.15s;
+  line-height: 1;
+}
+
+/* active state */
+.appnav-btn.active .appnav-icon,
+.appnav-btn[data-active] .appnav-icon {
+  filter: grayscale(0%) opacity(1);
+}
+.appnav-btn.active .appnav-label,
+.appnav-btn[data-active] .appnav-label {
+  color: var(--c-text-hi);
+}
+.appnav-btn.active::after,
+.appnav-btn[data-active]::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background-color: var(--c-cyan);
+}
+
+/* nav toggle (checkbox-based) */
+.nav-toggle-btn { cursor: pointer; }
+
+/* divider between nav items */
+.appnav-divider {
+  width: 1px;
+  height: 28px;
+  background-color: var(--c-border);
+  align-self: center;
+  flex-shrink: 0;
+}
+
+/* ── Slide-out panel ──────────────────────────────────────── */
+.appnav-panel {
+  display: none; /* opened by JS */
+  position: fixed;
+  bottom: var(--footer-safe);
+  left: 0;
+  width: 100%;
+  max-height: 60vh;
+  z-index: var(--z-sidebar);
+  background-color: #09111f;
+  border-top: 1px solid var(--c-border);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px;
+}
+.appnav-panel.is-open { display: block; }
+
+.js-appnav-panel-item { display: none; }
+.js-appnav-panel-item:not(.hidden) { display: block; }
+
+.appnav-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-text-lo);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
+
+.appnav-alert {
+  font-size: 13px;
+  color: var(--c-text-lo);
+  line-height: 1.6;
+}
+
+.sidebar-welcome-area {
+  margin-bottom: 8px;
+}
+
+/* ── Error list ──────────────────────────────────────────── */
+.appnav-error-item {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--c-border);
+  font-size: 12px;
+}
+.appnav-error-time { color: var(--c-text-lo); white-space: nowrap; }
+.error-msg { color: var(--c-offline-text); }
+
+/* ── Rank filter accordion ───────────────────────────────── */
+.appnav-filter-accordion { display: flex; flex-direction: column; gap: 6px; }
+
+.appnav-rank-item {
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.appnav-rank-header {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  background-color: var(--c-surface);
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--c-text-hi);
+  -webkit-tap-highlight-color: transparent;
+  text-align: left;
+}
+
+.appnav-area-expansion {
+  background-color: var(--c-bg);
+  padding: 8px;
+}
+.area-grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ── PC layout override ───────────────────────────────────── */
+@media (min-width: 900px) {
+  #appnav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: auto;
+    right: auto;
+    width: 64px;
+    height: 100%;
+    border-top: none;
+    border-right: 1px solid var(--c-border);
+  }
+  .appnav-inner {
+    flex-direction: column;
+  }
+  .appnav-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 0 10px;
+    border-bottom: 1px solid var(--c-border);
+  }
+  .appnav-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    gap: 0;
+  }
+  .appnav-logo-the  { font-size: 9px; color: var(--c-cyan); font-weight: 700; }
+  .appnav-logo-hunt { font-size: 12px; color: var(--c-gold); font-weight: 700; }
+  .appnav-logo-refresh { font-size: 12px; color: var(--c-text-lo); }
+
+  .appnav-items-wrapper {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: auto;
+    padding: 8px 0;
+    gap: 4px;
+  }
+  .appnav-btn {
+    width: 100%;
+    height: 52px;
+    flex: none;
+  }
+  .appnav-divider {
+    width: 36px;
+    height: 1px;
+    margin: 4px 0;
+  }
+
+  /* panel becomes left-side flyout */
+  .appnav-panel {
+    top: 0;
+    left: 64px;
+    bottom: 0;
+    width: 240px;
+    max-height: none;
+    border-top: none;
+    border-right: 1px solid var(--c-border);
+  }
+
+  /* push main content right */
+  body { padding-left: 64px; }
+  #root-mobile-top-bar { display: none; }
+}

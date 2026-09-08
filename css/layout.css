@@ -1,0 +1,59 @@
+/* =========================================================
+   css / layout.css  —  .main-content-area #list-layout
+   ========================================================= */
+
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.main-content-area {
+  flex: 1 1 auto;
+  overflow: hidden;
+  position: relative;
+}
+
+#list-layout {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  overflow: hidden;
+}
+
+#moblist-container {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--footer-safe);
+}
+
+#mobcard-pane {
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 900px) {
+  #list-layout {
+    gap: 0;
+  }
+  #moblist-container {
+    flex: 0 0 360px;
+    border-right: 1px solid var(--c-border);
+    padding-bottom: 0;
+  }
+  #mobcard-pane {
+    display: flex;
+    flex: 1 1 auto;
+    padding: 16px;
+  }
+  #mobcard-clocks {
+    display: flex;
+  }
+}
