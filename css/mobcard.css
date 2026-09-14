@@ -12,9 +12,11 @@
   position: fixed;
   bottom: var(--footer-safe);
   left: 0;
+  right: 0;
   width: 100%;
   max-height: 72vh;
   z-index: var(--z-card-mob);
+  overflow: hidden;
   transform: translateY(100%);
   transition: transform 0.22s cubic-bezier(0.32, 0, 0.67, 0);
 }
@@ -347,13 +349,31 @@
   border-radius: 6px;
   overflow: hidden;
   background-color: var(--c-bg);
+  position: relative;
 }
-.pc-map-box { max-height: 260px; }
-.mob-map-img { display: block; }
-.map-overlay { pointer-events: none; }
+.pc-map-box {
+  max-height: 320px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mob-map-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.map-overlay {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+}
 
 .spawn-point {
   position: absolute;
+  left: var(--point-x);
+  top: var(--point-y);
   width: 12px;
   height: 12px;
   border-radius: 50%;
@@ -362,6 +382,7 @@
   transform: translate(-50%, -50%);
   cursor: pointer;
   transition: transform 0.1s;
+  pointer-events: auto;
 }
 .spawn-point:focus,
 .spawn-point:hover { transform: translate(-50%, -50%) scale(1.4); outline: none; }
