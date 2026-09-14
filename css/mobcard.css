@@ -386,3 +386,12 @@
 }
 .spawn-point:focus,
 .spawn-point:hover { transform: translate(-50%, -50%) scale(1.4); outline: none; }
+
+/* ── Spawn point colors ──────────────────────────────────── */
+.color-b1 { background-color: var(--c-cyan); border-color: var(--c-cyan); }
+.color-b2 { background-color: var(--c-error); border-color: var(--c-error); }
+.color-b1-culled { background-color: transparent; border-color: var(--c-cyan); }
+.color-b2-culled { background-color: transparent; border-color: var(--c-error); }
+.color-lastone { background-color: var(--c-emerald); border-color: var(--c-emerald); }
+.color-b1-only { background-color: transparent; border-color: var(--c-cyan); }
+.color-b2-only { background-color: transparent; border-color: var(--c-error); }
