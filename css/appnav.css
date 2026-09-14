@@ -2,27 +2,22 @@
    css / appnav.css  —  #appnav
    ========================================================= */
 
-/* ── Sidebar (PC) ────────────────────────────────────────── */
+/* ── Mobile (base): bottom bar ───────────────────────────── */
 #appnav {
   position: fixed;
-  top: 0;
-  left: 0;
-  height: 100%;
-  z-index: var(--z-sidebar);
-  background-color: var(--c-panel);
-  border-right: 1px solid var(--c-border);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  /* Mobile: bottom bar */
-  top: auto;
   bottom: 0;
   left: 0;
   right: 0;
-  height: var(--footer-safe);
+  top: auto;
   width: 100%;
-  border-right: none;
+  height: var(--footer-safe);
+  z-index: var(--z-sidebar);
+  background-color: var(--c-panel);
   border-top: 1px solid var(--c-border);
+  border-right: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .appnav-inner {
