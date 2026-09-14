@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>The Hunt</title>
+    <link rel="icon" type="image/png" href="./icon/The_Hunt.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+    <script src="js/lib/marked.min.js"></script>
+    <script src="js/lib/purify.min.js"></script>
+  <script type="module" crossorigin src="./assets/index-DmAyXP0P.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BHR-IkFB.css">
+</head>
+
+<body class="">
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <aside id="appnav">
+        <div class="appnav-inner">
+            <div class="appnav-main-nav">
+                <div class="appnav-top">
+                    <div class="appnav-logo" role="button" aria-label="Reload Page">
+                        <span class="appnav-logo-the">The</span><br><span class="appnav-logo-hunt">Hunt</span>
+                        <span class="appnav-logo-refresh">↻</span>
+                    </div>
+                </div>
+                <div class="appnav-items-wrapper">
+                    <button class="appnav-btn" data-nav-id="rank" aria-label="RANK">
+                        <span class="appnav-icon">📊</span>
+                        <span class="appnav-label">RANK</span>
+                    </button>
+                    <button class="appnav-btn" data-nav-id="telop" aria-label="告知">
+                        <span class="appnav-icon">📢</span>
+                        <span class="appnav-label">告知</span>
+                    </button>
+                    <button class="appnav-btn" data-nav-id="maintenance" aria-label="メンテ">
+                        <span class="appnav-icon">🛠️</span>
+                        <span class="appnav-label">メンテ</span>
+                    </button>
+                    <button class="appnav-btn" data-nav-id="error" aria-label="エラー">
+                        <span class="appnav-icon">⚠️</span>
+                        <span class="appnav-label">エラー</span>
+                    </button>
+                    <button class="appnav-btn" data-nav-id="manual" aria-label="説明">
+                        <span class="appnav-icon">📖</span>
+                        <span class="appnav-label">説明</span>
+                    </button>
+                    <div class="appnav-divider"></div>
+                    <label class="appnav-btn nav-toggle-btn" for="appnav-notification-toggle" data-nav-id="notify" aria-label="通知">
+                        <input type="checkbox" id="appnav-notification-toggle" name="appnav-notify"
+                            class="hidden-toggle js-notify-toggle">
+                        <span class="appnav-icon">🔔</span>
+                        <span class="appnav-label">通知</span>
+                    </label>
+                </div>
+            </div>
+            <div class="appnav-panel">
+                <div id="sidebar-panel-error" class="js-appnav-panel-item hidden">
+                    <div class="appnav-section-title">Error</div>
+                    <div id="sidebar-error-content" class="appnav-alert js-error-content"></div>
+                </div>
+                <div id="sidebar-panel-telop" class="js-appnav-panel-item hidden">
+                    <div class="appnav-section-title">Information</div>
+                    <div id="sidebar-welcome-area" class="sidebar-welcome-area"></div>
+                    <div id="sidebar-telop-content" class="appnav-alert js-telop-content"></div>
+                </div>
+                <div id="sidebar-panel-maintenance" class="js-appnav-panel-item hidden">
+                    <div class="appnav-section-title">Maintenance</div>
+                    <div id="sidebar-maintenance-content" class="appnav-alert js-maintenance-content"></div>
+                </div>
+                <div id="sidebar-panel-rank" class="js-appnav-panel-item hidden">
+                    <div id="sidebar-filter-accordion" class="appnav-filter-accordion"></div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <div id="root-mobile-top-bar">
+        <div class="root-mobile-title">
+            <span class="text-cyan u-font-bold">The</span>
+            <span class="text-yellow u-font-bold">Hunt</span>
+        </div>
+        <div class="mobile-top-clocks">
+            <span class="mobile-clock-label">ET</span>
+            <span class="mobile-clock-val js-et-clock">--:--</span>
+            <span class="mobile-clock-label">LT</span>
+            <span class="mobile-clock-val js-lt-clock">--:--</span>
+        </div>
+    </div>
+
+    <main class="main-content-area">
+
+        <div id="list-layout" class="main-layout-container">
+            <div id="moblist-container"></div>
+            <div id="mobcard-anchor"></div>
+            <div id="mobcard-pane" class="js-mobcard-container">
+                <div id="mobcard-clocks" class="mobile-top-clocks js-pc-clocks">
+                    <span class="mobile-clock-label">ET</span>
+                    <span class="mobile-clock-val js-et-clock">--:--</span>
+                    <span class="mobile-clock-label">LT</span>
+                    <span class="mobile-clock-val js-lt-clock">--:--</span>
+                </div>
+                <div id="mobcard-detail"></div>
+            </div>
+        </div>
+
+        <div id="manual-modal" class="hidden">
+            <div class="app-backdrop"></div>
+            <div class="manual-modal-content">
+                <div class="manual-modal-top-border"></div>
+
+                <div class="manual-modal-header">
+                    <h2 class="manual-modal-title">
+                        <span class="text-cyan">The</span>
+                        <span class="text-yellow">Hunt</span>
+                        <span class="text-gray">USER GUIDE</span>
+                    </h2>
+                    <button id="close-manual-modal" class="manual-modal-close" aria-label="閉じる">✕</button>
+                </div>
+
+                <div id="readme-container" class="prose prose-invert prose-sm max-w-none">
+                </div>
+            </div>
+        </div>
+
+        <div id="report-modal" class="app-backdrop hidden report-modal-backdrop">
+            <div class="modal-content-base">
+                <div class="modal-top-bar"></div>
+                <p id="modal-mob-name" class="modal-mob-name"></p>
+
+                <form id="report-form" data-mob-no="">
+                    <div class="u-mb-14">
+                        <label for="report-datetime" class="u-block u-text-sm font-medium text-gray-400 u-mb-2">討伐日時
+                            (JST)</label>
+                        <input type="datetime-local" id="report-datetime" name="kill-time" required
+                            class="modal-input-field">
+                    </div>
+
+                    <div id="modal-status" class="modal-error-display"></div>
+
+                    <div class="u-flex u-justify-between u-items-center u-mt-21">
+                        <div class="u-flex u-items-center u-gap-2">
+                            <input type="checkbox" id="report-force-submit" name="force-submit" class="modal-checkbox">
+                            <label for="report-force-submit" class="u-text-sm text-gray-300 select-none">修正する</label>
+                        </div>
+                        <div class="u-flex u-gap-2">
+                            <button type="button" id="cancel-report" class="btn-secondary">キャンセル</button>
+                            <button type="submit" class="btn-primary-cyan">送信</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="auth-modal" class="app-backdrop hidden auth-modal-backdrop">
+            <div class="modal-content-base">
+                <div class="modal-top-bar"></div>
+
+                <h2 class="text-glow u-text-18 u-font-700 u-mb-14 u-text-gold">ユーザー認証
+                    (キャラクター登録)</h2>
+                <div class="modal-auth-description">
+                    <p>Lodestoneキャラクターとの紐付けが必要です。</p>
+
+                    <div class="modal-auth-box">
+                        <div>
+                            <div class="u-block text-xs font-semibold text-gray-500 uppercase u-mb-2">Step 1:
+                                検証コードをコピー</div>
+                            <div class="u-flex u-gap-2">
+                                <code id="auth-v-code" class="auth-code-display">----</code>
+                                <button id="auth-copy-code" class="btn-copy">Copy</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="u-block text-xs font-semibold text-gray-500 uppercase u-mb-2">Step 2:
+                                Lodestoneプロフィールに貼り付け</div>
+                            <div class="u-text-sm text-gray-300 space-y-2 leading-relaxed">
+                                <p>自己紹介欄に認証コードを貼り付けて保存</p>
+                                <a href="https://jp.finalfantasyxiv.com/lodestone/my/setting/profile/" target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="text-cyan-400 underline u-inline-flex u-items-center gap-1 u-font-bold">
+                                    プロフィール編集画面を開く 🔗
+                                </a>
+                                <div class="modal-auth-note">
+                                    <p>※Lodestoneのログイン必須</p>
+                                    <p>編集画面で認証コードを入力し、「確認」→「設定」を押して保存後、「自己紹介を確認する」を押してください</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="auth-lodestone-id" class="u-block text-xs font-semibold text-gray-500 uppercase u-mb-2">Step 3:
+                                認証コードが正しく表示されるか確認し、開いているキャラクターページのURL、もしくはURL末尾の数字をコピーして貼り付け</label>
+                            <input type="text" id="auth-lodestone-id" name="lodestone-id" maxlength="200"
+                                aria-label="LodestoneキャラクターページのURL、またはキャラクターIDを入力" class="modal-input-field">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="auth-modal-status" class="u-text-sm text-center min-h-[18px] u-mb-14">
+                </div>
+
+                <div class="u-flex justify-end gap-3">
+                    <button type="button" id="auth-cancel" class="btn-secondary">キャンセル</button>
+                    <button type="button" id="auth-verify" class="btn-primary-yellow">登録</button>
+                </div>
+            </div>
+        </div>
+
+        <template id="mobcard-card-template">
+            <div class="mobcard-card">
+                <div class="mobcard-inner">
+                    <div class="mobcard-header">
+                        <div class="header-top-row">
+                            <div class="header-left">
+                                <div class="mobcard-rank" data-rank=""></div>
+                                <h2 class="mobcard-name"></h2>
+                            </div>
+                        </div>
+                        <div class="header-mid-row">
+                            <div class="mobcard-area-info">
+                                <span class="detail-area"></span>
+                                <span class="detail-expansion"></span>
+                            </div>
+                            <div class="percent">0%</div>
+                        </div>
+                        <div class="mobcard-progress-container">
+                            <div class="mobcard-progress-bar"></div>
+                        </div>
+                    </div>
+
+                    <div class="mobcard-content overflow-y-auto pr-1">
+                        <div class="mobcard-section memo-section">
+                            <div class="mobcard-memo-box">
+                                <div class="mobcard-memo-prefix-area">
+                                    <span class="mobcard-memo-prefix-text">memo</span>
+                                </div>
+                                <div class="mobcard-memo-separator"></div>
+                                <textarea name="memo" aria-label="メモを入力" class="mobcard-memo-input detail-memo-input"
+                                    placeholder="全角30文字まで" maxlength="30" data-action="save-memo" rows="1"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="mobcard-grid">
+                            <div class="mobcard-info-item">
+                                <div class="mobcard-label">最短POP</div>
+                                <div class="mobcard-value" data-min-repop>--/-- --:--</div>
+                            </div>
+                            <div class="mobcard-info-item">
+                                <div class="mobcard-label">最大POP</div>
+                                <div class="mobcard-value" data-max-repop>--/-- --:--</div>
+                            </div>
+                            <div class="mobcard-info-item mobcard-highlight">
+                                <div class="mobcard-label">次回POP可能</div>
+                                <div class="mobcard-value" data-next-possible>--/-- --:--</div>
+                            </div>
+                            <div class="mobcard-info-item">
+                                <div class="mobcard-label">前回討伐</div>
+                                <div class="mobcard-value" data-last-kill>--/-- --:--</div>
+                            </div>
+                        </div>
+
+                        <div class="mobcard-section map-section">
+                            <div class="mobcard-section-label">
+                                <span>出現マップ</span>
+                                <span class="map-update-time"></span>
+                            </div>
+                            <div class="map-container relative w-full pc-map-box overflow-hidden u-mt-4">
+                                <img class="mob-map-img w-full h-auto object-contain opacity-90 transition-opacity">
+                                <div class="map-overlay absolute inset-0"></div>
+                            </div>
+                        </div>
+
+                        <div class="mobcard-section">
+                            <div class="mobcard-section-label">出現条件</div>
+                            <div class="section-content condition condition-text"></div>
+                        </div>
+                    </div>
+
+                    <div class="mobcard-mobile-actions">
+                        <button class="moblist-report-btn bottom-report-btn" data-report-type="" data-mob-no="">REPORT</button>
+                        <div class="mobcard-close-btn" data-action="close-card">CLOSE</div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <div id="global-magnifier" class="map-magnifier hidden">
+            <div class="magnifier-content-wrapper absolute w-full h-full"></div>
+        </div>
+
+        <template id="timer-rich-template">
+            <span class="mobcard-timer">
+                <span class="mobcard-timer-part h-part">
+                    <span class="mobcard-timer-num"></span><span class="mobcard-timer-unit">h</span>
+                </span>
+                <span class="mobcard-timer-part m-part">
+                    <span class="mobcard-timer-num"></span><span class="mobcard-timer-unit">m</span>
+                </span>
+            </span>
+        </template>
+
+        <template id="spawn-point-template">
+            <div class="spawn-point" tabindex="0"></div>
+        </template>
+
+        <template id="moblist-item-template">
+            <div class="moblist-item" data-rank="">
+                <div class="moblist-rank-badge"></div>
+                <div class="moblist-info-col">
+                    <div class="moblist-name-row">
+                        <span class="moblist-name truncate"></span>
+                        <span class="memo-icon-container"></span>
+                        <span class="moblist-count"></span>
+                    </div>
+                    <div class="moblist-area-row">
+                        <span class="moblist-area truncate"></span>
+                    </div>
+                </div>
+                <div class="moblist-time-col">
+                    <div class="moblist-time"></div>
+                </div>
+                <div class="moblist-progress-line">
+                    <div class="moblist-progress-bar"></div>
+                </div>
+            </div>
+        </template>
+
+        <template id="status-group-template">
+            <section class="status-group u-w-full hidden">
+                <div class="status-group-separator">
+                    <span class="status-group-label"></span>
+                </div>
+                <div class="group-columns">
+                    <div class="col-1 u-flex u-flex-col u-gap-2"></div>
+                    <div class="col-2 u-flex u-flex-col u-gap-2"></div>
+                    <div class="col-3 u-flex u-flex-col u-gap-2"></div>
+                </div>
+            </section>
+        </template>
+
+        <template id="appnav-error-item-template">
+            <div class="appnav-error-item">
+                <span class="appnav-error-time"></span>
+                <span class="error-msg"></span>
+            </div>
+        </template>
+
+        <template id="rank-accordion-item-template">
+            <div class="appnav-rank-item">
+                <button class="appnav-rank-header"></button>
+                <div class="appnav-area-expansion">
+                    <div class="area-grid-container"></div>
+                </div>
+            </div>
+        </template>
+
+        <template id="ui-message-template">
+            <p class="u-msg"></p>
+        </template>
+
+        <template id="spawn-count-template">
+            <span class="pc-count-val">📍<span class="count-num"></span><span class="count-unit"></span></span>
+        </template>
+
+        <template id="memo-icon-template">
+            <span class="memo-icon">📝</span>
+        </template>
+
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('./sw.js').then(reg => {
+                        console.log('SW registered');
+                    }).catch(err => {
+                        console.warn('SW failed', err);
+                    });
+                });
+            }
+        </script>
+</body>
+
+</html>
+
+
+

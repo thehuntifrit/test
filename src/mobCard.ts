@@ -426,7 +426,7 @@ export function createSimpleMobItem(mob: Mob): HTMLElement {
 
   const rankBadge = item.querySelector('.moblist-rank-badge') as HTMLElement | null;
   if (rankBadge) {
-    rankBadge.textContent = mob.rank === "FATE" ? "F" : mob.rank;
+    rankBadge.textContent = mob.rank;
     rankBadge.dataset.rank = mob.rank;
   }
 
