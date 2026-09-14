@@ -62,15 +62,15 @@
   --row-prog-h:     2px;
 
   /* z-index */
-  --z-loading:  100;
-  --z-toast:     95;
+  --z-sidebar:   50;
+  --z-card-mob:  60;
+  --z-magnifier: 88;
   --z-header:    90;
   --z-footer:    90;
-  --z-magnifier: 88;
-  --z-modal:     80;
-  --z-modal-bd:  75;
-  --z-card-mob:  60;
-  --z-sidebar:   50;
+  --z-modal-bd:  95;
+  --z-modal:     100;
+  --z-toast:     105;
+  --z-loading:   110;
 
   /* typography */
   --font-ui:   'Inter', 'Hiragino Sans', 'Meiryo', sans-serif;
