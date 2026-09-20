@@ -12,7 +12,6 @@
   inset: 0;
   background-color: #0a1220;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
 }
 .manual-modal-top-border {
   height: 3px;
@@ -53,7 +52,7 @@
   padding: 18px;
   font-size: 14px;
   line-height: 1.7;
-  color: var(--c-text-lo);
+  color: var(--c-text-hi);
 }
 #readme-container h1,
 #readme-container h2,

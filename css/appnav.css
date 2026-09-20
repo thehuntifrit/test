@@ -11,7 +11,7 @@
   top: auto;
   width: 100%;
   height: var(--footer-safe);
-  z-index: var(--z-sidebar);
+  z-index: var(--z-footer);
   background-color: var(--c-panel);
   border-top: 1px solid var(--c-border);
   border-right: none;
@@ -32,7 +32,11 @@
   width: 100%;
 }
 
-.appnav-top { display: none; } /* logo — hidden on mobile */
+.appnav-top {
+  display: none;
+}
+
+/* logo — hidden on mobile */
 
 .appnav-items-wrapper {
   display: flex;
@@ -65,8 +69,8 @@
 .appnav-icon {
   font-size: 20px;
   line-height: 1;
-  filter: grayscale(60%) opacity(0.7);
-  transition: filter 0.15s;
+  opacity: 0.85;
+  transition: filter 0.15s, opacity 0.15s;
 }
 
 .appnav-label {
@@ -80,14 +84,20 @@
 
 /* active state */
 .appnav-btn.active .appnav-icon,
+.appnav-btn.appnav-active .appnav-icon,
 .appnav-btn[data-active] .appnav-icon {
   filter: grayscale(0%) opacity(1);
+  opacity: 1;
 }
+
 .appnav-btn.active .appnav-label,
+.appnav-btn.appnav-active .appnav-label,
 .appnav-btn[data-active] .appnav-label {
   color: var(--c-text-hi);
 }
+
 .appnav-btn.active::after,
+.appnav-btn.appnav-active::after,
 .appnav-btn[data-active]::after {
   content: '';
   position: absolute;
@@ -101,7 +111,9 @@
 }
 
 /* nav toggle (checkbox-based) */
-.nav-toggle-btn { cursor: pointer; }
+.nav-toggle-btn {
+  cursor: pointer;
+}
 
 /* divider between nav items */
 .appnav-divider {
@@ -114,23 +126,31 @@
 
 /* ── Slide-out panel ──────────────────────────────────────── */
 .appnav-panel {
-  display: none; /* opened by JS */
+  display: none;
+  /* opened by JS */
   position: fixed;
   bottom: var(--footer-safe);
   left: 0;
   width: 100%;
   max-height: 60vh;
-  z-index: var(--z-sidebar);
+  z-index: var(--z-footer);
   background-color: #09111f;
   border-top: 1px solid var(--c-border);
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   padding: 14px;
 }
-.appnav-panel.is-open { display: block; }
 
-.js-appnav-panel-item { display: none; }
-.js-appnav-panel-item:not(.hidden) { display: block; }
+.appnav-panel.is-open {
+  display: block;
+}
+
+.js-appnav-panel-item {
+  display: none;
+}
+
+.js-appnav-panel-item:not(.hidden) {
+  display: block;
+}
 
 .appnav-section-title {
   font-size: 11px;
@@ -160,11 +180,22 @@
   border-bottom: 1px solid var(--c-border);
   font-size: 12px;
 }
-.appnav-error-time { color: var(--c-text-lo); white-space: nowrap; }
-.error-msg { color: var(--c-offline-text); }
+
+.appnav-error-time {
+  color: var(--c-text-lo);
+  white-space: nowrap;
+}
+
+.error-msg {
+  color: var(--c-offline-text);
+}
 
 /* ── Rank filter accordion ───────────────────────────────── */
-.appnav-filter-accordion { display: flex; flex-direction: column; gap: 6px; }
+.appnav-filter-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
 .appnav-rank-item {
   border: 1px solid var(--c-border);
@@ -193,10 +224,9 @@
   background-color: var(--c-bg);
   padding: 8px;
 }
+
 .area-grid-container {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
-
-

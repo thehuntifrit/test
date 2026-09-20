@@ -54,11 +54,11 @@
   --footer-safe: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
 
   /* list row */
-  --row-h:          70px;
+  --row-h:          46px;
   --row-stripe:     4px;
   --row-stripe-sel: 6px;
-  --row-badge:      42px;
-  --row-radius:     8px;
+  --row-badge:      28px;
+  --row-radius:     6px;
   --row-prog-h:     2px;
 
   /* z-index */
@@ -73,7 +73,7 @@
   --z-loading:   110;
 
   /* typography */
-  --font-ui:   'Inter', 'Hiragino Sans', 'Meiryo', sans-serif;
+  --font-ui:   'Inter', 'Roboto', 'Hiragino Sans', 'Meiryo', sans-serif;
   --font-mono: 'JetBrains Mono', 'Roboto Mono', monospace;
 }
 
