@@ -73,7 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
     closeBtn?.addEventListener('click', closeUserManual);
 
     modal?.addEventListener('click', (e) => {
-        if (e.target === modal) closeUserManual();
+        const target = e.target as HTMLElement;
+        if (target === modal || target.classList.contains('app-backdrop')) closeUserManual();
     });
 
     document.addEventListener('keydown', (e) => {
