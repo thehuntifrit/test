@@ -107,12 +107,6 @@
             <div id="moblist-container"></div>
             <div id="mobcard-anchor"></div>
             <div id="mobcard-pane" class="js-mobcard-container">
-                <div id="mobcard-clocks" class="mobile-top-clocks js-pc-clocks">
-                    <span class="mobile-clock-label">ET</span>
-                    <span class="mobile-clock-val js-et-clock">--:--</span>
-                    <span class="mobile-clock-label">LT</span>
-                    <span class="mobile-clock-val js-lt-clock">--:--</span>
-                </div>
                 <div id="mobcard-detail"></div>
             </div>
         </div>
@@ -319,19 +313,19 @@
 
         <template id="moblist-item-template">
             <div class="moblist-item" data-rank="">
-                <div class="moblist-rank-badge"></div>
                 <div class="moblist-info-col">
                     <div class="moblist-name-row">
                         <span class="moblist-name truncate"></span>
                         <span class="memo-icon-container"></span>
                         <span class="moblist-count"></span>
                     </div>
-                    <div class="moblist-area-row">
+                    <div class="moblist-bottom-row">
                         <span class="moblist-area truncate"></span>
+                        <div class="moblist-time-col">
+                            <div class="moblist-time"></div>
+                            <span class="moblist-percent"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="moblist-time-col">
-                    <div class="moblist-time"></div>
                 </div>
                 <div class="moblist-progress-line">
                     <div class="moblist-progress-bar"></div>
@@ -395,6 +389,3 @@
 </body>
 
 </html>
-
-
-

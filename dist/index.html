@@ -11,8 +11,8 @@
         rel="stylesheet">
     <script src="js/lib/marked.min.js"></script>
     <script src="js/lib/purify.min.js"></script>
-  <script type="module" crossorigin src="./assets/index-DmAyXP0P.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BHR-IkFB.css">
+  <script type="module" crossorigin src="./assets/index-MbiGccZP.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BTNEHkMD.css">
 </head>
 
 <body class="">
@@ -101,12 +101,6 @@
             <div id="moblist-container"></div>
             <div id="mobcard-anchor"></div>
             <div id="mobcard-pane" class="js-mobcard-container">
-                <div id="mobcard-clocks" class="mobile-top-clocks js-pc-clocks">
-                    <span class="mobile-clock-label">ET</span>
-                    <span class="mobile-clock-val js-et-clock">--:--</span>
-                    <span class="mobile-clock-label">LT</span>
-                    <span class="mobile-clock-val js-lt-clock">--:--</span>
-                </div>
                 <div id="mobcard-detail"></div>
             </div>
         </div>
@@ -272,8 +266,8 @@
                                 <span>出現マップ</span>
                                 <span class="map-update-time"></span>
                             </div>
-                            <div class="map-container relative w-full pc-map-box overflow-hidden u-mt-4">
-                                <img class="mob-map-img w-full h-auto object-contain opacity-90 transition-opacity">
+                            <div class="map-container pc-map-box u-mt-4">
+                                <img class="mob-map-img">
                                 <div class="map-overlay absolute inset-0"></div>
                             </div>
                         </div>
@@ -313,19 +307,19 @@
 
         <template id="moblist-item-template">
             <div class="moblist-item" data-rank="">
-                <div class="moblist-rank-badge"></div>
                 <div class="moblist-info-col">
                     <div class="moblist-name-row">
                         <span class="moblist-name truncate"></span>
                         <span class="memo-icon-container"></span>
                         <span class="moblist-count"></span>
                     </div>
-                    <div class="moblist-area-row">
+                    <div class="moblist-bottom-row">
                         <span class="moblist-area truncate"></span>
+                        <div class="moblist-time-col">
+                            <div class="moblist-time"></div>
+                            <span class="moblist-percent"></span>
+                        </div>
                     </div>
-                </div>
-                <div class="moblist-time-col">
-                    <div class="moblist-time"></div>
                 </div>
                 <div class="moblist-progress-line">
                     <div class="moblist-progress-bar"></div>

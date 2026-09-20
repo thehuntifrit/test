@@ -60,48 +60,9 @@
 .moblist-item[data-rank="A"] .moblist-progress-bar { background-color: var(--c-prog-a); }
 .moblist-item[data-rank="F"] .moblist-progress-bar { background-color: var(--c-prog-f); }
 
-/* ── Inner layout ────────────────────────────────────────── */
-/* badge | info | time */
-.moblist-item > .moblist-rank-badge,
-.moblist-item > .moblist-info-col,
-.moblist-item > .moblist-time-col {
-  /* pushed right of stripe */
-}
-
-/* rank badge (square) */
+/* rank badge (square) - hidden as rank stripe color identifies rank */
 .moblist-rank-badge {
-  flex-shrink: 0;
-  width: var(--row-badge);
-  height: var(--row-badge);
-  border-radius: 7px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-ui);
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1;
-  margin-left: calc(var(--row-stripe) + 10px);
-  margin-right: 10px;
-  /* default A */
-  background-color: var(--c-a-dark);
-  color: var(--c-a);
-  border: 1.5px solid var(--c-a);
-}
-.moblist-item[data-rank="S"] .moblist-rank-badge {
-  background-color: var(--c-s-dark);
-  color: var(--c-s);
-  border-color: var(--c-s);
-}
-.moblist-item[data-rank="A"] .moblist-rank-badge {
-  background-color: var(--c-a-dark);
-  color: var(--c-a);
-  border-color: var(--c-a);
-}
-.moblist-item[data-rank="F"] .moblist-rank-badge {
-  background-color: var(--c-f-dark);
-  color: var(--c-f);
-  border-color: var(--c-f);
+  display: none !important;
 }
 
 /* info column */
@@ -113,6 +74,8 @@
   justify-content: center;
   gap: 3px;
   overflow: hidden;
+  padding-left: calc(var(--row-stripe) + 10px);
+  padding-right: 10px;
 }
 
 /* name row */
@@ -132,6 +95,32 @@
   text-overflow: ellipsis;
   line-height: 1.2;
   min-width: 0;
+  display: inline-flex;
+  align-items: center;
+}
+.instance-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 4px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(59, 130, 246, 0.25));
+  border: 1px solid var(--c-cyan, #06b6d4);
+  color: #ffffff;
+  flex-shrink: 0;
+  margin-right: 5px;
+  box-shadow: 0 0 6px rgba(6, 182, 212, 0.3);
+  font-family: var(--font-mono, monospace);
+}
+.instance-badge::before {
+  content: '🌐';
+  font-size: 10px;
+  margin-right: 2px;
 }
 .moblist-count {
   flex-shrink: 0;
@@ -143,8 +132,13 @@
 .memo-icon-container { flex-shrink: 0; }
 .memo-icon { font-size: 12px; }
 
-/* area row */
-.moblist-area-row {
+/* bottom row (left: area, right: time time-category percent) */
+.moblist-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
   overflow: hidden;
 }
 .moblist-area {
@@ -155,29 +149,49 @@
   overflow: hidden;
   text-overflow: ellipsis;
   line-height: 1;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
-/* time column */
+/* time column (right column in bottom row) */
 .moblist-time-col {
   flex-shrink: 0;
-  padding-right: 12px;
   display: flex;
-  align-items: center;
+  align-items: baseline;
+  gap: 4px;
 }
 .moblist-time {
   font-family: var(--font-mono);
-  font-size: 20px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--c-text-hi);
   letter-spacing: 0.3px;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: baseline;
 }
 
 /* timer inner parts (from #timer-rich-template) */
 .mobcard-timer      { display: inline-flex; gap: 2px; align-items: baseline; }
 .mobcard-timer-part { display: inline-flex; align-items: baseline; }
-.mobcard-timer-num  { font-family: var(--font-mono); font-size: 20px; font-weight: 700; color: var(--c-text-hi); }
-.mobcard-timer-unit { font-family: var(--font-ui); font-size: 12px; color: var(--c-text-lo); margin-left: 1px; margin-right: 4px; }
+.mobcard-timer-num  { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--c-text-hi); }
+.mobcard-timer-unit { font-family: var(--font-ui); font-size: 10px; color: var(--c-text-lo); margin-left: 1px; margin-right: 2px; }
+.timer-label-base {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 2px;
+}
+.moblist-percent {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-text-lo);
+  white-space: nowrap;
+}
+.moblist-percent::before { content: '('; }
+.moblist-percent::after { content: ')'; }
+.moblist-percent.max-over { color: var(--c-red, #ef4444); }
 
 /* spawn count (pc-count-val) */
 .pc-count-val {

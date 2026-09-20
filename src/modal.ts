@@ -1,5 +1,6 @@
 import { getState, setLodestoneId, setCharacterName, setVerified, extractLodestoneId, DOM, handleAppError } from "./dataManager";
 import { verifyLodestoneCharacter, registerUserToFirestore } from "./server";
+import { renderNameWithInstance } from "./mobCard";
 
 export async function openReportModal(mobNo: number): Promise<void> {
     const mob = getState().mobs.find(m => m.No === mobNo);
@@ -14,7 +15,7 @@ export async function openReportModal(mobNo: number): Promise<void> {
         DOM.reportForm.dataset.mobNo = String(mobNo);
     }
     if (DOM.modalMobName) {
-        DOM.modalMobName.textContent = `${mob.name}`;
+        renderNameWithInstance(DOM.modalMobName, mob.name);
     }
     if (DOM.modalTimeInput) {
         DOM.modalTimeInput.value = localIso;
