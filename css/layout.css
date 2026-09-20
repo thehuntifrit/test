@@ -14,12 +14,17 @@ body {
   flex: 1 1 auto;
   overflow: hidden;
   position: relative;
+  display: flex;
+  justify-content: center;
 }
 
 #list-layout {
   display: flex;
   flex-direction: row;
   height: 100%;
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
   overflow: hidden;
 }
 
@@ -27,7 +32,6 @@ body {
   flex: 1 1 auto;
   overflow-y: auto;
   overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
   padding-bottom: var(--footer-safe);
 }
 
@@ -36,7 +40,6 @@ body {
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
 }
 
 @media (min-width: 900px) {
@@ -44,7 +47,7 @@ body {
     gap: 0;
   }
   #moblist-container {
-    flex: 0 0 360px;
+    flex: 0 0 440px;
     border-right: 1px solid var(--c-border);
     padding-bottom: 0;
   }

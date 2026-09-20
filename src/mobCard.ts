@@ -472,6 +472,7 @@ export function updateProgressBar(element: HTMLElement, mob: Mob, timeLabelObj: 
 
   bar.classList.toggle('u-no-transition', noTransition);
   bar.style.setProperty('--prog-percent', String(flooredPct / 100));
+  bar.style.width = `${flooredPct}%`;
   bar.dataset.lastPct = String(flooredPct);
 
   if (bar.dataset.lastStatus !== status) {
@@ -484,6 +485,7 @@ export function updateProgressBar(element: HTMLElement, mob: Mob, timeLabelObj: 
 
     if (status === "Next" || status === "Maintenance") {
       bar.style.setProperty('--prog-percent', '0');
+      bar.style.width = '0%';
     }
   }
 
