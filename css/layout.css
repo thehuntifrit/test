@@ -32,7 +32,7 @@ body {
   flex: 1 1 auto;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: var(--footer-safe);
+  padding-bottom: calc(var(--footer-safe) + 6px);
 }
 
 #mobcard-pane {
@@ -40,6 +40,7 @@ body {
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
+  padding-bottom: var(--footer-safe);
 }
 
 @media (min-width: 900px) {
