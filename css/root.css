@@ -52,6 +52,9 @@
   --header-h:   48px;
   --footer-h:   52px;
   --footer-safe: calc(var(--footer-h) + env(safe-area-inset-bottom, 0px));
+  --layout-w: 1024px;
+  --chrome-overhang: 40px;
+  --chrome-w: calc(var(--layout-w) + var(--chrome-overhang) * 2);
 
   /* list row */
   --row-h:          46px;
@@ -180,6 +183,17 @@ input, textarea {
   justify-content: space-between;
   padding: 0 14px;
   flex-shrink: 0;
+}
+
+@media (min-width: 900px) {
+  #root-mobile-top-bar {
+    width: 100%;
+    max-width: var(--chrome-w);
+    margin-inline: auto;
+    padding: 0 calc(var(--chrome-overhang) + 14px);
+    border-left: 1px solid var(--c-border);
+    border-right: 1px solid var(--c-border);
+  }
 }
 
 .root-mobile-title {

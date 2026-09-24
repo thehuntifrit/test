@@ -531,6 +531,20 @@ export function filterAndRender(options: { isInitialLoad?: boolean } = {}): void
       pane.classList.remove("is-active");
       document.body.classList.remove('body-lock');
     }
+    // #region agent log
+    {
+      const card = detailContainer.querySelector('.mobcard-card') as HTMLElement | null;
+      const cs = (el: Element | null) => el ? getComputedStyle(el as HTMLElement) : null;
+      const paneCs = cs(pane);
+      const cardCs = cs(card);
+      const header = document.getElementById('root-mobile-top-bar');
+      const nav = document.getElementById('appnav');
+      const navPanel = document.querySelector('.appnav-panel');
+      const list = document.getElementById('moblist-container');
+      const cardRect = card?.getBoundingClientRect();
+      fetch('http://127.0.0.1:7598/ingest/92efc946-df11-41ac-86f5-d2f248dfed58',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1578bd'},body:JSON.stringify({sessionId:'1578bd',runId:'pre-fix',hypothesisId:'B-C-D-E',location:'app.ts:filterAndRender',message:'pane/card computed after render',data:{openMobNo,innerWidth:window.innerWidth,paneDisplay:paneCs?.display,panePos:paneCs?.position,paneZ:paneCs?.zIndex,paneOverflow:paneCs?.overflow,paneIsActive:pane.classList.contains('is-active'),cardPresent:!!card,cardClasses:card?.className||null,cardDisplay:cardCs?.display,cardPos:cardCs?.position,cardZ:cardCs?.zIndex,cardTransform:cardCs?.transform,cardRect:cardRect?{t:Math.round(cardRect.top),b:Math.round(cardRect.bottom),h:Math.round(cardRect.height),w:Math.round(cardRect.width)}:null,headerZ:cs(header)?.zIndex,navZ:cs(nav)?.zIndex,navPanelZ:cs(navPanel)?.zIndex,navPanelDisplay:cs(navPanel)?.display,listOverflow:cs(list)?.overflow,mainOverflow:cs(document.querySelector('.main-content-area'))?.overflow,layoutOverflow:cs(document.getElementById('list-layout'))?.overflow},timestamp:Date.now()})}).catch(()=>{});
+    }
+    // #endregion
   }
 
   if (isInitialLoad) {
@@ -1076,6 +1090,13 @@ function attachMobCardEvents(): void {
 function handleGeneralClick(e: Event): void {
   const target = e.target as HTMLElement;
   const item = target.closest(".moblist-item, .mobcard-card") as HTMLElement | null;
+  // #region agent log
+  {
+    const ev = e as MouseEvent;
+    const hit = document.elementFromPoint(ev.clientX || 0, ev.clientY || 0) as HTMLElement | null;
+    fetch('http://127.0.0.1:7598/ingest/92efc946-df11-41ac-86f5-d2f248dfed58',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1578bd'},body:JSON.stringify({sessionId:'1578bd',runId:'pre-fix',hypothesisId:'A',location:'app.ts:handleGeneralClick',message:'list/card click',data:{hasItem:!!item,targetTag:target.tagName,targetClass:String(target.className||'').slice(0,80),itemClass:item?String(item.className||'').slice(0,80):null,mobNo:item?.dataset?.mobNo||null,hitTag:hit?.tagName||null,hitId:hit?.id||null,hitClass:hit?String(hit.className||'').slice(0,80):null,innerWidth:window.innerWidth,openBefore:getState().openMobCardNo},timestamp:Date.now()})}).catch(()=>{});
+  }
+  // #endregion
   if (!item) return;
 
   const mobNo = parseInt(item.dataset.mobNo!, 10);
@@ -1106,6 +1127,9 @@ function handleGeneralClick(e: Event): void {
   if (target.closest(".moblist-item") || target.classList.contains('mobcard-card')) {
     const currentOpen = getState().openMobCardNo;
     setOpenMobCardNo(currentOpen === mobNo ? null : mobNo);
+    // #region agent log
+    fetch('http://127.0.0.1:7598/ingest/92efc946-df11-41ac-86f5-d2f248dfed58',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1578bd'},body:JSON.stringify({sessionId:'1578bd',runId:'pre-fix',hypothesisId:'B',location:'app.ts:handleGeneralClick:toggle',message:'setOpenMobCardNo',data:{mobNo,prevOpen:currentOpen,nextOpen:getState().openMobCardNo},timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     sortAndRedistribute({ immediate: true });
   }
 }
