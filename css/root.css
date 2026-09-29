@@ -183,16 +183,21 @@ input, textarea {
   justify-content: space-between;
   padding: 0 14px;
   flex-shrink: 0;
+  /* Mobile: full width */
+  left: 0;
+  right: 0;
+  width: 100%;
 }
 
+/* PC: full viewport width, inner content centered to layout-w */
 @media (min-width: 900px) {
   #root-mobile-top-bar {
+    max-width: none;
     width: 100%;
-    max-width: var(--chrome-w);
-    margin-inline: auto;
-    padding: 0 calc(var(--chrome-overhang) + 14px);
-    border-left: 1px solid var(--c-border);
-    border-right: 1px solid var(--c-border);
+    margin-inline: 0;
+    padding: 0 max(14px, calc((100vw - var(--layout-w)) / 2 + 14px));
+    border-left: none;
+    border-right: none;
   }
 }
 

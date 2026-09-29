@@ -340,19 +340,25 @@
     left: 0;
     right: 0;
     width: 100%;
-    max-width: var(--chrome-w);
+    max-width: none;
+    margin-inline: 0;
+    border-left: none;
+    border-right: none;
+  }
+
+  .appnav-inner {
+    max-width: var(--layout-w);
     margin-inline: auto;
-    border-left: 1px solid var(--c-border);
-    border-right: 1px solid var(--c-border);
+    padding: 0 0;
   }
 
   .appnav-panel {
     left: 0;
     right: 0;
     width: 100%;
-    max-width: var(--chrome-w);
-    margin-inline: auto;
-    border-left: 1px solid var(--c-border);
-    border-right: 1px solid var(--c-border);
+    max-width: none;
+    margin-inline: 0;
+    border-left: none;
+    border-right: none;
   }
 }

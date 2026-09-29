@@ -256,7 +256,31 @@
 
 /* ── Report button on list item ──────────────────────────── */
 .moblist-report-btn {
-  display: none; /* shown only in card context on mobile */
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 100%;
+  background: none;
+  border: none;
+  border-left: 1px solid var(--c-border);
+  cursor: pointer;
+  color: var(--c-text-lo);
+  font-size: 14px;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  transition: background-color 0.12s, color 0.12s;
+  z-index: 1;
+  position: relative;
+}
+.moblist-report-btn:hover {
+  background-color: rgba(34, 211, 238, 0.08);
+  color: var(--c-cyan);
+}
+.moblist-report-btn:active {
+  background-color: rgba(34, 211, 238, 0.18);
+  color: var(--c-cyan);
 }
 
 /* ── #status-group-template ──────────────────────────────── */

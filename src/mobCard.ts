@@ -441,6 +441,13 @@ export function createSimpleMobItem(mob: Mob): HTMLElement {
     areaEl.textContent = mob.area || "";
   }
 
+  // リストのREPORTボタンにデータを設定
+  const reportBtn = item.querySelector('.moblist-report-btn') as HTMLElement | null;
+  if (reportBtn) {
+    reportBtn.dataset.mobNo = String(mob.No);
+    reportBtn.dataset.reportType = mob.rank === 'A' ? 'instant' : 'modal';
+  }
+
   updateSimpleMobItem(item, mob);
   return item;
 }
