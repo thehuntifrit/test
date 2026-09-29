@@ -117,6 +117,25 @@
   cursor: pointer;
 }
 
+/* 通知OFF（is-disabled または チェックなし）時のグレーアウト */
+.appnav-btn.is-disabled .appnav-icon,
+.appnav-btn.is-disabled .appnav-label,
+.appnav-btn:has(input[type="checkbox"]:not(:checked)) .appnav-icon,
+.appnav-btn:has(input[type="checkbox"]:not(:checked)) .appnav-label {
+  filter: grayscale(100%);
+  opacity: 0.35;
+}
+
+/* 通知ON（チェックあり かつ disabledでない）時のスタイル */
+.appnav-btn:not(.is-disabled):has(input[type="checkbox"]:checked) .appnav-icon {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+.appnav-btn:not(.is-disabled):has(input[type="checkbox"]:checked) .appnav-label {
+  color: var(--c-cyan);
+}
+
 /* divider between nav items */
 .appnav-divider {
   width: 1px;

@@ -39,6 +39,16 @@ export function initNotification(): void {
     document.addEventListener('click', onFirstUserAction);
     document.addEventListener('touchstart', onFirstUserAction);
 
+    window.addEventListener('notificationSettingChanged', (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail && typeof detail.enabled === 'boolean') {
+            toggle.checked = detail.enabled;
+            if (label) {
+                label.classList.toggle('is-disabled', !detail.enabled);
+            }
+        }
+    });
+
     toggle.addEventListener('change', (e) => {
         const target = e.target as HTMLInputElement;
         const enabled = target.checked;

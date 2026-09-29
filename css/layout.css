@@ -43,6 +43,22 @@ body {
   padding-bottom: var(--footer-safe);
 }
 
+/* Mobile active overlay state */
+#mobcard-pane.is-active {
+  display: block;
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-card-mob);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  padding: 0;
+}
+
+#mobcard-pane.is-active .mobcard-card {
+  transform: translateY(0);
+  transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+}
+
 @media (min-width: 900px) {
   #list-layout {
     gap: 0;
@@ -56,6 +72,17 @@ body {
     display: flex;
     flex: 1 1 auto;
     padding: 16px;
+    position: static;
+    background-color: transparent;
+    backdrop-filter: none;
+    z-index: auto;
+  }
+  #mobcard-pane.is-active {
+    position: static;
+    background-color: transparent;
+    backdrop-filter: none;
+    padding: 16px;
+    z-index: auto;
   }
   #mobcard-clocks {
     display: flex;
