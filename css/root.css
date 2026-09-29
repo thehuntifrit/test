@@ -57,7 +57,7 @@
   --chrome-w: calc(var(--layout-w) + var(--chrome-overhang) * 2);
 
   /* list row */
-  --row-h:          36px;
+  --row-h:          40px;
   --row-stripe:     4px;
   --row-stripe-sel: 6px;
   --row-badge:      28px;

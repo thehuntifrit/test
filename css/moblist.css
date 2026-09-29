@@ -74,10 +74,12 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0px;
+  gap: 2px;
   overflow: hidden;
   padding-left: calc(var(--row-stripe) + 8px);
   padding-right: 8px;
+  padding-top: 2px;
+  padding-bottom: 2px;
 }
 
 /* name row */
