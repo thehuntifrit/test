@@ -84,32 +84,41 @@
   line-height: 1;
 }
 
-/* active state */
+/* active state (Old CSS glow & highlight effect) */
+.appnav-btn.active,
+.appnav-btn.appnav-active,
+.appnav-btn[data-active] {
+  background-color: var(--c-surface-sel);
+}
+
 .appnav-btn.active .appnav-icon,
 .appnav-btn.appnav-active .appnav-icon,
 .appnav-btn[data-active] .appnav-icon {
-  filter: grayscale(0%) opacity(1);
+  filter: drop-shadow(0 0 6px rgba(34, 211, 238, 0.8));
   opacity: 1;
 }
 
 .appnav-btn.active .appnav-label,
 .appnav-btn.appnav-active .appnav-label,
 .appnav-btn[data-active] .appnav-label {
-  color: var(--c-text-hi);
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 0 0 6px rgba(34, 211, 238, 0.6);
 }
 
+/* active top indicator bar with cyan glow */
 .appnav-btn.active::after,
 .appnav-btn.appnav-active::after,
 .appnav-btn[data-active]::after {
   content: '';
   position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
+  top: 0;
+  left: 12%;
+  right: 12%;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
   background-color: var(--c-cyan);
+  box-shadow: 0 0 10px var(--c-cyan), 0 0 4px var(--c-cyan);
 }
 
 /* nav toggle (checkbox-based) */
