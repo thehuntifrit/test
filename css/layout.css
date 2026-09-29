@@ -48,12 +48,9 @@ body {
 #mobcard-pane.is-active {
   display: block;
   position: fixed;
-  top: var(--header-h);
-  left: 0;
-  right: 0;
-  bottom: var(--footer-safe);
+  inset: 0;
   z-index: var(--z-card-mob);
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(2px);
   padding: 0;
 }
