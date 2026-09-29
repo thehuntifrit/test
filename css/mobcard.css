@@ -62,14 +62,14 @@
 /* rank badge */
 .mobcard-rank {
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-ui);
-  font-size: 18px;
+  font-size: 13px;
   font-weight: 700;
   background-color: var(--c-a-dark);
   color: var(--c-a);
@@ -246,10 +246,17 @@
 }
 .mobcard-value {
   font-family: var(--font-ui);
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
   color: var(--c-text-hi);
   line-height: 1.3;
+}
+.mobcard-value .mobcard-timer-num {
+  font-size: 20px;
+  font-weight: 700;
+}
+.mobcard-value .mobcard-timer-unit {
+  font-size: 13px;
 }
 .mobcard-highlight .mobcard-value { color: var(--c-cyan); }
 
@@ -264,17 +271,18 @@
 .mobcard-mobile-actions {
   flex-shrink: 0;
   display: flex;
-  gap: 8px;
-  padding: 10px 14px;
+  gap: 0;
+  padding: 0;
   border-top: 1px solid var(--c-border);
   background-color: var(--c-surface);
+  overflow: hidden;
 }
 
 .bottom-report-btn,
 .moblist-report-btn {
   flex: 1 1 auto;
-  height: 42px;
-  border-radius: 7px;
+  height: 44px;
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -283,6 +291,7 @@
   font-weight: 700;
   cursor: pointer;
   border: none;
+  border-right: 1px solid var(--c-border);
   outline: none;
   -webkit-tap-highlight-color: transparent;
   background-color: var(--c-cyan);
@@ -296,10 +305,10 @@
 .moblist-report-btn:disabled { opacity: 0.3; pointer-events: none; }
 
 .mobcard-close-btn {
-  flex-shrink: 0;
-  height: 42px;
-  padding: 0 18px;
-  border-radius: 7px;
+  flex: 0 0 90px;
+  height: 44px;
+  padding: 0;
+  border-radius: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -307,11 +316,11 @@
   font-size: 12px;
   font-weight: 600;
   color: var(--c-text-lo);
-  border: 1px solid var(--c-border);
+  border: none;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  background: none;
-  transition: opacity 0.15s;
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: background-color 0.15s, opacity 0.15s;
 }
 .mobcard-close-btn:active { opacity: 0.6; }
 
@@ -349,10 +358,13 @@
   overflow: hidden;
   background-color: var(--c-bg);
   position: relative;
+  width: 100%;
+  max-width: 100%;
 }
 .pc-map-box {
-  max-height: 320px;
-  aspect-ratio: 1 / 1;
+  max-height: none;
+  width: 100%;
+  max-width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -360,7 +372,8 @@
 .mob-map-img {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
+  max-width: 100%;
   object-fit: contain;
 }
 .map-overlay {
@@ -373,24 +386,54 @@
   position: absolute;
   left: var(--point-x);
   top: var(--point-y);
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  background-color: var(--c-gold);
-  border: 2px solid #fff;
+  box-sizing: border-box;
   transform: translate(-50%, -50%);
   cursor: pointer;
-  transition: transform 0.1s;
+  transition: none;
   pointer-events: auto;
+  z-index: 5;
 }
 .spawn-point:focus,
-.spawn-point:hover { transform: translate(-50%, -50%) scale(1.4); outline: none; }
+.spawn-point:hover {
+  transform: translate(-50%, -50%) scale(2);
+  z-index: 20;
+  box-shadow: 0 0 12px #9da0a7, 0 0 5px #090c14;
+  outline: none;
+}
 
-/* ── Spawn point colors ──────────────────────────────────── */
-.color-b1 { background-color: var(--c-cyan); border-color: var(--c-cyan); }
-.color-b2 { background-color: var(--c-error); border-color: var(--c-error); }
-.color-b1-culled { background-color: transparent; border-color: var(--c-cyan); }
-.color-b2-culled { background-color: transparent; border-color: var(--c-error); }
-.color-lastone { background-color: var(--c-emerald); border-color: var(--c-emerald); }
-.color-b1-only { background-color: transparent; border-color: var(--c-cyan); }
-.color-b2-only { background-color: transparent; border-color: var(--c-error); }
+/* ── Spawn point colors (Old CSS restored) ───────────────── */
+.color-b1 {
+  background-color: #22d3ee;
+  border: 2px solid #ffffff;
+}
+.color-b2 {
+  background-color: #f87171;
+  border: 2px solid #ffffff;
+}
+.color-b1-culled {
+  background-color: #ffffff;
+  border: 2px solid #22d3ee;
+}
+.color-b2-culled {
+  background-color: #ffffff;
+  border: 2px solid #f87171;
+}
+.color-lastone {
+  background-color: #10b981;
+  border: 2px solid #ffffff;
+}
+.color-b1-only {
+  background-color: #ffffff;
+  border: 2px solid #22d3ee;
+  width: 10px;
+  height: 10px;
+}
+.color-b2-only {
+  background-color: #ffffff;
+  border: 2px solid #f87171;
+  width: 10px;
+  height: 10px;
+}
