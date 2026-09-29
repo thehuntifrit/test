@@ -74,10 +74,10 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 2px;
+  gap: 0px;
   overflow: hidden;
-  padding-left: calc(var(--row-stripe) + 10px);
-  padding-right: 10px;
+  padding-left: calc(var(--row-stripe) + 8px);
+  padding-right: 8px;
 }
 
 /* name row */
@@ -89,13 +89,13 @@
 }
 .moblist-name {
   font-family: var(--font-ui);
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
   color: var(--c-text-hi);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.2;
+  line-height: 1.1;
   min-width: 0;
   display: inline-flex;
   align-items: center;
@@ -105,9 +105,9 @@
   align-items: center;
   justify-content: center;
   min-width: 18px;
-  height: 16px;
+  height: 15px;
   padding: 0 4px;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   line-height: 1;
   border-radius: 3px;
@@ -127,45 +127,51 @@
 .moblist-count {
   flex-shrink: 0;
   font-family: var(--font-ui);
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--c-text-lo);
   white-space: nowrap;
 }
 .memo-icon-container { flex-shrink: 0; }
-.memo-icon { font-size: 11px; }
+.memo-icon { font-size: 10px; }
 
-/* area row */
+/* area row (bottom row containing area on left & time on right) */
 .moblist-area-row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   overflow: hidden;
+  width: 100%;
 }
 .moblist-area {
   font-family: var(--font-ui);
-  font-size: 11px;
+  font-size: 10.5px;
   color: var(--c-text-lo);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  line-height: 1.2;
+  line-height: 1.1;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
-/* time column (fixed right position aligned across rows) */
+/* time column (placed on the right side of the bottom row) */
 .moblist-time-col {
   flex-shrink: 0;
-  display: flex;
+  margin-left: auto;
+  display: inline-flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
-  padding-right: 12px;
+  gap: 4px;
+  padding-right: 0;
   white-space: nowrap;
 }
 .moblist-time {
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--c-text-hi);
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
   white-space: nowrap;
   display: inline-flex;
   align-items: baseline;

@@ -159,7 +159,7 @@
 
 /* ── Sections ────────────────────────────────────────────── */
 .mobcard-section {
-  padding: 10px 14px;
+  padding: 5px 14px;
   border-bottom: 1px solid var(--c-border);
 }
 .mobcard-section-label {
@@ -168,7 +168,7 @@
   color: var(--c-text-lo);
   text-transform: uppercase;
   letter-spacing: 0.7px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -190,7 +190,7 @@
   overflow: hidden;
 }
 .mobcard-memo-prefix-area {
-  padding: 8px 8px;
+  padding: 4px 8px;
   border-right: 1px solid var(--c-border);
   flex-shrink: 0;
 }
@@ -206,7 +206,7 @@
   flex: 1 1 auto;
   background: none;
   border: none;
-  padding: 8px 10px;
+  padding: 4px 10px;
   font-family: var(--font-ui);
   font-size: 13px;
   color: var(--c-text-hi);
@@ -233,13 +233,13 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 8px 10px;
+  padding: 4px 10px;
   background-color: var(--c-surface);
 }
 .mobcard-highlight { background-color: #0d2038; }
 .mobcard-label {
   font-family: var(--font-ui);
-  font-size: 9px;
+  font-size: 13.5px;
   font-weight: 600;
   color: var(--c-text-lo);
   text-transform: uppercase;
