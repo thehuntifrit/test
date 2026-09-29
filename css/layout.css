@@ -16,6 +16,7 @@ body {
   position: relative;
   display: flex;
   justify-content: center;
+  padding-bottom: var(--footer-safe);
 }
 
 #list-layout {
@@ -32,7 +33,7 @@ body {
   flex: 1 1 auto;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: calc(var(--footer-safe) + 6px);
+  padding-bottom: 16px;
 }
 
 #mobcard-pane {
@@ -40,7 +41,7 @@ body {
   flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-bottom: var(--footer-safe);
+  padding-bottom: 16px;
 }
 
 /* Mobile active overlay state */
@@ -48,6 +49,7 @@ body {
   display: block;
   position: fixed;
   inset: 0;
+  bottom: var(--footer-safe);
   z-index: var(--z-card-mob);
   background-color: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(2px);
@@ -66,7 +68,7 @@ body {
   #moblist-container {
     flex: 0 0 440px;
     border-right: 1px solid var(--c-border);
-    padding-bottom: 0;
+    padding-bottom: 16px;
   }
   #mobcard-pane {
     display: flex;
