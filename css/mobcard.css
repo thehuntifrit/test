@@ -288,8 +288,8 @@
   overflow: hidden;
 }
 
-.bottom-report-btn,
-.moblist-report-btn {
+.mobcard-mobile-actions .bottom-report-btn,
+.mobcard-mobile-actions .moblist-report-btn {
   flex: 1 1 auto;
   height: 44px;
   border-radius: 0;
@@ -309,10 +309,10 @@
   letter-spacing: 0.5px;
   transition: opacity 0.15s;
 }
-.bottom-report-btn:active,
-.moblist-report-btn:active { opacity: 0.7; }
-.bottom-report-btn:disabled,
-.moblist-report-btn:disabled { opacity: 0.3; pointer-events: none; }
+.mobcard-mobile-actions .bottom-report-btn:active,
+.mobcard-mobile-actions .moblist-report-btn:active { opacity: 0.7; }
+.mobcard-mobile-actions .bottom-report-btn:disabled,
+.mobcard-mobile-actions .moblist-report-btn:disabled { opacity: 0.3; pointer-events: none; }
 
 .mobcard-close-btn {
   flex: 0 0 90px;

@@ -254,10 +254,10 @@
 }
 
 /* ── Report button on list item ──────────────────────────── */
-.moblist-report-btn {
-  flex: 0 0 var(--row-h);
-  width: var(--row-h);
-  height: var(--row-h);
+.moblist-item .moblist-report-btn {
+  flex: 0 0 calc(var(--row-h) * 2 / 3);
+  width: calc(var(--row-h) * 2 / 3);
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -266,18 +266,20 @@
   border-left: 1px solid var(--c-border);
   cursor: pointer;
   color: var(--c-cyan);
-  font-size: 14px;
+  font-size: 13px;
   -webkit-tap-highlight-color: transparent;
   outline: none;
   transition: background-color 0.12s, color 0.12s;
   z-index: 1;
   position: relative;
+  margin-left: auto;
+  padding: 0;
 }
-.moblist-report-btn:hover {
+.moblist-item .moblist-report-btn:hover {
   background-color: rgba(6, 182, 212, 0.35);
   color: #fff;
 }
-.moblist-report-btn:active {
+.moblist-item .moblist-report-btn:active {
   background-color: var(--c-cyan);
   color: var(--c-bg);
 }
