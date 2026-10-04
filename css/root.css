@@ -189,13 +189,13 @@ input, textarea {
   width: 100%;
 }
 
-/* PC: constrain to layout-w, centered */
+/* PC: full viewport width, inner content centered to layout-w */
 @media (min-width: 900px) {
   #root-mobile-top-bar {
-    max-width: var(--layout-w);
+    max-width: none;
     width: 100%;
-    margin-inline: auto;
-    padding: 0 14px;
+    margin-inline: 0;
+    padding: 0 max(14px, calc((100vw - var(--layout-w)) / 2 + 14px));
     border-left: none;
     border-right: none;
   }
