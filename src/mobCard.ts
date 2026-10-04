@@ -338,7 +338,7 @@ export function drawSpawnPoint(point: SpawnPoint, spawnCullStatus: Record<string
 
   const pointNumber = parseInt(point.id.slice(-2), 10);
   const stateText = isLastOne ? "(確)" : isCulledFlag ? "(済)" : "";
-  el.title = rank === "F" ? stateText : `${pointNumber} ${stateText}`;
+  el.dataset.tooltip = rank === "F" ? stateText : `${pointNumber} ${stateText}`;
 
   Object.assign(el.dataset, {
     locationId: point.id,
