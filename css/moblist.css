@@ -184,10 +184,7 @@
 .mobcard-timer-num  { font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--c-text-hi); }
 .mobcard-timer-unit { font-family: var(--font-ui); font-size: 10px; color: var(--c-text-lo); margin-left: 1px; margin-right: 2px; }
 .timer-label-base {
-  font-family: var(--font-ui);
-  font-size: 10px;
-  font-weight: 600;
-  margin-left: 2px;
+  display: none !important;
 }
 .moblist-percent {
   font-family: var(--font-mono);
@@ -233,6 +230,17 @@
   }
 }
 .moblist-item:active { background-color: var(--c-surface-ho); }
+
+/* ── State: Timed mob in condition window (White Glow) ───── */
+.moblist-item.moblist-highlight-white {
+  border-color: #f0f4f8;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.45), 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* ── State: Timed mob next condition countdown (Gold timer) ── */
+.moblist-item .mobcard-timer.label-next .mobcard-timer-num {
+  color: var(--c-gold);
+}
 
 /* ── State: culled ───────────────────────────────────────── */
 .moblist-item.culled,
