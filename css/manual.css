@@ -20,6 +20,17 @@
   background-color: #0a1220;
   overflow-y: auto;
 }
+@media (min-width: 900px) {
+  .manual-modal-content {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: var(--layout-w);
+    border-left: 1px solid var(--c-border);
+    border-right: 1px solid var(--c-border);
+  }
+}
 .manual-modal-top-border {
   height: 3px;
   background: linear-gradient(90deg, var(--c-cyan), var(--c-f));

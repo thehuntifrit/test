@@ -23,6 +23,16 @@
   overflow-y: auto;
 }
 
+@media (min-width: 900px) {
+  .modal-content-base {
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: var(--layout-w);
+    border-left: 1px solid var(--c-border);
+    border-right: 1px solid var(--c-border);
+  }
+}
+
 .modal-top-bar {
   width: 36px;
   height: 4px;

@@ -340,8 +340,8 @@
     left: 0;
     right: 0;
     width: 100%;
-    max-width: var(--layout-w);
-    margin-inline: auto;
+    max-width: none;
+    margin-inline: 0;
     border-left: none;
     border-right: none;
   }
@@ -359,7 +359,7 @@
     width: 100%;
     max-width: var(--layout-w);
     margin-inline: 0;
-    border-left: none;
-    border-right: none;
+    border-left: 1px solid var(--c-border);
+    border-right: 1px solid var(--c-border);
   }
 }

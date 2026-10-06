@@ -77,6 +77,9 @@ body {
     background-color: transparent;
     backdrop-filter: none;
     z-index: auto;
+    overflow: hidden;
+    height: 100%;
+    min-height: 0;
   }
   #mobcard-pane.is-active {
     position: static;
@@ -84,6 +87,17 @@ body {
     backdrop-filter: none;
     padding: 16px;
     z-index: auto;
+    overflow: hidden;
+    height: 100%;
+    min-height: 0;
+  }
+  #mobcard-detail {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
   }
   #mobcard-clocks {
     display: flex;
