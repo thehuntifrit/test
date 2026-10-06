@@ -258,42 +258,45 @@
   background-color: #303c51;
   border: 1px solid #353e4b;
   border-radius: 4px;
-  padding: 4px 10px 4px;
+  padding: 6px 10px;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
   min-height: auto;
 }
 .mobcard-label {
   font-family: var(--font-ui);
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--c-text-lo);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 2px;
+  letter-spacing: 0.05em;
+  margin-bottom: 0;
   line-height: 1;
   padding-right: 0;
   border-right: none;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .mobcard-value {
   font-family: var(--font-mono);
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--c-text-hi);
   line-height: 1.2;
-  margin-left: 0;
-  text-align: left;
+  margin-left: auto;
+  text-align: right;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
 .mobcard-value .mobcard-timer-num {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
 }
 .mobcard-value .mobcard-timer-unit {
-  font-size: 12px;
+  font-size: 11px;
 }
 /* Next possible repop time in gold */
 .mobcard-highlight .mobcard-value,
