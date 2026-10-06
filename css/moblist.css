@@ -47,9 +47,10 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100%;
+  right: calc(var(--row-h) * 2 / 3);
   height: var(--row-prog-h);
   background-color: var(--c-prog-bg);
+  overflow: hidden;
 }
 .moblist-progress-bar {
   height: 100%;
