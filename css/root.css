@@ -3,7 +3,7 @@
    ========================================================= */
 
 /* ── Google Fonts ────────────────────────────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&family=Roboto+Mono:wght@400;700&family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;700&display=swap');
 
 /* ── Reset ───────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -76,8 +76,8 @@
   --z-loading:   110;
 
   /* typography */
-  --font-ui:   'Inter', 'Roboto', 'Hiragino Sans', 'Meiryo', sans-serif;
-  --font-mono: 'Roboto Mono', 'JetBrains Mono', monospace;
+  --font-ui:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Roboto Mono', monospace;
 }
 
 /* ── Base ────────────────────────────────────────────────── */
@@ -213,21 +213,27 @@ input, textarea {
 
 .mobile-top-clocks {
   display: flex;
-  align-items: baseline;
-  gap: 5px;
+  align-items: center;
+  gap: 4px;
 }
 .mobile-clock-label {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--c-text-lo);
+  font-size: 12px;
+  font-weight: 700;
+  color: #646a75;
+  letter-spacing: 0.05em;
+  line-height: normal;
   font-family: var(--font-ui);
 }
 .mobile-clock-val {
   font-family: var(--font-mono);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--c-gold);
-  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+  line-height: normal;
+}
+.mobile-clock-val:not(:last-child) {
+  margin-inline-end: 14px;
 }
 
 /* #ui-message-template */
