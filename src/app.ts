@@ -204,7 +204,6 @@ export async function renderMaintenanceStatus(): Promise<void> {
     const welcome = document.createElement("div");
     welcome.className = "sidebar-welcome-msg";
 
-    welcome.appendChild(document.createTextNode("ようこそ "));
     const nameSpan = document.createElement("span");
     nameSpan.className = "sidebar-welcome-name";
     nameSpan.textContent = nameToDisplay;

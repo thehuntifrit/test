@@ -166,14 +166,21 @@
   z-index: var(--z-footer);
   background-color: #09111f;
   border-top: 1px solid var(--c-border);
-  overflow-y: auto;
-  padding: 14px;
+  overflow: hidden;
+  padding: 0;
+  flex-direction: column;
+}
+
+.appnav-panel-top-border {
+  height: 3px;
+  flex-shrink: 0;
+  background: linear-gradient(90deg, var(--c-cyan), var(--c-f));
 }
 
 .appnav-panel.is-open,
 .appnav-panel.expanded,
 #appnav.expanded .appnav-panel {
-  display: block;
+  display: flex;
 }
 
 .js-appnav-panel-item {
@@ -182,6 +189,20 @@
 
 .js-appnav-panel-item:not(.hidden) {
   display: block;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px;
+}
+
+.appnav-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--c-border);
 }
 
 .appnav-section-title {
@@ -190,7 +211,7 @@
   color: var(--c-text-lo);
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  margin-bottom: 10px;
+  margin-bottom: 0;
 }
 
 .appnav-alert {
@@ -200,12 +221,17 @@
 }
 
 .sidebar-welcome-area {
-  margin-bottom: 8px;
+  margin-bottom: 0;
+  min-width: 0;
 }
 
 .sidebar-welcome-msg {
   font-size: 12px;
   color: var(--c-text-lo);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
 }
 
 .sidebar-welcome-name {
