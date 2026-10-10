@@ -15,7 +15,7 @@ FFXIV (ファイナルファンタジー14) **Ifritサーバー**のモブハン
 ## 2. 技術スタック
 
 | カテゴリ | 技術 | 備考 |
-|---|---|---|
+| --- | --- | --- |
 | フロントエンド | TypeScript + Vite | SPA（フレームワーク不使用） |
 | スタイリング | Vanilla CSS (8ファイル) | CSS変数によるテーマ管理 |
 | バックエンド | Firebase (Firestore, Auth, App Check) | SDK v12 ESM CDN直接インポート |
@@ -25,6 +25,7 @@ FFXIV (ファイナルファンタジー14) **Ifritサーバー**のモブハン
 | PWA | Service Worker | 静的アセットのオフラインキャッシュ |
 
 ### ビルドコマンド
+
 ```bash
 npm run dev      # Vite開発サーバー (port 3000)
 npm run build    # tsc + vite build → dist/
@@ -157,7 +158,7 @@ interface AppState {
 ### 5.2 永続化
 
 | データ | 保存先 | キー |
-|---|---|---|
+| --- | --- | --- |
 | ユーザーID | localStorage | `user_uuid` |
 | LodestoneID | localStorage | `lodestone_id` |
 | キャラクター名 | localStorage | `character_name` |
@@ -178,7 +179,7 @@ interface AppState {
 5桁の数値: `EEMMN`
 
 | 桁 | 意味 | 例 |
-|---|---|---|
+| --- | --- | --- |
 | EE (上2桁) | 拡張版ID | 01=新生, 02=蒼天, 03=紅蓮, 04=漆黒, 05=暁月, 06=黄金 |
 | MM (中2桁) | モブ固有ID | 01〜 |
 | N (下1桁) | インスタンス番号 | 1〜3 |
@@ -262,7 +263,7 @@ interface Mob {
 ## 7. Firestore コレクション構造
 
 | コレクション | ドキュメント | フィールド | 説明 |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `mob_status` | `s_latest` | `{mobNo}: {last_kill_time, prev_kill_time, reporter_id}` | Sモブ討伐時刻 |
 | `mob_status` | `a_latest` | 同上 | Aモブ討伐時刻 |
 | `mob_status` | `f_latest` | 同上 | Fモブ（FATE）討伐時刻 |
@@ -354,7 +355,7 @@ DOMContentLoaded
 ### 10.1 エオルゼア時間の定数
 
 | 定数 | 値 | 説明 |
-|---|---|---|
+| --- | --- | --- |
 | `ET_HOUR_SEC` | 175 | 1ET時間 = 175リアル秒 |
 | `WEATHER_CYCLE_SEC` | 1400 | 天候サイクル = 8ET時間 |
 | `ET_DAY_SEC` | 4200 | 1ET日 = 24ET時間 |
@@ -370,6 +371,7 @@ DOMContentLoaded
 ```
 
 **計算フロー**:
+
 1. `getMaintenanceRepop()` で `minRepop` / `maxRepop` を算出（メンテ補正込み）
 2. 特殊条件モブ（天候/月齢/ET）の場合、`findNextSpawn()` で次回出現時刻を探索
 3. 現在時刻と比較してステータスを決定
@@ -387,7 +389,7 @@ DOMContentLoaded
 Sモブは以下の条件の組み合わせで出現する:
 
 | 条件 | 判定関数 | 周期 |
-|---|---|---|
+| --- | --- | --- |
 | 月齢 | `getEorzeaMoonInfo()` | 32ET日サイクル（新月/満月） |
 | 天候 | `getEorzeaWeatherSeed()` | 1400秒サイクル |
 | ET時間 | `checkEtCondition()` | 175秒サイクル |
@@ -407,6 +409,7 @@ Sモブは以下の条件の組み合わせで出現する:
 ### 10.6 nextBoundarySec
 
 ステータスが変化する可能性のある**最短の未来時刻**を保持:
+
 - 対象: `minRepop`, `maxRepop`, `nextConditionSpawnDate`, `conditionWindowEnd`
 - 現在時刻より未来のもののうち最小値
 
@@ -418,7 +421,7 @@ Sモブは以下の条件の組み合わせで出現する:
 ## 11. モブステータスの定義
 
 | ステータス | ラベル | 意味 |
-|---|---|---|
+| --- | --- | --- |
 | `MaxOver` | 超過 | 最大リポップ時間を超過 |
 | `ConditionActive` | なう | リポップ窓内で特殊条件を**満たしている** |
 | `PopWindow` | 残り | リポップ窓内だが条件未充足（または条件なし） |
@@ -543,7 +546,7 @@ Sモブは以下の条件の組み合わせで出現する:
 アプリ内のモジュール間通信に `window.dispatchEvent(CustomEvent)` を使用:
 
 | イベント | トリガー | 処理 |
-|---|---|---|
+| --- | --- | --- |
 | `initialDataLoaded` | 初期ロード完了 | 初回描画 |
 | `initialSortComplete` | 初回ソート完了 | ローディング非表示 |
 | `filterChanged` | フィルタ変更 | 再フィルタ・再描画 |
@@ -565,7 +568,7 @@ Sモブは以下の条件の組み合わせで出現する:
 ### デザイントークン (`root.css :root`)
 
 | カテゴリ | 主要変数 |
-|---|---|
+| --- | --- |
 | 背景 | `--c-bg: #070d17`, `--c-surface: #142238` |
 | ランク色 | `--c-s: #f59e0b (金)`, `--c-a: #22d3ee (シアン)`, `--c-f: #a855f7 (紫)` |
 | テキスト | `--c-text-hi: #f0f4f8`, `--c-text-lo: #8fa3c0` |
@@ -586,6 +589,7 @@ Sモブは以下の条件の組み合わせで出現する:
 以下は仕様違反であり、AIが自己判断で実装してはならない:
 
 ### 更新サイクル
+
 - ❌ Tier Cの対象を `ConditionActive` 状態で別途抽出する
 - ❌ Tier Cを全件（全filteredモブ）に対して実行する
 - ❌ 定期ループ内で `calculateRepop()` / `findNextSpawn()` を無条件に呼び出す
@@ -593,12 +597,14 @@ Sモブは以下の条件の組み合わせで出現する:
 - ❌ `updateVisibleCards` の visibility チェックを省略する
 
 ### 計算・ロジック
+
 - ❌ メンテナンス猶予期間（1800秒）を無視したリポップ計算
 - ❌ FATEモブ（ランクF）にメンテ係数を適用する
 - ❌ UIスレッドでの大規模な再計算ループの実行
 - ❌ `_spawnCache` を無視して毎回 `findNextSpawn()` を呼ぶ
 
 ### 命名・構造
+
 - ❌ `1_ボナコン` のような命名規則を独断で変更する
 - ❌ `cal.ts` の定数や計算ロジックを指示なく変更する
 - ❌ モブ番号体系（5桁 EEMMN）を変更する
@@ -607,6 +613,7 @@ Sモブは以下の条件の組み合わせで出現する:
 ### 重い計算の実行タイミング
 
 `findNextSpawn()` 等の条件探索は**以下のトリガー時のみ**実行:
+
 1. 初回ロード時
 2. 討伐報告の受信時（Firestoreからの更新）
 3. `nextBoundarySec` を現在時刻が超えた時（境界タイマー or Tier B/C内）
@@ -657,7 +664,7 @@ modal.ts
 ## 22. 設定値一覧 (`CONFIG`)
 
 | キー | 値 | 説明 |
-|---|---|---|
+| --- | --- | --- |
 | `APP_LOAD_TIMEOUT` | 6000ms | ローディングタイムアウト |
 | `TIER_B_UPDATE_INTERVAL` | 60000ms | Tier B更新間隔 |
 | `TOAST_DURATION` | 4000ms | トースト表示時間 |
@@ -679,7 +686,7 @@ modal.ts
 
 - **キャッシュ名**: `hunt-cache-v5`
 - **キャッシュ対象**: JSONデータ、マップ画像、アイコン、通知音
-- **戦略**: 
+- **戦略**:
   - Firestoreリクエスト/認証: ネットワークのみ（キャッシュしない）
   - JSON: ネットワーク優先、失敗時キャッシュ
   - その他: キャッシュ優先、失敗時ネットワーク

@@ -21,6 +21,7 @@
   transform: translateY(100%);
   transition: transform 0.22s cubic-bezier(0.32, 0, 0.67, 0);
 }
+
 .mobcard-card.is-open,
 .mobcard-card.visible {
   transform: translateY(0);
@@ -76,9 +77,24 @@
   color: var(--c-a);
   border: 1.5px solid var(--c-a);
 }
-.mobcard-rank[data-rank="S"] { background-color: var(--c-s-dark); color: var(--c-s); border-color: var(--c-s); }
-.mobcard-rank[data-rank="A"] { background-color: var(--c-a-dark); color: var(--c-a); border-color: var(--c-a); }
-.mobcard-rank[data-rank="F"] { background-color: var(--c-f-dark); color: var(--c-f); border-color: var(--c-f); }
+
+.mobcard-rank[data-rank="S"] {
+  background-color: var(--c-s-dark);
+  color: var(--c-s);
+  border-color: var(--c-s);
+}
+
+.mobcard-rank[data-rank="A"] {
+  background-color: var(--c-a-dark);
+  color: var(--c-a);
+  border-color: var(--c-a);
+}
+
+.mobcard-rank[data-rank="F"] {
+  background-color: var(--c-f-dark);
+  color: var(--c-f);
+  border-color: var(--c-f);
+}
 
 /* mob name */
 .mobcard-name {
@@ -109,6 +125,7 @@
   min-width: 0;
   overflow: hidden;
 }
+
 .detail-area {
   font-family: var(--font-ui);
   font-size: 11px;
@@ -117,6 +134,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 .detail-expansion {
   font-family: var(--font-ui);
   font-size: 10px;
@@ -141,6 +159,7 @@
   background-color: var(--c-prog-bg);
   overflow: hidden;
 }
+
 .mobcard-progress-bar {
   height: 100%;
   width: calc(var(--prog-percent, 0) * 100%);
@@ -165,6 +184,7 @@
   padding: 0;
   border-bottom: none;
 }
+
 .mobcard-section-label {
   font-size: 10px;
   font-weight: 800;
@@ -179,6 +199,7 @@
   align-items: baseline;
   justify-content: space-between;
 }
+
 .map-update-time {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -199,15 +220,18 @@
   min-height: 34px;
   transition: border-color 0.2s;
 }
+
 .mobcard-memo-box:focus-within {
   border-color: var(--c-cyan);
 }
+
 .mobcard-memo-prefix-area {
   display: flex;
   align-items: center;
   padding: 0 8px 0 10px;
   flex-shrink: 0;
 }
+
 .mobcard-memo-prefix-text {
   font-size: 11px;
   font-weight: 800;
@@ -215,12 +239,14 @@
   letter-spacing: 0.05em;
   text-transform: lowercase;
 }
+
 .mobcard-memo-separator {
   width: 1px;
   height: 20px;
   background-color: #2e657f;
   display: block;
 }
+
 .mobcard-memo-input {
   flex: 1 1 auto;
   background: transparent;
@@ -243,10 +269,14 @@
   -ms-user-select: text;
   user-select: text;
 }
+
 .mobcard-memo-input::-webkit-scrollbar {
   display: none;
 }
-.mobcard-memo-input::placeholder { color: var(--c-text-off); }
+
+.mobcard-memo-input::placeholder {
+  color: var(--c-text-off);
+}
 
 /* ── Info grid (4 repop times) ───────────────────────────── */
 .mobcard-grid {
@@ -254,6 +284,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 4px;
 }
+
 .mobcard-info-item {
   background-color: #303c51;
   border: 1px solid #353e4b;
@@ -266,6 +297,7 @@
   gap: 6px;
   min-height: auto;
 }
+
 .mobcard-label {
   font-family: var(--font-ui);
   font-size: 11px;
@@ -280,6 +312,7 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
+
 .mobcard-value {
   font-family: var(--font-mono);
   font-size: 14px;
@@ -291,13 +324,16 @@
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
 }
+
 .mobcard-value .mobcard-timer-num {
   font-size: 14px;
   font-weight: 700;
 }
+
 .mobcard-value .mobcard-timer-unit {
   font-size: 11px;
 }
+
 /* Next possible repop time in gold */
 .mobcard-highlight .mobcard-value,
 .mobcard-info-item.mobcard-highlight .mobcard-value,
@@ -350,10 +386,17 @@
   letter-spacing: 0.5px;
   transition: opacity 0.15s;
 }
+
 .mobcard-mobile-actions .bottom-report-btn:active,
-.mobcard-mobile-actions .moblist-report-btn:active { opacity: 0.7; }
+.mobcard-mobile-actions .moblist-report-btn:active {
+  opacity: 0.7;
+}
+
 .mobcard-mobile-actions .bottom-report-btn:disabled,
-.mobcard-mobile-actions .moblist-report-btn:disabled { opacity: 0.3; pointer-events: none; }
+.mobcard-mobile-actions .moblist-report-btn:disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
 
 .mobcard-close-btn {
   flex: 0 0 90px;
@@ -373,7 +416,10 @@
   background-color: rgba(255, 255, 255, 0.05);
   transition: background-color 0.15s, opacity 0.15s;
 }
-.mobcard-close-btn:active { opacity: 0.6; }
+
+.mobcard-close-btn:active {
+  opacity: 0.6;
+}
 
 /* ── PC: static right pane ───────────────────────────────── */
 @media (min-width: 900px) {
@@ -390,6 +436,7 @@
     flex-direction: column;
     min-height: 0;
   }
+
   .mobcard-inner {
     height: 100%;
     max-height: 100%;
@@ -398,15 +445,18 @@
     flex-direction: column;
     overflow: hidden;
   }
+
   .mobcard-header {
     flex-shrink: 0;
   }
+
   .mobcard-content {
     flex: 1 1 auto;
     overflow-y: auto;
     overflow-x: hidden;
     min-height: 0;
   }
+
   .mobcard-mobile-actions {
     flex-shrink: 0;
   }
@@ -426,15 +476,17 @@
   overflow: hidden;
   background-color: #050d18;
   pointer-events: none;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
 }
-.map-magnifier.hidden { display: none; }
+
+.map-magnifier.hidden {
+  display: none;
+}
 
 .magnifier-content-wrapper {
   position: absolute;
   transform-origin: 0 0;
-  transform: translate(var(--mag-zoom-x), var(--mag-zoom-y))
-    scale(var(--mag-scale));
+  transform: translate(var(--mag-zoom-x), var(--mag-zoom-y)) scale(var(--mag-scale));
   width: var(--map-w);
   height: var(--map-h);
 }
@@ -462,6 +514,7 @@ html body.magnifier-active .mobcard-inner * {
   width: 100%;
   max-width: 100%;
 }
+
 .pc-map-box {
   max-height: none;
   width: 100%;
@@ -470,6 +523,7 @@ html body.magnifier-active .mobcard-inner * {
   align-items: center;
   justify-content: center;
 }
+
 .mob-map-img {
   display: block;
   width: 100%;
@@ -477,6 +531,7 @@ html body.magnifier-active .mobcard-inner * {
   max-width: 100%;
   object-fit: contain;
 }
+
 .map-overlay {
   pointer-events: none;
   position: absolute;
@@ -498,6 +553,7 @@ html body.magnifier-active .mobcard-inner * {
   pointer-events: auto;
   z-index: 5;
 }
+
 .spawn-point:focus,
 .spawn-point:hover {
   transform: translate(-50%, -50%) scale(2);
@@ -526,6 +582,7 @@ html body.magnifier-active .mobcard-inner * {
   transition: opacity 0.12s;
   z-index: 30;
 }
+
 .spawn-point[data-tooltip]:hover::after,
 .spawn-point[data-tooltip]:focus::after {
   opacity: 1;
@@ -536,28 +593,34 @@ html body.magnifier-active .mobcard-inner * {
   background-color: #22d3ee;
   border: 2px solid #ffffff;
 }
+
 .color-b2 {
   background-color: #f87171;
   border: 2px solid #ffffff;
 }
+
 .color-b1-culled {
   background-color: #ffffff;
   border: 2px solid #22d3ee;
 }
+
 .color-b2-culled {
   background-color: #ffffff;
   border: 2px solid #f87171;
 }
+
 .color-lastone {
   background-color: #10b981;
   border: 2px solid #ffffff;
 }
+
 .color-b1-only {
   background-color: #ffffff;
   border: 2px solid #22d3ee;
   width: 10px;
   height: 10px;
 }
+
 .color-b2-only {
   background-color: #ffffff;
   border: 2px solid #f87171;

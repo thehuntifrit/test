@@ -38,9 +38,17 @@
 }
 
 /* rank stripe colours */
-.moblist-item[data-rank="S"]::before { background-color: var(--c-s); }
-.moblist-item[data-rank="A"]::before { background-color: var(--c-a); }
-.moblist-item[data-rank="F"]::before { background-color: var(--c-f); }
+.moblist-item[data-rank="S"]::before {
+  background-color: var(--c-s);
+}
+
+.moblist-item[data-rank="A"]::before {
+  background-color: var(--c-a);
+}
+
+.moblist-item[data-rank="F"]::before {
+  background-color: var(--c-f);
+}
 
 /* ── Progress line (bottom) ──────────────────────────────── */
 .moblist-progress-line {
@@ -52,15 +60,25 @@
   background-color: var(--c-prog-bg);
   overflow: hidden;
 }
+
 .moblist-progress-bar {
   height: 100%;
   width: calc(var(--prog-percent, 0) * 100%);
   background-color: var(--c-prog-a);
   border-radius: 0 1px 1px 0;
 }
-.moblist-item[data-rank="S"] .moblist-progress-bar { background-color: var(--c-prog-s); }
-.moblist-item[data-rank="A"] .moblist-progress-bar { background-color: var(--c-prog-a); }
-.moblist-item[data-rank="F"] .moblist-progress-bar { background-color: var(--c-prog-f); }
+
+.moblist-item[data-rank="S"] .moblist-progress-bar {
+  background-color: var(--c-prog-s);
+}
+
+.moblist-item[data-rank="A"] .moblist-progress-bar {
+  background-color: var(--c-prog-a);
+}
+
+.moblist-item[data-rank="F"] .moblist-progress-bar {
+  background-color: var(--c-prog-f);
+}
 
 /* rank badge (square) - hidden as rank stripe color identifies rank */
 .moblist-rank-badge {
@@ -89,6 +107,7 @@
   gap: 5px;
   overflow: hidden;
 }
+
 .moblist-name {
   font-family: var(--font-ui);
   font-size: 12.5px;
@@ -102,6 +121,7 @@
   display: inline-flex;
   align-items: center;
 }
+
 .instance-badge {
   display: inline-flex;
   align-items: center;
@@ -121,11 +141,13 @@
   box-shadow: 0 0 6px rgba(6, 182, 212, 0.3);
   font-family: var(--font-mono, monospace);
 }
+
 .instance-badge::before {
   content: '🌐';
   font-size: 9px;
   margin-right: 2px;
 }
+
 .moblist-count {
   flex-shrink: 0;
   font-family: var(--font-ui);
@@ -133,8 +155,14 @@
   color: var(--c-text-lo);
   white-space: nowrap;
 }
-.memo-icon-container { flex-shrink: 0; }
-.memo-icon { font-size: 10px; }
+
+.memo-icon-container {
+  flex-shrink: 0;
+}
+
+.memo-icon {
+  font-size: 10px;
+}
 
 /* area row (bottom row containing area on left & time on right) */
 .moblist-area-row {
@@ -145,6 +173,7 @@
   overflow: hidden;
   width: 100%;
 }
+
 .moblist-area {
   font-family: var(--font-ui);
   font-size: 10.5px;
@@ -168,6 +197,7 @@
   padding-right: 0;
   white-space: nowrap;
 }
+
 .moblist-time {
   font-family: var(--font-mono);
   font-size: 13px;
@@ -187,12 +217,14 @@
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
+
 .mobcard-timer-part {
   display: inline-flex;
   align-items: baseline;
   min-inline-size: 2.2ch;
   justify-content: flex-end;
 }
+
 .mobcard-timer-num {
   font-family: var(--font-mono);
   font-size: 14px;
@@ -200,6 +232,7 @@
   color: var(--c-text-hi);
   font-variant-numeric: tabular-nums;
 }
+
 .mobcard-timer-unit {
   font-family: var(--font-ui);
   font-size: 10px;
@@ -207,9 +240,11 @@
   margin-left: 1px;
   margin-right: 2px;
 }
+
 .timer-label-base {
   display: none !important;
 }
+
 .moblist-percent {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -218,9 +253,18 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
-.moblist-percent::before { content: '('; }
-.moblist-percent::after { content: ')'; }
-.moblist-percent.max-over { color: var(--c-red, #ef4444); }
+
+.moblist-percent::before {
+  content: '(';
+}
+
+.moblist-percent::after {
+  content: ')';
+}
+
+.moblist-percent.max-over {
+  color: var(--c-red, #ef4444);
+}
 
 /* spawn count (pc-count-val) */
 .pc-count-val {
@@ -237,10 +281,12 @@
   background-color: var(--c-surface-sel);
   border-color: var(--c-border-sel);
 }
+
 .moblist-item.is-selected::before,
 .moblist-item.selected::before {
   width: var(--row-stripe-sel);
 }
+
 .moblist-item.is-selected .moblist-time,
 .moblist-item.selected .moblist-time,
 .moblist-item.is-selected .mobcard-timer-num,
@@ -254,7 +300,10 @@
     background-color: var(--c-surface-ho);
   }
 }
-.moblist-item:active { background-color: var(--c-surface-ho); }
+
+.moblist-item:active {
+  background-color: var(--c-surface-ho);
+}
 
 /* ── State: Timed mob in condition window (White Glow) ───── */
 .moblist-item.moblist-highlight-white {
@@ -278,7 +327,12 @@
 .moblist-item.pop-window .mobcard-timer-num {
   animation: flash-amber 1s step-end infinite;
 }
-@keyframes flash-amber { 50% { opacity: 0.25; } }
+
+@keyframes flash-amber {
+  50% {
+    opacity: 0.25;
+  }
+}
 
 /* ── State: last one ─────────────────────────────────────── */
 .moblist-item.last-one .moblist-time,
@@ -308,23 +362,29 @@
   margin-left: auto;
   padding: 0;
 }
+
 .moblist-item .moblist-report-btn:hover {
   background-color: rgba(6, 182, 212, 0.35);
   color: #fff;
 }
+
 .moblist-item .moblist-report-btn:active {
   background-color: var(--c-cyan);
   color: var(--c-bg);
 }
 
 /* ── #status-group-template ──────────────────────────────── */
-.status-group { margin-bottom: 8px; }
+.status-group {
+  margin-bottom: 8px;
+}
+
 .status-group-separator {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 6px 4px 4px;
 }
+
 .status-group-label {
   font-size: 11px;
   font-weight: 600;
@@ -333,6 +393,7 @@
   letter-spacing: 0.8px;
   white-space: nowrap;
 }
+
 .status-group-separator::before,
 .status-group-separator::after {
   content: '';
@@ -340,6 +401,7 @@
   height: 1px;
   background-color: var(--c-border);
 }
+
 .group-columns {
   display: flex;
   flex-direction: column;

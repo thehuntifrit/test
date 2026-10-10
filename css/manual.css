@@ -10,9 +10,11 @@
   bottom: var(--footer-safe);
   z-index: var(--z-modal);
 }
+
 #manual-modal .app-backdrop {
   z-index: 0;
 }
+
 .manual-modal-content {
   position: absolute;
   inset: 0;
@@ -22,6 +24,7 @@
   flex-direction: column;
   overflow: hidden;
 }
+
 @media (min-width: 900px) {
   .manual-modal-content {
     left: 50%;
@@ -33,15 +36,18 @@
     border-right: 1px solid var(--c-border);
   }
 }
+
 .manual-modal-chrome {
   flex-shrink: 0;
   background-color: #0a1220;
   z-index: 10;
 }
+
 .manual-modal-top-border {
   height: 3px;
   background: linear-gradient(90deg, var(--c-cyan), var(--c-f));
 }
+
 .manual-modal-header {
   display: flex;
   align-items: center;
@@ -49,12 +55,14 @@
   padding: 16px 18px 14px;
   border-bottom: 1px solid var(--c-border);
 }
+
 .manual-modal-title {
   font-size: 18px;
   font-weight: 700;
   display: flex;
   gap: 6px;
 }
+
 .manual-modal-close {
   width: 32px;
   height: 32px;
@@ -72,6 +80,7 @@
   z-index: 11;
   -webkit-tap-highlight-color: transparent;
 }
+
 #readme-container {
   flex: 1;
   min-height: 0;
@@ -81,8 +90,22 @@
   line-height: 1.7;
   color: var(--c-text-hi);
 }
+
 #readme-container h1,
 #readme-container h2,
-#readme-container h3 { color: var(--c-text-hi); margin: 16px 0 8px; }
-#readme-container p  { margin-bottom: 10px; }
-#readme-container code { font-family: var(--font-mono); font-size: 12px; background: var(--c-surface); padding: 1px 5px; border-radius: 3px; }
+#readme-container h3 {
+  color: var(--c-text-hi);
+  margin: 16px 0 8px;
+}
+
+#readme-container p {
+  margin-bottom: 10px;
+}
+
+#readme-container code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: var(--c-surface);
+  padding: 1px 5px;
+  border-radius: 3px;
+}

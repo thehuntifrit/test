@@ -64,11 +64,13 @@ body {
   #list-layout {
     gap: 0;
   }
+
   #moblist-container {
     flex: 0 0 440px;
     border-right: 1px solid var(--c-border);
     padding-bottom: 16px;
   }
+
   #mobcard-pane {
     display: flex;
     flex: 1 1 auto;
@@ -81,6 +83,7 @@ body {
     height: 100%;
     min-height: 0;
   }
+
   #mobcard-pane.is-active {
     position: static;
     background-color: transparent;
@@ -91,6 +94,7 @@ body {
     height: 100%;
     min-height: 0;
   }
+
   #mobcard-detail {
     display: flex;
     flex-direction: column;
@@ -99,6 +103,7 @@ body {
     min-height: 0;
     overflow: hidden;
   }
+
   #mobcard-clocks {
     display: flex;
   }
